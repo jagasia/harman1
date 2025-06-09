@@ -723,3 +723,248 @@ var arr=[ 2, 16, 15, 2, 6, 8, 10, 7, 22, 4 , 6];
 OUTPUT:
 4
 3
+------------------------------------------------
+check points
+
+NodeJs is installed in cloud lab.
+	node -v
+
+Introduction to ReactJs
+--------------------------
+javascript library
+for developing robust web applications
+high performance
+	virtual DOM
+
+what is DOM?
+	Document Object Model
+		represents the html document (web page) as an object in memory
+
+	using that object, we can manipulate the document
+		add element
+		update element
+		remove element
+		append child
+		list all elements matching 
+
+	working with web page using javascript
+
+		document.getElementById
+		getElementsByName
+
+	innerHTML	html
+	value		val()
+	innerText		text
+	attr		
+
+What is Virtual DOM?
+	Light weight DOM
+	Is like a copy of the entire document
+	ReactJs uses Virtual DOM to do the changes and
+		detect the changes and reflect only those changes
+		rather than reloading the entire document in 			browser
+
+
+------------------------------------------------
+How to create a reactJs application (nodejs is installed already)
+
+there are 2 ways we can create a reactjs application.
+	npm
+	npx
+
+npm
+	install create-react-app using npm
+		npm i create-react-app
+
+	then create an application
+		create-react-app <<appname>>
+
+npx
+	we use the following commands to create app
+
+	npx create-react-app <<appname>>
+
+
+
+
+
+
+
+
+we have created an app "first-project"
+
+package.json
+	configuration file for our project
+	like pom.xml in maven?
+	dependencies:
+		the list of libraries included in this project
+
+
+when i push reactjs app to git
+	as mentioned in .gitignore file
+	node_modules folder will be ignored.
+
+but my project still contains package.json file
+
+when you download this project to your computer,
+your folder will not have node_modules
+
+but you can go to cmd prompt or terminal where
+package.json is present
+	and run
+		npm intall
+
+this will create node_modules folder if not present
+and install all libraries mentioned in the dependencies part of package.json
+
+Have you created reactjs app now?
+
+package.json
+
+
+src folder
+	all the source codes that we create
+
+
+public folder
+	index.html
+		this is the only html file in our project
+
+SPA	Single Page Applications
+
+public folder is a place for your static files like
+	icons
+	images
+
+you can refer files from public folder like they are available locally	
+we can create sub folders and maintain
+
+
+	
+
+
+
+
+
+
+index.html
+	html page.	static web page
+index.js
+	not a component.
+	is a javascript file
+	uses DOM to inject code into index.html
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+before JSX, the above method was used to create any element in DOM or Virtual DOM
+
+JSX 	-	JavaScript XML
+
+in javascript, can we do like:
+
+	document.getElementById("div1").innerHTML+="<TABLE><THEAD><TR><TH>S.No.</TH><TH>Name</TH></TR></THEAD>
+<TBODY>
+<TR><TD>1</TD><TD>Raja</TD></TR>
+</TBODY></TABLE>";
+
+The above code is html code embedded inside a string 	"" or '' or ``
+
+JSX is not embedding HTML code inside a string literal at all.
+
+
+
+	
+App.js
+
+
+javascript vs jsx
+
+
+Delete all contents of App.js
+ensure that there is one root element in App component
+
+-----------------------
+How to create components in reactjs?
+	1) using class
+		A class that extends Component and override render 			function
+	2) using function
+		functional component
+		arrow functional component
+
+
+signup component
+login component
+	present a form that has
+		username
+		password
+			login button
+	behavior / logic part
+		validate data entered in username and password
+		on clicking login button it says either success/failure
+	style part
+		css/ bootstrap/ any similar to style the appearance
+
+altogether, login becomes a component that can be plugged or removed or moved wherever required whenever.
+
+CSS	Cascading Style Sheet
+is effective method of applying style to web page(s)
+so that, it is easy to maintain/ modify styles for one or more pages
+
+though html itself provides methods to style web pages,
+
+for consistent styling for multiple pages, css (external) is very useful.
+
+a team who is good in aesthetics can work on css and apply style to html pages.
+
+bootstrap
+	is an application of css
+	someone has created huge css file "bootstrap.css" or "bootstrap.min.css" (that reduces file size by removing extra spaces)
+
+so if you know how to refer to external css from a html file, then you can use bootstrap.
+
+
+How to create a component 
+	class based approach
+
+
+in src, create a folder called "components"
+
+we will create all components in this folder.
+
+Task:
+------
+create a Maths.js that accepts 2 numbers input and add them 
+
+create this component inside components folder
+and plug it in App.js
+
+use class based approach
+
+how can we add 2 numbers entered by the user?
+	if you know javascript, you will tend to use DOM.
+
+
+
+props
+state
+event handling
+data binding
+
+props
+	properties
+	input from parent component to child component
+
+in App.js	(parent)
+
+	<Login title="Login page" />
+
+
+in Login.js (child)
+
+	<h3>{this.props.title}</h3>
+
+
+
+
+
