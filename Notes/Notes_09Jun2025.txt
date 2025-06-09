@@ -2,3 +2,280 @@ Jagadeeswaran
 
 https://cloud.cdp.rpsconsulting.in/console
 
+password is 
+	rps@12345
+
+
+
+
+c:\training folder
+if not found, pls create now
+
+
+Var, Let and Const keyword				
+Arrow functions, default arguments				
+Template Strings, String methods				
+Object de-structuring, Spread and Rest operator				
+Typescript Fundamentals				
+Types & type assertions, Creating custom object types, function types				
+Typescript OOPS - Classes, Interfaces, Constructor, etc				
+
+
+
+---------------------------
+What is the latest version of javascript?
+
+ES6
+	ECMA Script
+
+	European Computer Manufacturers Association
+
+
+update the browser versions
+	Internet Explorer
+
+
+Javascript runs either 
+	in browser
+	nodejs shell
+
+when a new version of js is introduced, we should ask everyone to update their browser
+
+Typescript
+	a language that provides type safe, convenient way of writing javascript code
+	typescript code is compiled (translated) into javascript.
+
+typescript is for the developers.
+new versions of ts is for the developers
+
+browsers doesn't execute typescript code.
+
+-----------------------------
+Lab setup for typescript.
+	we need to install typescript compiler (tsc)
+	for that we need npm	Node Package Manager
+	once we install nodejs in any computer, we have npm also
+
+npm i -g typescript
+
+	this command will install typescript compiler. 
+
+tsc --version
+
+this tsc is used to compile our typescript program into javascript code
+
+then we can run that js code in command prompt using "node"
+
+Hello world program in typescript.
+
+demo:
+-------
+we use  Visual Studio Code IDE
+
+i have created a folder "typescript" inside c:\training in cloud lab.
+
+open that folder in vs code.
+	right click folder -> open with code
+	or
+	go to cmd prompt in c:\training\typescript
+		code .
+	or
+		open vs code and open folder
+
+we have opened our "typescript" folder in vs code
+
+create a file for ex: "one.ts"
+and write some javascript code
+
+var x=20;
+var y=30;
+var z=x+y;
+console.log(z);
+
+
+save the file "one.ts"
+
+to compile this typescript code to javascript code:
+	tsc one.ts
+
+this will create one.js
+
+to run one.js
+	node one.js
+
+Benefits of typescript 
+------------------------
+	Compiled
+	Type safety, assertions
+	Blocked scoped variable
+	Language services
+
+
+
+javascript and typescript 
+	does not required ; at the end. If you use new line character
+	single quotes preferred. double quotes also allowed for string
+
+comments
+	//		single line comments
+	/*	*/	multi line comments
+
+
+Variables naming conventions:
+1) cannot start with a digit
+2) can contain characters, numbers.
+3) symbols are not allowed
+	except		_ 	and 	$
+4) identifiers cannot be keyword
+5) must be unique	(within the scope)
+6) case sensitive
+7) cannot have space in between
+
+
+var vs let vs const
+
+var fn1=()=>{
+}
+
+this allows me 
+	fn1=()=>{	//something else	}
+
+const fn1=()=>{}
+
+
+const x=20;		//assign a value or reference
+----------------------------------------
+var str="hello";
+console.log(str.length);	//based on the type of variable, it is allowed
+
+in javascript, every variable infers the type based on the assignment
+
+
+Data types
+-------------
+Kindly list out the data types in javascript (first)
+	number
+	bigint
+	string
+	undefined
+	boolean
+	null
+	symbol
+	
+
+what is a block?
+	{	} this is a block
+
+ideally, whatever we declared inside a block, should be scoped inside the block only. Not visible outside the block.
+
+lets observe this in js and then ts:
+
+in js:
+
+{
+    var x=20;
+}
+
+console.log(x);
+
+
+output:	20
+
+observation:
+	a variable declared and assigned inside a block is
+	visible outside the block
+
+so js does not provide scoped variables
+
+----------------------
+in ts:
+
+{
+    let x=20;
+}
+console.log(x);		//error		x is not visible outside
+
+
+ error TS2304: Cannot find name 'x'.
+
+
+
+
+let _name: string='Suresh';
+let str=`Hello ${_name}`;
+console.log(str);
+
+
+
+the above is called as template literal that uses ` instead of '
+
+` will be very useful for multi line string
+
+
+Array destructuring:
+------------------------
+let arr=[8,2,5,3,7];
+let [a,b]=arr;	//arr[0] and arr[1] are assigned to a and b
+
+console.log(a);
+
+
+Object destructuring:
+-------------------------
+// let arr=[8,2,5,3,7];
+// let [a,b]=arr;
+
+// console.log(a);
+
+
+let employee={name:'Raja', department:'ECE'};
+let {name, department}=employee;
+
+console.log(department);
+
+
+
+
+let arr=[21,14,33,54,6];
+let arr1=[11];
+let [x,y]=arr1;
+console.log(x);     //11
+console.log(y);     //undefined
+
+
+
+Rest parameters:
+	similar to param array
+	normally, an array, passed as an argument, is passed by reference.
+	but a param array, can pass array as argument but as values
+	so, the function that affects the parameter array, does not
+	affect the actual parameter array
+
+function fn1(arr)
+	if arr is modified inside the fn1 function, 
+	what happens to the actual parameter
+
+fn1(arr1)
+
+if paramter is a rest parameter, then a copy of the array is passed as argument.
+
+function fn1(...arr){
+    //affect the values of arr
+    arr[0]=100;
+}
+var arr=[1,2,3,4];
+fn1(arr);
+
+console.log(arr[0]);		//still it is 0
+
+
+Rest parameters can also be passed values instead of array
+
+fn1(2,1,7,4);		//values instead of array
+
+
+---------------------
+Break 11:30 to 11:45
+-----------------
+
+After break, we start pre test in cloud lab
