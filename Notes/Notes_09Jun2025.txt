@@ -274,8 +274,316 @@ Rest parameters can also be passed values instead of array
 fn1(2,1,7,4);		//values instead of array
 
 
----------------------
-Break 11:30 to 11:45
------------------
+-------------------------------
+Type assertions in typescript.
 
-After break, we start pre test in cloud lab
+we can do casting.
+
+in c, c++, java, how we do casting?
+
+	int x=20;
+	float y=(float)x;	//explicit casting
+
+in typescript:
+
+
+
+
+
+
+
+Javascript ES6 features:
+====================
+
+JavaScript ES6 (ECMAScript 2015) introduced many new features that modernized the language and made it more powerful and expressive. Here’s a breakdown of the most important ES6 features:
+
+---
+
+### 🔹 1. **Let and Const**
+
+* `let`: Block-scoped variable.
+* `const`: Block-scoped constant (cannot be reassigned).
+
+```js
+let x = 10;
+const y = 20;
+```
+
+---
+
+### 🔹 2. **Arrow Functions**
+
+Shorter syntax for functions and lexically binds `this`.
+
+```js
+const add = (a, b) => a + b;
+```
+
+---
+
+### 🔹 3. **Template Literals**
+
+Multi-line strings and embedded expressions using backticks (`` ` ``).
+
+```js
+const name = "Alice";
+const greeting = `Hello, ${name}!`;
+```
+
+---
+
+### 🔹 4. **Destructuring Assignment**
+
+Extract values from arrays or objects into variables.
+
+```js
+const [a, b] = [1, 2];
+const {name, age} = {name: "Bob", age: 30};
+```
+
+---
+
+### 🔹 5. **Default Parameters**
+
+Set default values for function parameters.
+
+```js
+function greet(name = "Guest") {
+  return `Hello, ${name}`;
+}
+```
+
+---
+
+### 🔹 6. **Rest and Spread Operators**
+
+* `...rest`: Combines remaining elements into an array.
+* `...spread`: Spreads elements from an array or object.
+
+```js
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+
+const arr = [1, 2, 3];
+const newArr = [...arr, 4];
+```
+
+---
+
+### 🔹 7. **Enhanced Object Literals**
+
+Shorthand property names and methods.
+
+```js
+const x = 10;
+const obj = {
+  x,
+  greet() {
+    return "Hello";
+  }
+};
+```
+
+---
+
+### 🔹 8. **Classes**
+
+Syntactic sugar over prototype-based inheritance.
+
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  }
+}
+```
+
+---
+
+### 🔹 9. **Modules**
+
+Import and export functions, objects, or primitives.
+
+```js
+// module.js
+export const PI = 3.14;
+
+// main.js
+import { PI } from './module.js';
+```
+
+---
+
+### 🔹 10. **Promises**
+
+A native way to handle asynchronous operations.
+
+```js
+const fetchData = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve("Data received"), 1000);
+  });
+};
+```
+
+---
+
+### 🔹 11. **Map and Set**
+
+New data structures for unique values and key-value pairs.
+
+```js
+const set = new Set([1, 2, 3]);
+const map = new Map([['a', 1], ['b', 2]]);
+```
+
+---
+
+Want deeper examples or ES6+ (ES7–ES14) updates too?
+
+
+
+TasK
+------
+create a promise that accepts a number as argument,
+and returns the sum of 1 to that number,
+after 5 seconds
+
+we can subscribe using then function and catch the exception
+
+
+timeout
+	is used to give a delay
+	like Thread.sleep() in java
+
+i want to execute few lines of code after a pause of few milliseconds
+
+
+
+setTimeout(ref, delay);
+
+ex:
+
+setTimeout(()=>{
+	///all these code are executed after the delay of 2000 millis
+},2000);
+
+
+Promise
+	provides us options to
+		either respond
+		or reject
+based on conditions
+
+	promise responds, asynchronously
+
+
+we can create promise
+and then subscribe or handle exceptions to/of the promise
+
+
+
+
+var username='raja'
+var password='raja2'
+
+function promiseHandler(res, rej){
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+}
+const myPromise=new Promise(promiseHandler);
+
+myPromise
+.then((res)=>{
+    console.log(('Response from promise is '+res));
+    
+})
+.catch((rej)=>{
+    console.log('Error from promise is '+rej);
+    
+});
+
+console.log("Last line.");
+
+
+------------------now lets change it to arrow function
+var username='raja'
+var password='raja2'
+
+function promiseHandler(res, rej){
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+}
+const myPromise=new Promise((res, rej)=>{
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+});
+
+myPromise
+.then((res)=>{
+    console.log(('Response from promise is '+res));
+    
+})
+.catch((rej)=>{
+    console.log('Error from promise is '+rej);
+    
+});
+
+console.log("Last line.");
+
+
+
+Task:
+-------
+Create a promise that will print hello world after 5 seconds.
+use then to subscribe and catch to handle exception
+
+for delay, use setTimeout function
+
+this is an observation for 
+	arrow functions
+	setTimeout
+	Promise
+
+
+Question:
+
+if a function has arguments with default values
+
+function fn1(x,y,z=0){
+    return x+y+z;
+}
+
+console.log(fn1(2,3));
+
+Can the first argument have default value?	NO
+the last argument only can have default value. But
+last 2 arguments can have default.
+
+in that way, all default value arguments are pushed to end only
+after an (optional/ default value) argument, there cannot be a regular argument (mandatory)
+
+what about rest paramters?
+	rest parameters must always be at the end of the arg list
+	only 1 rest parameter is allowed in the list
+	all other parameters are mandatory, and cannot have default value.
+
+Try this.
+
+
