@@ -582,8 +582,144 @@ after an (optional/ default value) argument, there cannot be a regular argument 
 what about rest paramters?
 	rest parameters must always be at the end of the arg list
 	only 1 rest parameter is allowed in the list
-	all other parameters are mandatory, and cannot have default value.
-
+	
 Try this.
 
 
+fn(2)		2 is for 1st parameter
+fn(2,3)		2 is for 1st, 3 is for 2nd	
+fn(2,3,10)	2, 3, 10 are for 1st, 2nd and 3rd respectively
+
+
+...	used for rest parameters	(like a param array)
+...	spread operator
+
+var arr=[1,2,3];	
+var arr2=[...arr,4];		//1,2,3,4
+
+rest
+spread
+
+
+----------------------------------------------------------------------
+
+Objects in javascript.
+
+In javascript, we can create objects without a class.
+
+var obj={};
+obj.id=123;
+obj.name='Raja';
+obj.department='IT',
+obj.salary=1234567;
+
+
+
+
+Array
+-------
+array is a datastructure that keeps elements in memory in contiguous memory locations
+They are all same data type or type.
+
+in js, we can create an array without specifying the length of the array.
+
+()=>{
+
+}
+
+
+
+-----------------------
+Map
+	key - value pair
+	if key is duplicate, then value is updated/replaced
+	values can be duplicate or null
+
+
+Set
+	rejects duplicates
+
+
+
+
+var str='education';
+for(var c of str){
+    console.log(c);
+    
+}
+
+
+
+
+if
+if else
+if else if -else
+switch case
+for loop	(definitive loop)
+for(;;)		(infinite loop)
+while(true)	(infinite loop)
+while		(indefinite loop)
+do while	(indefinite loop)
+break
+continue
+
+
+
+Task:
+Each player will be allowed to throw a dice 2 times. The points for each player will be calculated as follows :
+The points scored is the absolute difference between 8 and the sum of the 2 values, provided the sum of the 2 values is less than 8.
+In all other cases, the point  scored is double the absolute difference between 8 and the sum of the 2 values.
+
+Write a program to calculate the points scored by a player.
+
+test case 1:
+var input1=5;
+var input2=6;
+
+the output should be :		6
+explanation:
+	the sum of 2 values:	11	(5+6)
+	abs diff between 8 and sum:	11 and 8	=	3
+	since the sum (11) is not less than 8, the points is double the abs diff	=	2 * 3	=6
+
+test case 2:
+var input1=3;
+var input2=2;
+
+the output should be :		3
+
+
+
+
+
+
+var input1=5;
+var input2=6;
+
+//write your code here
+
+--------------------------------------------------
+Task:
+Run Length IV
+ 
+Write a program to find the length of the longest running sequence of even numbers in the given array. Also find the starting index of the longest running sequence of even numbers.
+ 
+Example :
+ 
+Consider the array ... [ 2, 16, 15, 2, 6, 8, 10, 7, 22, 4 , 6]
+ 
+The 3 even number sequences in this array are {2, 16}, {2, 6, 8, 10} and {22, 4, 6}.
+The longest running even number sequence is {2, 6, 8, 10}
+The length of the longest running even number sequence is 4 and the starting index is 3.
+ 
+Note:
+The array indexing starts from 0.
+If there are multiple choices, select the choice where the starting index is minimum.
+ 
+declaration:
+
+var arr=[ 2, 16, 15, 2, 6, 8, 10, 7, 22, 4 , 6];
+
+OUTPUT:
+4
+3
