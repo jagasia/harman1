@@ -1,0 +1,16 @@
+
+ Cloud Lab URL as follows :- https://cloud.cdp.rpsconsulting.in/console
+
+trainer username:
+25PRE1573_TR
+
+
+password:
+rps@12345
+
+
+
+
+25PRE1573_U01
+to
+25PRE1573_U19
