@@ -185,4 +185,134 @@ Task:
 create a class based component for example Maths or Login
 and ensure that the data entered in the user interface are bound to the state.
 
-sample code is provided above
+sample code is provided above in notes file
+
+
+remember to bind the functions to the "this" object to allow access to state
+
+
+
+Shall we simplify this code?
+
+
+import { Component } from "react";
+
+ class Login extends Component{
+    
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:''};
+        this.onChangeHandler=this.onChangeHandler.bind(this);
+    }
+
+
+    onChangeHandler(e){
+        var source=e.target.id;
+        switch(source){
+            case "txtUsername":
+                this.setState({username:e.target.value})
+                break;
+            case "txtPassword":
+                this.setState({password:e.target.value})
+                break;
+        }
+    }
+
+    render(){
+        return <div>
+            { JSON.stringify(this.state) }
+            <h3>{this.props.title}</h3>
+            Username: <input id="txtUsername" type="text" className="form-control" onChange={this.onChangeHandler} />
+            Password: <input id="txtPassword" type="password" className="form-control" onChange={this.onChangeHandler} /><br/>
+            <input type="button" value="Login" className="btn btn-success" />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+        </div>
+    }
+}
+
+export default Login;
+
+-=======================
+after refactoring further, we do not need a function.
+Lets use arrow function and achieve the same.
+
+
+
+import { Component } from "react";
+
+ class Login extends Component{
+    
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:''};
+    }
+
+
+
+    render(){
+        return <div>
+            { JSON.stringify(this.state) }
+            <h3>{this.props.title}</h3>
+            Username: <input id="txtUsername" type="text" className="form-control" onChange={(e)=>this.setState({username:e.target.value})} />
+            Password: <input id="txtPassword" type="password" className="form-control" onChange={(e)=>this.setState({password:e.target.value})} /><br/>
+            <input type="button" value="Login" className="btn btn-success" />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+        </div>
+    }
+}
+
+export default Login;
+
+
+--------------------------------------------------------
+if username and password are same, login is successful.
+otherwise, failure
+
+import { Component } from "react";
+
+ class Login extends Component{
+    
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:'', touched:false};
+        this.fnLogin=this.fnLogin.bind(this);
+    }
+
+    fnLogin(){
+        this.setState({touched:true})
+        var username=this.state.username;
+        var password=this.state.password;
+        if(username===password && username!='' && password!=''){
+            this.setState({result:true})
+        }else{
+            this.setState({result:false})
+        }
+    }
+
+
+
+    render(){
+        return <div>
+            { JSON.stringify(this.state) }
+            <h3>{this.props.title}</h3>
+            Username: <input id="txtUsername" type="text" className="form-control" onChange={(e)=>this.setState({username:e.target.value})} />
+            Password: <input id="txtPassword" type="password" className="form-control" onChange={(e)=>this.setState({password:e.target.value})} /><br/>
+            <input type="button" value="Login" className="btn btn-success" onClick={this.fnLogin} />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+            {/* {this.state.result} */}
+            {
+                this.state.result && <div style={{'color':'green'}}>Success</div>
+            }
+
+            {
+                this.state.touched && !this.state.result && <div style={{'color':'red'}}>Failure</div>
+            }
+        </div>
+    }
+}
+
+export default Login;
+
