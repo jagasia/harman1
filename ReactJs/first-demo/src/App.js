@@ -1,7 +1,7 @@
 import './App.css';
-import { Counter } from './components/Counter';
-import Login from './components/Login';
-import Maths from './components/Maths';
+import { ColorRange } from './components/ColorRange';
+import { Register } from './components/Register';
+import { Signup } from './components/Signup';
 
 
 function App() {
@@ -10,15 +10,19 @@ function App() {
       <div className="p-5 bg-primary text-center">
         <h1 className="text-white">Welcome to Home page</h1>
       </div>
-      <div class="row">
-        <div class="col-md-4">
-          <Maths />
+      <div className="row">
+        <div className="col-md-4">
+          {/* <Maths /> */}
+          {/* <Color /> */}
+          <ColorRange />
         </div>
-        <div class="col-md-4">
-          <Login title="Login page" />
+        <div className="col-md-4">
+          {/* <Login title="Login page" /> */}
+          <Register />
         </div>
-        <div class="col-md-4">
-          <Counter heading="Counter ... " />
+        <div className="col-md-4">
+          {/* <Counter heading="Counter ... " /> */}
+          <Signup />
         </div>
       </div>
     </div>

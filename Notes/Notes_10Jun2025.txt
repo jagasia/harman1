@@ -316,3 +316,409 @@ import { Component } from "react";
 
 export default Login;
 
+-----------------------------------------
+Task:
+-------
+In this login form, we will provide a check box "Show Password" and on ticking this, the password should be made visible.
+
+
+Hint: use state
+clicking checkbox to update state
+
+
+
+import { Component } from "react";
+
+ class Login extends Component{
+    
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:'', touched:false, showPassword:false};
+        this.fnLogin=this.fnLogin.bind(this);
+    }
+
+    fnLogin(){
+        this.setState({touched:true})
+        var username=this.state.username;
+        var password=this.state.password;
+        if(username===password && username!='' && password!=''){
+            this.setState({result:true})
+        }else{
+            this.setState({result:false})
+        }
+    }
+
+
+
+    render(){
+        return <div>
+            { JSON.stringify(this.state) }
+            <h3>{this.props.title}</h3>
+            Username: <input id="txtUsername" type="text" className="form-control" onChange={(e)=>this.setState({username:e.target.value})} />
+            Password: <input id="txtPassword" type={(this.state.showPassword)?'text':'password'} className="form-control" onChange={(e)=>this.setState({password:e.target.value})} /><br/>
+            <label for="chkShowPassword">Show Password:</label> <input id="chkShowPassword" type="checkbox" onChange={(e)=>this.setState({showPassword:e.target.checked})} /><br/><br/>            
+            <input type="button" value="Login" className="btn btn-success" onClick={this.fnLogin} />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+            {/* {this.state.result} */}
+            {
+                this.state.result && <div style={{'color':'green'}}>Success</div>
+            }
+
+            {
+                this.state.touched && !this.state.result && <div style={{'color':'red'}}>Failure</div>
+            }
+        </div>
+    }
+}
+
+export default Login;
+
+-----------------------------------------------------
+Task:
+-------
+Can you create a component called "Color" that provides few color options in dropdownlist
+
+on selecting the color, the background color of a div should change accordingly.
+
+Props and Component Reusability				
+--------------------------------------
+The main purpose of creating components, and following component based approach, should be re-usability
+if it is customizable, then it is more re-usable.
+
+import { useState } from "react";
+
+export const Color=()=>{
+    const [color, setColor]=useState('white');
+
+    return <div>
+        {color}
+        <br/>
+        Choose color: <select className="form-select" onChange={(e)=>setColor(e.target.value)}>
+            <option>Red</option>
+            <option>Green</option>
+            <option>Blue</option>
+        </select>
+        <br/>
+        <div style={{'background-color':color}}>
+            <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+        </div>
+    </div>
+}
+
+--------------------------
+Task:
+
+create a signin (functional) component,
+and bind the username and password to state
+and on typing every character in the username, display the length of the username
+
+
+
+
+Password: <input type="text" className="form-control" onChange={(e)=>{setPassword(e.target.value); fnValidatePasswordMatcch()}} />
+
+
+Problem:
+----------
+onChange even hander has 2 lines of code (in our arrow function)
+
+setPassword(e.target.value);
+fnValidatePasswordMatcch();		//executed even before prev line
+
+what is the problem?
+	set state methods always work asynchronously.
+	so, before setPassword method is completed,
+		the fnValidatePasswordMatcch() is executed.
+
+
+
+solution:
+
+avoid setter methods like
+	setPassword(e.target.value);
+
+instead, use
+	setPassword((pwd)=>{
+		
+		fnValidatePasswordMatcch();
+});
+
+
+
+So far we have used only one hook: 	useState hook
+
+
+lets use useEffect hook, that will re load the component whenever a change occurs on specified state or object
+
+useEffect(()=>{//callback function},[objects to watch, list it here]);
+
+
+useEffect(callbackfunction, array of objects to watch);
+
+example:
+
+useEffect(()=>{}, []);
+
+
+Life cycle hooks of a component (functional)
+Life cycle method/functions of a component (class based component)
+
+
+Activity:
+understand the purpose of the following hooks:
+	useState
+	useEffect
+
+---------------------------------
+import { useEffect, useState } from "react";
+
+export const Signup=()=>{
+    const [username, setUsername]=useState('');
+    const [password, setPassword]=useState('');
+    const [confirmPassword, setConfirmPassword]=useState('');
+    const [valid, setValid]=useState(true);
+
+    useEffect(()=>{
+        console.log("useEffect hook is in action now...");
+        
+        fnValidatePasswordMatcch();
+    }, [password, confirmPassword]);
+
+    function fnValidatePasswordMatcch(){
+        if(password!=confirmPassword){
+            setValid(false);
+        }else{
+            setValid(true);
+        }
+    }
+
+    return <div>
+        
+        Username: <input type="text" className="form-control" onChange={(e)=>{setUsername(e.target.value);}} />
+        Password: <input type="text" className={`form-control is-invalid`} onChange={(e)=>{setPassword(e.target.value); }} />
+        Confirm Password: <input type="text" className="form-control" onChange={(e)=>{setConfirmPassword(e.target.value);}} />
+        <br/>
+        {  !valid && <div>Passwords does not match</div> }
+        <br/>
+        
+    </div>
+}
+
+
+
+try to conditionally apple classname "is-invalid"
+
+Password: <input type="text" className={`form-control is-invalid`} onChange={(e)=>{setPassword(e.target.value); }} />
+
+is now changed into...
+
+
+Password: <input type="text" className={`form-control ${!valid && 'is-invalid'}`} onChange={(e)=>{setPassword(e.target.value); }} />
+
+--------------------------------------------------------------------
+What is React and Why React?				
+Features of React				
+React vs Other Frameworks				
+Installation and Setup using Vite				
+Creating First React Application				
+Introduction to JSX				
+Rendering Elements				
+Understanding Components				
+Functional vs Class Components				
+Props and Component Reusability				
+Best Practices for Component Structure				
+Introduction to State				
+useState Hook				
+Event Handling				
+Conditional Rendering				
+Lifting State Up				
+Building a Simple Counter Application				
+Display Data using Props				
+Basic Event Handling Exercises				
+Debugging with React DevTools				
+
+
+
+
+
+-----------------------
+binding various type of input form elements
+	text
+	password
+	select
+	checkbox
+	radio
+	date
+	email
+	time
+	range
+	file
+
+A signup component can make use of most of these input elements	
+
+Task:
+-------
+can you create a component, that changes the background color based on red, green, blue
+
+red, green, blue are three range input elements that can be used to increase or decrease the values by sliding
+
+
+
+export const ColorRange=()=>{
+
+    return <div>
+        Red:    <input type="range" min={0} max={255} /><br/>
+        Green:  <input type="range" min="0" max="255" /><br/>
+        Blue:   <input type="range" min={0} max={255} /><br/>
+        <div style={{'backgroundColor':'rgb(0,0,255)'}}>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/> 
+        </div>
+        
+    </div>
+}
+
+complete this so that, on changing/sliding any of these red, green, blue, the color combination is applied for the backgroundColor
+
+
+
+
+import { useState } from "react";
+
+export const ColorRange=()=>{
+    const [red, setRed]=useState(255);
+    const [green, setGreen]=useState(255);
+    const [blue, setBlue]=useState(255);
+    return <div>
+        
+        Red:    <input type="range" min={0} max={255} onChange={(e)=>setRed(e.target.value)} /><br/>
+        Green:  <input type="range" min="0" max="255" onChange={(e)=>setGreen(e.target.value)} /><br/>
+        Blue:   <input type="range" min={0} max={255} onChange={(e)=>setBlue(e.target.value)} /><br/>
+        <div style={{'backgroundColor':`rgb(${red},${green},${blue})`}}>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/> 
+        </div>
+        
+    </div>
+}
+
+
+
+----------------------------------------------
+import { useState } from "react";
+
+export const ColorRange=()=>{
+    const [color, setColor]=useState({red:0, green:0, blue:0});
+    return <div>
+        {JSON.stringify(color)}
+    <br/>        
+        Red:    <input type="range" min={0} max={255} onChange={(e)=>setColor({...color,'red':e.target.value})} /><br/>
+        Green:  <input type="range" min="0" max="255" onChange={(e)=>setColor({...color,'green':e.target.value})} /><br/>
+        Blue:   <input type="range" min={0} max={255} onChange={(e)=>setColor({...color,'blue':e.target.value})} /><br/>
+        <div style={{'backgroundColor':`rgb(${color.red},${color.green},${color.blue})`}}>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/> 
+        </div>
+        
+    </div>
+}
+------------------------------------
+Task:
+-------
+Create a Signup component and bind the user interface/ input elements to state.
+And validate the form and display error messages.
+
+rules can be like:
+
+username must be atleast 6 characters
+password must be 
+	atleast 8 characters length
+	min 1 upper, 1 lower case
+	1 number, 1 symbol (!@#$%^&*)
+	
+confirm password must match with password
+Email	must be valid email
+Date of Birth	cannot be future date
+Phone number 	must be 10 digit number only (no symbols)
+
+------------------------------------
+import { useState } from "react";
+
+export const Register=()=>{
+
+    const [user, setUser]=useState({username:'', password:'', cpassword:'', email:'',dateOfBirth:'',phone:''});
+
+    return <div>
+    <form className="container">        
+        <br/>
+        Username: <input type="text" className="form-control" onChange={(e)=>setUser({...user,username:e.target.value})} />
+        Password: <input type="password" className="form-control" onChange={(e)=>setUser({...user,password:e.target.value})} />
+        Confirm Password: <input type="password" className="form-control" onChange={(e)=>setUser({...user,cpassword:e.target.value})} />
+        Email: <input type="email" className="form-control" onChange={(e)=>setUser({...user,email:e.target.value})} />
+        Date of Birth: <input type="date" className="form-control" onChange={(e)=>setUser({...user,dateOfBirth:e.target.value})} />
+        Phone number: <input type="number" className="form-control" onChange={(e)=>setUser({...user,phone:e.target.value})} />
+        <br/>    
+        {      JSON.stringify(user) }
+    </form>        
+    </div>
+}
+
+
+
+
+Can you continue to use javascript validations?
+
+--------------------------------------------------------
+import { useState } from "react";
+
+export const Register=()=>{
+
+    const [user, setUser]=useState({username:'', password:'', cpassword:'', email:'',dateOfBirth:'',phone:''});
+    const [errors, setErrors]=useState({username:'', password:'', cpassword:'', email:'',dateOfBirth:'',phone:''});
+
+    function fnValidateUsername(username){
+        if(username.length<6){
+            setErrors({...errors, username:'Username must be atleast 6 characters'})
+        }else{
+            setErrors({...errors, username:''})
+        }
+    }
+
+    return <div>
+    <form className="container">        
+        <br/>
+        Username: <input type="text" className={`form-control ${errors.username && 'is-invalid'}`} onChange={(e)=>{ setUser({...user,username:e.target.value}); fnValidateUsername(e.target.value) }} />
+        {  true && <div className="text-danger">{errors.username}</div>  }
+        Password: <input type="password" className="form-control" onChange={(e)=>setUser({...user,password:e.target.value})} />
+        Confirm Password: <input type="password" className="form-control" onChange={(e)=>setUser({...user,cpassword:e.target.value})} />
+        Email: <input type="email" className="form-control" onChange={(e)=>setUser({...user,email:e.target.value})} />
+        Date of Birth: <input type="date" className="form-control" onChange={(e)=>setUser({...user,dateOfBirth:e.target.value})} />
+        Phone number: <input type="number" className="form-control" onChange={(e)=>setUser({...user,phone:e.target.value})} />
+        <br/>    
+        {      JSON.stringify(errors) }
+    </form>        
+    </div>
+}
+
+
+Now that i have done the validation for username, 
+can you do the rest of the form validations?
