@@ -1,0 +1,188 @@
+Yesterday, we focused more on javascript ES6
+and little bit of typescript.
+We will learn a lot of typescript during Angular module.
+
+In ReactJs, we use more of Javascript and JSX.
+
+Yesterday, we have create a ReactJs Application.
+	npx create-react-app first-demo
+If anyone have issues in creating reactjs app, please let me know.
+
+We run reactjs app using 
+	npm start
+
+we opened the project folder in visual studio code.
+
+We understood the folder structure of the project
+	package.json file	configuration file, contains dependencies
+	src folder		we create components and services
+	public folder	keep images, icons, etc
+	index.html	html file	(only html file in our project)
+	index.js		js file
+	App.js		reactjs component
+
+i used bootstrap
+	how?
+		i used external css method
+		    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.css">
+
+the above approach is CDN approach
+
+But,
+we can use bootstrap by installing bootstrap library to our project
+
+currently, if you see our package.json
+
+"dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  }
+
+bootstrap library is not installed in our project.
+
+there are 2 ways to add any library to our node_modules
+	i) install the libaray
+		ex:	npm i bootstrap@5
+	ii) add the dependency in package.json and then use
+		npm i
+		or
+		npm install
+
+
+steps to use bootstrap:
+1) install bootstrap
+	npm install bootstrap@5.3.3
+	or
+	npm i bootstrap@5
+
+
+2) import bootstrap in index.js
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+-----------------------------------------
+Componets in ReactJs
+---------------------------
+
+we can create 
+	class based component
+	functional component
+		function
+		arrow function
+
+
+our Login component is a class based component
+
+as of now:
+
+import { Component } from "react";
+
+ class Login extends Component{
+
+    constructor(props){
+        super(props);
+        
+    }
+
+    render(){
+        return <div>
+            <h3>{this.props.title}</h3>
+            Username: <input type="text" className="form-control" />
+            Password: <input type="password" className="form-control" /><br/>
+            <input type="button" value="Login" className="btn btn-success" />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+        </div>
+    }
+}
+
+export default Login;
+
+
+------------------------------
+props
+
+we used props to inject input to the child component
+
+<Login title="Login page" />
+
+child accepts input using "props". How?
+
+<h3>{this.props.title}</h3>
+
+
+props vs state
+----------------
+props is  read only
+sent from parent to child (one way)
+
+state is used to maintain or retain data across function calls
+
+how to use state in class based component:
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:''};    
+    }
+
+
+
+JSON.stringify(obj);	returns JSON String
+JSON.parse(str);		return the object version of JSON string
+
+
+Lets bind the textboxes to the state
+	username text box to username state
+
+lets create couple of functions and bind them to change event of textbox
+
+	
+
+
+import { Component } from "react";
+
+ class Login extends Component{
+    
+
+    constructor(props){
+        super(props);
+        this.state={username:'', password:'', result:''};
+        this.usernameChange=this.usernameChange.bind(this);
+        this.passwordChange=this.passwordChange.bind(this);
+    }
+
+    usernameChange(e){
+        this.setState({username:e.target.value})
+    }
+
+    passwordChange(e){
+        this.setState({password:e.target.value})
+    }
+
+    render(){
+        return <div>
+            { JSON.stringify(this.state) }
+            <h3>{this.props.title}</h3>
+            Username: <input type="text" className="form-control" onChange={this.usernameChange} />
+            Password: <input type="password" className="form-control" onChange={this.passwordChange} /><br/>
+            <input type="button" value="Login" className="btn btn-success" />&nbsp;
+            <input type="reset" value="Reset" className="btn btn-warning" /><br/>
+        </div>
+    }
+}
+
+export default Login;
+
+
+
+Task:
+
+create a class based component for example Maths or Login
+and ensure that the data entered in the user interface are bound to the state.
+
+sample code is provided above
