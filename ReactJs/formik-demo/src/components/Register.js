@@ -59,7 +59,7 @@ export const Register = () => {
             <Field
               type="text"
               name="username"
-              className={`form-control `}
+              className='form-control'
             />
             <ErrorMessage name="username" component="div" className="text-danger" />
 
