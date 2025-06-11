@@ -1,5 +1,5 @@
 import './App.css';
-import { Prime } from './components/Prime';
+import { List } from './components/List';
 
 function App() {
 
@@ -22,12 +22,13 @@ function App() {
         </div>
         <div className='col-sm-4'>
           {/* <Login onLogin={fnLogin} /><br/><br/> */}
-          <Prime />
+          {/* <Prime /> */}
+          <List />
         </div>
         <div className='col-sm-4'>
           {/* <Login onLogin={fnLoginAdmin} /> */}
           {/* <Register /> */}
-          {/* <List /> */}
+      
         </div>
       </div>
     </div>
