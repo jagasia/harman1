@@ -1,5 +1,6 @@
 import './App.css';
 import { Login } from './components/Login';
+import { Register } from './components/Register';
 import { Signup } from './components/Signup';
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
           <Login onLogin={fnLogin} />
         </div>
         <div className='col-sm-4'>
-          <Login onLogin={fnLoginAdmin} />
+          {/* <Login onLogin={fnLoginAdmin} /> */}
+          <Register />
         </div>
       </div>
     </div>

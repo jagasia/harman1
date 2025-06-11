@@ -32,5 +32,7 @@ export const Signup=()=>{
         {   user.touched.phone && <div className="text-danger">{user.errors.phone}</div> }
         <br/>
 {JSON.stringify(user)}
+<br/>
+<input type="button" value="Register" className="btn btn-info" onClick={(e)=>{alert(JSON.stringify(user.values))}} disabled={!(user.dirty && user.isValid)} />
     </div>
 }
