@@ -1,10 +1,16 @@
 import './App.css';
-import { ColorRange } from './components/ColorRange';
+import Login from './components/Login';
 import { Register } from './components/Register';
 import { Signup } from './components/Signup';
 
 
 function App() {
+
+  function fnLogin(username, password){
+    alert("logging in using : "+username+" and "+password);
+  }
+
+
   return (
     <div className="App">
       <div className="p-5 bg-primary text-center">
@@ -14,7 +20,8 @@ function App() {
         <div className="col-md-4">
           {/* <Maths /> */}
           {/* <Color /> */}
-          <ColorRange />
+          {/* <ColorRange /> */}
+          <Login onLogin={fnLogin} />
         </div>
         <div className="col-md-4">
           {/* <Login title="Login page" /> */}
