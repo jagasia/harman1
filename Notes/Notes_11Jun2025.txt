@@ -69,3 +69,23 @@ export const Register = () => {
         </div>
     );
 };
+
+
+
+-------------------------
+I have done validation upto 
+	username
+	password
+	cpassword
+
+
+how will you validate
+	email
+	date of birth
+	phone
+
+for email, we can use regex
+
+can you complete the email validation and update me?
+
+
