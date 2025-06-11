@@ -333,3 +333,33 @@ export const Login=({onLogin})=>{
     </div>
 }
 
+------------------------------------------
+------------------------------------------
+Formik and Yup
+-----------------
+so far, we have done form validations manually, that involves,
+	updating the state
+	handling change of state		onchange
+	entire form validity		no errors = form is valid
+
+formik and yup libraries are created for this purpose.
+
+steps:
+
+1) install the libraries
+	npm i formik yup
+
+2) lets create signup component and use these libraries:
+
+--------------------------
+Task:
+i will push the changes to git.
+
+I have validated username.
+
+You validate remaining elements.
+
+
+
+
+

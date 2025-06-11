@@ -1,10 +1,15 @@
 import './App.css';
 import { Login } from './components/Login';
+import { Signup } from './components/Signup';
 
 function App() {
 
   function fnLogin(user){
     alert(JSON.stringify(user))
+  }
+
+  function fnLoginAdmin(user){
+    alert('Admin login validation: '+user.username+" and "+user.password)
   }
 
   return (
@@ -13,11 +18,15 @@ function App() {
         <h1>Welcome to React Js</h1>
       </div>
       <div className='row'>
-        <div className='col-sm-4'></div>
+        <div className='col-sm-4'>
+          <Signup />
+        </div>
         <div className='col-sm-4'>
           <Login onLogin={fnLogin} />
         </div>
-        <div className='col-sm-4'></div>
+        <div className='col-sm-4'>
+          <Login onLogin={fnLoginAdmin} />
+        </div>
       </div>
     </div>
   );
