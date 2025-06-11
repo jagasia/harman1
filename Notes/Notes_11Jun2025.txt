@@ -359,6 +359,10 @@ I have validated username.
 
 You validate remaining elements.
 
+1) password, cpassword, email, phone
+	the validation error messages to be displayed
+
+2) a button to be enabled or disabled based on validation errors.
 
 
 
