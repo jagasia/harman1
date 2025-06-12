@@ -147,3 +147,186 @@ import { useNavigate } from "react-router-dom";
 Task:
 -------
 use useNavigate() to navigate to components in coding.
+
+----------------------
+We need to have another component "Logout"
+and we toggle between login and logout in nav bar based on
+status
+
+
+an user is considered as logged in, if there is a localStorage called user
+
+in login:
+	if login is successful, we create a localStorage "user" and then
+		redirect
+
+in logout:
+	remove the localStorage		clear
+
+we need to write logic in Nav so that, it will display "Login" or "Logout" either according to the status.
+
+----------------------------------------------------------
+
+----------------------------------------------------import { createContext, useContext, useState } from 'react';
+
+const UserContext = createContext();
+
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(localStorage.getItem("user"));
+
+  const login = (username) => {
+    localStorage.setItem("user", username);
+    setUser(username);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
+  return (
+    <UserContext.Provider value={{ user, login, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUser = () => useContext(UserContext);
+
+
+
+
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
+
+export const Nav = () => {
+  const { user, logout } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/logout');
+  };
+
+  return (
+    <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+      <div className="container-fluid">
+        <a className="navbar-brand" href="/">Logo</a>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="collapsibleNavbar">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link" href="/">Home</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/about">About Us</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/contact">Contact Us</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/signup">Sign up</a>
+            </li>
+            <li className="nav-item">
+              {user ? (
+                <button className="nav-link btn btn-link text-white" onClick={handleLogout}>Logout</button>
+              ) : (
+                <a className="nav-link" href="/login">Login</a>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+
+
+
+
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
+
+export const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { login } = useUser();
+
+  function fnLogin() {
+    if (username === password) {
+      login(username); // context-based login
+      navigate('/adminhome');
+    } else {
+      login(username);
+      navigate('/');
+    }
+  }
+
+  return <>
+    Username: <input type="text" className="form-control" onChange={(e) => setUsername(e.target.value)} />
+    Password: <input type="password" className="form-control" onChange={(e) => setPassword(e.target.value)} />
+    <br />
+    <input type="button" value="Login" className="btn btn-info" onClick={fnLogin} />
+  </>
+}
+
+
+
+
+
+
+import { useEffect } from "react";
+import { useUser } from "./UserContext";
+
+export const Logout = () => {
+  const { logout } = useUser();
+
+  useEffect(() => {
+    setTimeout(()=>{
+logout(); // this clears localStorage AND updates context
+alert('logged out')
+    },5000);
+    
+  }, []);
+
+  return <>
+    You are logged out...Click <a href="/login">here</a> to login
+  </>
+}
+
+
+
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App.jsx'
+import { UserProvider } from './components/UserContext.jsx'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+    <UserProvider>
+      <App />
+      </UserProvider>
+    </BrowserRouter>
+  </StrictMode>,
+)
+
+
+
+
+----------------------------------------------
+First, you will complete the code for login and logout.
+
+Next, we should be able to pass information while redirecting.
+from one component, we use code to redirect.
+we should also pass info like query string 

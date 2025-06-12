@@ -6,6 +6,7 @@ import { AdminHome } from './components/AdminHome'
 import { Contact } from './components/Contact'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
+import { Logout } from './components/Logout'
 import { Nav } from './components/Nav'
 import { NotFound } from './components/NotFound'
 import { Signup } from './components/Signup'
@@ -29,6 +30,7 @@ function App() {
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/logout' element={<Logout />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/*' element={<NotFound />} />
           </Routes>
