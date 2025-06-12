@@ -465,3 +465,35 @@ export const ProductGrid=()=>{
 Task:
 display the products as a table.
 
+-------------------------
+JSON server.
+
+steps for json server.
+
+create a file "products.json"
+create an object that contains array of products
+
+{
+"products":[
+{"id":"1","name":"Pencil","price":"10"}
+]
+}
+
+
+run the server to watch this file.
+
+npx json-server --watch products.json
+
+
+
+We have completed, 
+ADD
+UPDATE
+DELETE
+READ ALL
+
+in our project.
+
+Try to do it now and then we will 
+move to find by id (select) and populate the form.
+

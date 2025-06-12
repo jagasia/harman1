@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Pencil",
+      "price": "11"
+    },
+    {
+      "id": "2",
+      "name": "Eraser",
+      "price": "5"
+    },
+    {
+      "id": "3",
+      "name": "Pen",
+      "price": "33"
+    }
+  ]
+}
