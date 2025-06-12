@@ -85,3 +85,36 @@ createRoot(document.getElementById('root')).render(
             <Route path='/signup' element={<Signup />} />
 
           </Routes>
+
+
+Task:
+------
+Complete upto
+	install react-router-dom
+	surround the App with BrowserRouter
+	define the Routes
+	check by changing the url
+
+
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/*' element={<NotFound />} />
+          </Routes>
+
+
+
+Now, we are going to provide a nav bar.
+so that, users need not re-write the url.
+
+Task:
+-------
+create a nav component and plug it in App
+
+nav component to have links to each component
+
+ensure that on clicking the links, corresponding component is rendered.
+
