@@ -327,6 +327,40 @@ createRoot(document.getElementById('root')).render(
 ----------------------------------------------
 First, you will complete the code for login and logout.
 
+
 Next, we should be able to pass information while redirecting.
 from one component, we use code to redirect.
 we should also pass info like query string 
+
+
+source:
+	navigate("/",{state:{username:'Raja'}});
+target:
+	to capture the object sent by source
+
+	useLocation hook
+
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+export const Home=()=>{
+    const location=useLocation();
+    const [name, setName]=useState('UnKnown');
+
+    useEffect(()=>{
+        setName(location.state.name);
+    },[]);
+
+    return <>
+        Welcome to Home. Welcome <span style={{'text-transform':'capitalize'}}>{name}</span>
+    </>
+}
+
+
+
+Task:
+
+when you redirect, send name 
+and when you receive, display the name.
+
+After this task, we will also see how we can define query strings in routes itself. That is when we use links or hyperlinks or url re-writing

@@ -14,7 +14,7 @@ export const Login = () => {
       navigate('/adminhome');
     } else {
       login(username);
-      navigate('/');
+      navigate('/',{state:{name:username}});
     }
   }
 
