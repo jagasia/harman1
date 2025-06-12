@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductService from "./services/ProductService";
 
-export const ProductGrid=()=>{
+export const ProductGrid=({onSelect})=>{
     const [products, setProducts]=useState([]);
 
     useEffect(()=>{
@@ -18,11 +18,16 @@ export const ProductGrid=()=>{
             console.log("Error while accessing api...."+error);            
         })
     },[]);
+
+    function fnSelect(id){
+        alert(id)
+    }
+
     return <div>
         <table className="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th><th>Name</th><th>Price</th>
+                    <th>Id</th><th>Name</th><th>Price</th><th></th>
                     {/* <th>Reviews</th><th>Thumbnail</th> */}
                 </tr>
             </thead>
@@ -32,6 +37,7 @@ export const ProductGrid=()=>{
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td>{p.price}</td>
+                <td><input type="button" className="btn btn-primary" value="Select" onClick={(e)=>{onSelect(p.id)}} /></td>
                 {/* <td><img src={p.image} width={150} /></td> */}
             </tr>)
         }

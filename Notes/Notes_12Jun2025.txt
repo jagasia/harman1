@@ -497,3 +497,14 @@ in our project.
 Try to do it now and then we will 
 move to find by id (select) and populate the form.
 
+
+how we implemented this:
+
+App is the parent
+	ProductGrid
+	ProductForm
+
+
+ProductGrid Select button handled by App (Parent)
+Parent sends id to ProductForm (Child)
+

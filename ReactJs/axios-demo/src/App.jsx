@@ -6,6 +6,14 @@ import { ProductGrid } from './components/ProductGrid'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [id, setId]=useState(0);
+
+  function fnSelect(id){
+    setId(id);
+    console.log("app received id as :"+id);
+    
+  }
+
 
   return <div>
     <div className="App">
@@ -13,9 +21,11 @@ function App() {
         <h1 className="text-white">Welcome to Home page</h1>
       </div>
       <div className="row">
-        <div className="col-md-4"></div>        
         <div className="col-md-4">
-          <ProductForm />
+          {id}
+          </div>        
+        <div className="col-md-4">
+          <ProductForm id={id} />
         </div>        
         <div className="col-md-4"></div>        
       </div>
@@ -23,7 +33,7 @@ function App() {
         <div className="col-md-2"></div>        
         <div className="col-md-8">
         <ErrorBoundary>
-          <ProductGrid />  
+          <ProductGrid onSelect={fnSelect} />  
         </ErrorBoundary>
         </div>        
         <div className="col-md-2"></div>        
