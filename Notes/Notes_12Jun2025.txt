@@ -364,3 +364,24 @@ when you redirect, send name
 and when you receive, display the name.
 
 After this task, we will also see how we can define query strings in routes itself. That is when we use links or hyperlinks or url re-writing
+
+-----------------------------------------------------------------------
+to provide route params in our path
+
+<Route path='/about/:color?/:title?' element={<About />} />
+
+in url, the user provides the values for params
+
+how these values are captured by the component?
+
+by using useParams hook.
+
+const {color, title}=useParams();
+	//in this approach, we are using object destructuring
+
+or
+	const params=useParams();
+
+	then use params.color and params.title
+
+You are going to try this now.
