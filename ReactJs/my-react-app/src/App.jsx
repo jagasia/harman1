@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import { About } from './components/About'
+import { AdminHome } from './components/AdminHome'
 import { Contact } from './components/Contact'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
@@ -24,6 +25,7 @@ function App() {
         <div className='col-md-4'>
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/adminhome' element={<AdminHome />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/login' element={<Login />} />

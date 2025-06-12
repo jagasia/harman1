@@ -118,3 +118,32 @@ nav component to have links to each component
 
 ensure that on clicking the links, corresponding component is rendered.
 
+
+
+Next
+
+through coding, we need to redirect.
+
+using useNavigate() hook
+and useLocation() hook
+
+import { useNavigate } from "react-router-dom";
+
+
+    const navigate=useNavigate();
+
+
+    function fnLogin(){
+        if(username==password){
+            //redirect to admin home
+            navigate('/adminhome');
+        }else{
+            //redirect to home
+            navigate('/');
+        }
+    }
+
+
+Task:
+-------
+use useNavigate() to navigate to components in coding.
