@@ -3,7 +3,10 @@
     {
       "id": "1",
       "name": "Pencil",
-      "price": "11"
+      "price": "10",
+      "addTrigger": false,
+      "updateTrigger": true,
+      "deleteTrigger": false
     },
     {
       "id": "2",
@@ -14,6 +17,58 @@
       "id": "3",
       "name": "Pen",
       "price": "33"
+    },
+    {
+      "id": "4",
+      "name": "Pencil Box",
+      "price": "100"
+    },
+    {
+      "id": "4",
+      "name": "Pencil Box",
+      "price": "100"
+    },
+    {
+      "id": "5",
+      "name": "Geometry Box",
+      "price": "111"
+    },
+    {
+      "id": "5",
+      "name": "Geometry Box",
+      "price": "111"
+    },
+    {
+      "id": "20",
+      "name": "Cricket bat 100",
+      "price": "2500",
+      "addTrigger": false,
+      "updateTrigger": true,
+      "deleteTrigger": false
+    },
+    {
+      "id": "15",
+      "name": "Sharpner",
+      "price": "111",
+      "addTrigger": true
+    },
+    {
+      "id": "111",
+      "name": "Sharpner",
+      "price": "111",
+      "addTrigger": true
+    },
+    {
+      "id": "112",
+      "name": "Battery AAA",
+      "price": "25",
+      "addTrigger": true
+    },
+    {
+      "id": "113",
+      "name": "Table Fan",
+      "price": "1234",
+      "addTrigger": true
     }
   ]
 }

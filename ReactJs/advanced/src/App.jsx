@@ -10,13 +10,13 @@ function App() {
         <h1>Adv React</h1>
       </div>
       <div className='row text-center'>
-        <div className='col-md-4'>
+        <div className='col-md-2'>
           <Counter />
         </div>
-        <div className='col-md-4'>
+        <div className='col-md-8'>
           <ProductForm />
         </div>
-        <div className='col-md-4'></div>
+        <div className='col-md-2'></div>
       </div>
     </>
   )

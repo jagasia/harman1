@@ -93,3 +93,13 @@ i will push this ProductForm also to git.
 
 try to do a dummy CRUD and then i will give demo for using payload.
 
+We have done Add...
+
+We will do update and delete after the break.
+-----------------
+Task:
+I have completed till add, update.
+
+Now, you will do delete
+and put a select button in each row,
+to select and populate the data in the form fields.
