@@ -10,7 +10,7 @@ export const ProductForm=()=>{
             case "update":                
                 return {...state, updateTrigger:true};
             case "delete":                
-                return state;
+                return {...state, deleteTrigger:true};
             case "setId":
                 return {...state, id:dispatch.payload.id};
             case "setName":
@@ -19,6 +19,8 @@ export const ProductForm=()=>{
                 return {...state, price:dispatch.payload.price};
             case "resetTrigger":
                 return { ...state, addTrigger: false, updateTrigger:false, deleteTrigger:false };
+            case "select":
+                return { ...state, id:dispatch.payload.id, name:dispatch.payload.name, price:dispatch.payload.price};
         }
     }
 
@@ -36,6 +38,8 @@ export const ProductForm=()=>{
  const [products, setProducts]=useState([]);
 
     useEffect(()=>{
+        console.log(state);
+        
         if(state.addTrigger){
             ProductService.fnAddProduct(state)
                 .then(response=>{
@@ -56,9 +60,19 @@ export const ProductForm=()=>{
                     console.log(err);
                     
                 })  
+        }else if(state.deleteTrigger){
+            ProductService.fnDeleteProduct(state.id)
+                .then(response=>{
+                    console.log(response.data);
+                    fnLoadProducts();
+                })
+                .catch(err=>{
+                    console.log(err);
+                    
+                })
         }
         dispatch({ type: "resetTrigger" }); 
-    },[state.addTrigger, state.updateTrigger])
+    },[state.addTrigger, state.updateTrigger, state.deleteTrigger])
 
 
 
@@ -71,9 +85,9 @@ export const ProductForm=()=>{
         <div className="row">
             <div className="col-sm-2"></div>
             <div className="col-sm-6">
-                Id:     <input type="number" className="form-control" onChange={(e)=>{dispatch({type:"setId",payload:{id:e.target.value}})}} />
-        Name:   <input type="text" className="form-control" onChange={(e)=>{dispatch({type:"setName",payload:{name:e.target.value}})}} />
-        Price:  <input type="number" className="form-control" onChange={(e)=>{dispatch({type:"setPrice",payload:{price:e.target.value}})}} />
+                Id:     <input type="number" className="form-control" onChange={(e)=>{dispatch({type:"setId",payload:{id:e.target.value}})}} value={state.id} />
+        Name:   <input type="text" className="form-control" onChange={(e)=>{dispatch({type:"setName",payload:{name:e.target.value}})}} value={state.name} />
+        Price:  <input type="number" className="form-control" onChange={(e)=>{dispatch({type:"setPrice",payload:{price:e.target.value}})}} value={state.price} />
         <br/>
         <button className="btn btn-success" onClick={(e)=>{dispatch({type:"add"})}}>Add</button>&nbsp;
         <button className="btn btn-warning" onClick={(e)=>{dispatch({type:"update"})}}>Update</button>&nbsp;
@@ -86,7 +100,7 @@ export const ProductForm=()=>{
         <table className="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>Id</th><th>Name</th><th>Price</th>
+                    <th>Id</th><th>Name</th><th>Price</th><th></th>
                 </tr>
             </thead>
             <tbody>
@@ -95,6 +109,9 @@ export const ProductForm=()=>{
                         <td>{p.id}</td>
                         <td>{p.name}</td>
                         <td>{p.price}</td>
+                        <td>
+                            <button className="btn btn-info" onClick={(e)=>{dispatch({payload:p, type:"select"})}} >Select</button>
+                        </td>
                     </tr>)
                 }
             </tbody>

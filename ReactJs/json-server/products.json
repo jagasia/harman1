@@ -24,16 +24,6 @@
       "price": "100"
     },
     {
-      "id": "4",
-      "name": "Pencil Box",
-      "price": "100"
-    },
-    {
-      "id": "5",
-      "name": "Geometry Box",
-      "price": "111"
-    },
-    {
       "id": "5",
       "name": "Geometry Box",
       "price": "111"
@@ -62,12 +52,6 @@
       "id": "112",
       "name": "Battery AAA",
       "price": "25",
-      "addTrigger": true
-    },
-    {
-      "id": "113",
-      "name": "Table Fan",
-      "price": "1234",
       "addTrigger": true
     }
   ]
