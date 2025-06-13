@@ -1,0 +1,81 @@
+Yesterday, we have used 
+	routing
+	axios
+
+apart from axios, we can also use
+	fetch
+	ajax
+to access apis.
+-------------------------------------------
+Reducer
+
+So far, we have used useState hook for retaining data across lifecycle of a component.
+
+state is useful when it is simple.
+
+useReducer is useful to handle complex state operations.
+
+Lets start with counter component example using useReducer.
+
+
+Demo:
+--------
+to use reducer, we should know 3 things:
+1) dispatch functionality defined as a function / arrow function
+ex:
+    const action=(state, action)=>{
+        switch(action.type){
+            case "increment":
+                if(state.count<100)
+                    return {count:state.count+1}
+            case "decrement":
+                if(state.count>0)
+                return {count:state.count-1}
+        }
+        return {count:state.count}
+    }
+
+2) use the hook called useReducer hook and that has 4 portions:
+	const [state, dispatch]=new useReducer(action, {count:0});
+
+	state = this is the state
+	dispath	=	is the function pointer to call the action
+
+	useReducer hook, takes 2 arguments
+		action = function pointer	used when dispatch
+		initial state	{count:0}
+
+3) to update the state, we need to use dispatch function pointer
+
+ex:
+dispatch({type:"decrement"})
+
+-----------complete code---------------------
+
+import { useReducer } from "react"
+
+export const Counter=()=>{
+    //define the action function. this is called when we dispatch
+    const action=(state, action)=>{
+        switch(action.type){
+            case "increment":
+                if(state.count<100)
+                    return {count:state.count+1}
+            case "decrement":
+                if(state.count>0)
+                return {count:state.count-1}
+        }
+        return {count:state.count}
+    }
+    const [state, dispatch]=useReducer(action, {count:0} );
+
+    return <div>
+        <br/>
+        <button onClick={(e)=>{ dispatch({type:"decrement"}) }}>-</button>&nbsp;
+        {state.count}
+        &nbsp;
+        <button onClick={(e)=>{dispatch({type:"increment"})}}>+</button>
+    </div>
+}
+
+		
