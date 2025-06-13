@@ -1,6 +1,6 @@
 import './App.css'
 import { Counter } from './components/Counter'
-import { ProductForm } from './components/ProductForm'
+import { ProductManager } from './components/ProductManager'
 
 function App() {
   
@@ -14,9 +14,12 @@ function App() {
           <Counter />
         </div>
         <div className='col-md-8'>
-          <ProductForm />
+          {/* <ProductForm /> */}
+          <ProductManager />
         </div>
-        <div className='col-md-2'></div>
+        <div className='col-md-2'>
+          
+        </div>
       </div>
     </>
   )

@@ -132,5 +132,142 @@ everything. pushing the changes to git.
 
 Try this CRUD with select in your system,
 
-After break, we will learn useMemo hook
+--------------------------------------------------------
+useMemo
+-------
+
+The useMemo hook in React is used to optimize performance by memoizing the result of a costly computation, so that it is not re-calculated on every render, unless its dependencies change.
+
+in useEffect also, we mention the dependency, and it is watched. Any change occur in those dependencies, the useEffect callback is executed.
+
+so in that case, both appears similar.
+
+
+useCallback
+------------------
+Excellent! Here's a clear, **side-by-side example** that shows how `useCallback` **prevents unnecessary re-renders** of child components.
+
+---
+
+## 🎯 Goal:
+
+We’ll create:
+
+* A **parent component** with two states.
+* A **child component** wrapped with `React.memo` that receives a function as prop.
+* We'll see how **with and without `useCallback`**, the child behaves differently.
+
+---
+
+### ✅ 1. **With `useCallback` (Optimized)**
+
+```jsx
+// File: Optimized.js
+import React, { useState, useCallback } from 'react';
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child Rendered');
+  return <button onClick={onClick}>Increment Count</button>;
+});
+
+export const Optimized = () => {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(100);
+
+  const handleClick = useCallback(() => {
+    setCount(c => c + 1);
+  }, []); // ✅ memoized function
+
+  return (
+    <div>
+      <h2>Optimized with useCallback</h2>
+      <p>Count: {count}</p>
+      <p>Other: {other}</p>
+      <Child onClick={handleClick} />
+      <button onClick={() => setOther(other + 1)}>Change Other</button>
+    </div>
+  );
+};
+```
+
+🧠 **Result:**
+
+* Clicking `Change Other` will NOT re-render `<Child />`.
+* ✅ `Child Rendered` only appears when `handleClick` or props change.
+
+---
+
+### ❌ 2. **Without `useCallback` (Not Optimized)**
+
+```jsx
+// File: NotOptimized.js
+import React, { useState } from 'react';
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child Rendered');
+  return <button onClick={onClick}>Increment Count</button>;
+});
+
+export const NotOptimized = () => {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(100);
+
+  const handleClick = () => {
+    setCount(c => c + 1);
+  }; // ❌ new function created every render
+
+  return (
+    <div>
+      <h2>Not Optimized (No useCallback)</h2>
+      <p>Count: {count}</p>
+      <p>Other: {other}</p>
+      <Child onClick={handleClick} />
+      <button onClick={() => setOther(other + 1)}>Change Other</button>
+    </div>
+  );
+};
+```
+
+🧠 **Result:**
+
+* Clicking `Change Other` will cause `Child Rendered` every time.
+* ❌ Unnecessary re-renders because `handleClick` is a new function each time.
+
+---
+
+### 🧪 Test It Yourself:
+
+Put both `<Optimized />` and `<NotOptimized />` in `App.jsx`:
+
+```jsx
+import { Optimized } from './Optimized';
+import { NotOptimized } from './NotOptimized';
+
+function App() {
+  return (
+    <div>
+      <Optimized />
+      <hr />
+      <NotOptimized />
+    </div>
+  );
+}
+```
+
+---
+
+### ✅ Key Takeaway:
+
+| Case                  | Child Re-renders on unrelated state change? |
+| --------------------- | ------------------------------------------- |
+| Without `useCallback` | ✅ Yes (function is new each time)           |
+| With `useCallback`    | ❌ No (function is memoized)                 |
+
+---
+
+Task:
+------
+understand the use of
+	useMemo
+	useCallback
 

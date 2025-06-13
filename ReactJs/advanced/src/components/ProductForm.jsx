@@ -78,6 +78,8 @@ export const ProductForm=()=>{
 
 
     useEffect(()=>{
+        console.log("useEffect of nothing is loading the products");
+        
         fnLoadProducts();
     },[])
 
