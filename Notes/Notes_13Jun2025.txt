@@ -271,3 +271,239 @@ understand the use of
 	useMemo
 	useCallback
 
+---------------------
+Lazy loading
+
+
+Great! Let's break down **Lazy Loading and Code Splitting** in **ReactJS** — two important techniques to **optimize performance and load time** of your React apps.
+
+---
+
+## 🚀 **What Is Code Splitting?**
+
+### ✅ Definition:
+
+Code Splitting is the practice of **breaking your JavaScript bundle into smaller chunks** so that only what's needed is loaded initially.
+
+### 🎯 Why?
+
+* Faster initial load time
+* Improve performance on slower networks
+* Load parts of app **on-demand**
+
+---
+
+## 💤 **What Is Lazy Loading?**
+
+### ✅ Definition:
+
+Lazy loading means **deferring loading of a component or module until it’s needed** (e.g., when user navigates to a route).
+
+### In React, we do this using:
+
+```js
+const Component = React.lazy(() => import('./MyComponent'));
+```
+
+Then render it with:
+
+```jsx
+<Suspense fallback={<div>Loading...</div>}>
+  <Component />
+</Suspense>
+```
+
+---
+
+## ✅ Simple Example – Lazy Load a Component
+
+### 🗂️ File Structure
+
+```
+/src
+  ├── App.jsx
+  ├── components/
+       ├── Home.jsx
+       └── About.jsx
+```
+
+### 📄 `Home.jsx`
+
+```jsx
+const Home = () => <h2>Welcome to Home</h2>;
+export default Home;
+```
+
+### 📄 `About.jsx`
+
+```jsx
+const About = () => <h2>About Us</h2>;
+export default About;
+```
+
+---
+
+### 📄 `App.jsx` with React Router + Lazy Loading
+
+```jsx
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+// Lazy loaded components
+const Home = lazy(() => import('./components/Home'));
+const About = lazy(() => import('./components/About'));
+
+function App() {
+  return (
+    <Router>
+      <h1>React Lazy Loading Example</h1>
+      <nav>
+        <Link to="/">Home</Link> | <Link to="/about">About</Link>
+      </nav>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+---
+
+## 🔍 Key Points:
+
+| Concept        | Tool/Function    | Purpose                               |
+| -------------- | ---------------- | ------------------------------------- |
+| Code Splitting | `import()`       | Splits the bundle                     |
+| Lazy Loading   | `React.lazy()`   | Loads component only when needed      |
+| Fallback UI    | `React.Suspense` | Renders a loading state while loading |
+
+---
+
+## ⚠️ Notes:
+
+* Works best with **React Router** (e.g. route-based splitting).
+* Works well with **large components**, **dashboards**, or **admin panels**.
+* Use meaningful `fallback={<...>}` to keep UX smooth.
+
+---
+
+Task:
+
+ Lazy Loading & Code Splitting Works
+
+In browser devTools, network tab,
+we can see the components loaded.
+
+until, we navigate to a particular component, they must not be loaded.
+
+// Lazy loaded components
+const Home = lazy(() => import('./components/Home'));
+const About = lazy(() => import('./components/About'));
+
+
+You are going to observe lazy loading and code splitting
+-------------------------------------
+
+
+
+Virtual DOM and Reconciliation				----------------------
+virtual DOM is a copy of the actual DOM, stored in the memory
+	in memory representation
+	performance
+		updates the virtual DOM instead of actual DOM
+	efficient updates
+		by comparing virtual representations, only the 					necessary changes to the real DOM
+
+Reconcilliation:
+	diffin algorithm
+	minimizing the changes
+	Real dom updates
+		only wherever necessary the updates are done
+	
+
+
+Optimized Product listing app "optimized-product-list"
+
+---------------------
+Implement Performance Monitoring with React Profiler			
+
+we use Profiler to get insigts that are used to measure the performance of a child component.
+
+The parent component wraps the child using <Profiler>
+
+          <Profiler id='ProductManager' onRender={onRenderCallback}>
+            <ProductManager />
+          </Profiler>
+
+complete code:-
+--------------------
+import { Profiler } from 'react';
+import './App.css';
+import { Counter } from './components/Counter';
+import { ProductManager } from './components/ProductManager';
+
+function App() {
+  
+   function onRenderCallback(
+    id, // the "id" prop of the Profiler tree
+    phase, // either "mount" or "update"
+    actualDuration, // time spent rendering the committed update
+    baseDuration, // estimated time to render without memoization
+    startTime, // when React began rendering this update
+    commitTime, // when React committed this update
+    interactions // the Set of interactions belonging to this update
+  ) {
+    console.log(`[Profiler: ${id}]`);
+    console.log(`Phase: ${phase}`);
+    console.log(`Actual duration: ${actualDuration.toFixed(2)}ms`);
+    console.log(`Base duration: ${baseDuration.toFixed(2)}ms`);
+    console.log(`Start time: ${startTime}`);
+    console.log(`Commit time: ${commitTime}`);
+    console.log("Interactions:", interactions);
+  }
+  
+  return (
+    <>
+      <div className='p-5 bg-secondary text-center text-white'>
+        <h1>Adv React</h1>
+      </div>
+      <div className='row text-center'>
+        <div className='col-md-2'>
+          <Counter />
+        </div>
+        <div className='col-md-8'>
+          {/* <ProductForm /> */}
+          <Profiler id='ProductManager' onRender={onRenderCallback}>
+            <ProductManager />
+          </Profiler>
+        </div>
+        <div className='col-md-2'>
+          
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default App
+
+
+
+TasK
+------
+Understand how performance is monitored using React Profiler.
+example code is updated in notes and also "advanced" app in reactjs folder.
+
+-------------------------------------
+We will come to back to reactjs and angular 
+	after completing spring security jwt
+
+
+----------------------------------------------------
