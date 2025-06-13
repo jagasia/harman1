@@ -3,10 +3,7 @@
     {
       "id": "1",
       "name": "Pencil",
-      "price": "10",
-      "addTrigger": false,
-      "updateTrigger": true,
-      "deleteTrigger": false
+      "price": "10"
     },
     {
       "id": "2",
@@ -31,28 +28,22 @@
     {
       "id": "20",
       "name": "Cricket bat 100",
-      "price": "2500",
-      "addTrigger": false,
-      "updateTrigger": true,
-      "deleteTrigger": false
+      "price": "2500"
     },
     {
       "id": "15",
       "name": "Sharpner",
-      "price": "111",
-      "addTrigger": true
+      "price": "111"
     },
     {
       "id": "111",
       "name": "Sharpner",
-      "price": "111",
-      "addTrigger": true
+      "price": "111"
     },
     {
       "id": "112",
       "name": "Battery AAA",
-      "price": "25",
-      "addTrigger": true
+      "price": "25"
     }
   ]
 }

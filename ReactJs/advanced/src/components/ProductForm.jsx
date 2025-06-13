@@ -39,9 +39,10 @@ export const ProductForm=()=>{
 
     useEffect(()=>{
         console.log(state);
-        
+        var {id, name, price}=state;
         if(state.addTrigger){
-            ProductService.fnAddProduct(state)
+
+            ProductService.fnAddProduct({id, name, price})
                 .then(response=>{
                     console.log(response.data);  
                     fnLoadProducts();
@@ -51,7 +52,7 @@ export const ProductForm=()=>{
                     
                 })           
         }else if(state.updateTrigger){
-                ProductService.fnUpdateProduct(state)
+                ProductService.fnUpdateProduct({id, name, price})
                 .then(response=>{
                     console.log(response.data);
                     fnLoadProducts();
