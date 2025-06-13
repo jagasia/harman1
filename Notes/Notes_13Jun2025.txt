@@ -55,6 +55,8 @@ dispatch({type:"decrement"})
 import { useReducer } from "react"
 
 export const Counter=()=>{
+
+
     //define the action function. this is called when we dispatch
     const action=(state, action)=>{
         switch(action.type){
@@ -78,4 +80,16 @@ export const Counter=()=>{
     </div>
 }
 
+Task:
+try this counter example using useReducer
 		
+------------------------------------------------
+Shall we now use this useReducer for a CRUD of Product?
+
+lets start with dummy CRUD
+	dummy means, it will just say, adding, updating, deleting
+
+i will push this ProductForm also to git.
+
+try to do a dummy CRUD and then i will give demo for using payload.
+
