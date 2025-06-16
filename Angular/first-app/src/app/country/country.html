@@ -1,0 +1,4 @@
+<input type="text" name="country" [(ngModel)]="country" class="form-control">
+<input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
+<br/>
+<li *ngFor="let c of countries">{{c}}</li>

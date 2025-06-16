@@ -569,3 +569,99 @@ create a login component to check if username and password are same, then login 
 
 print the result below.
 
+2 way data binding and
+event binding
+
+
+Username: <input type="text" name="username" [(ngModel)]="username" class="form-control">
+Password: <input type="password" name="password" [(ngModel)]="password" class="form-control">
+<br/>
+<input type="button" value="Login" class="btn btn-info" (click)="fnLogin()">
+<br/>
+<p [class]="resultStyle">{{result}}</p>
+<br/>
+<!-- {{username}}<br/>{{password}} -->
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-signin',
+  imports: [FormsModule],
+  templateUrl: './signin.html',
+  styleUrl: './signin.css'
+})
+export class Signin {
+  username:string='';
+  password:string='';
+  result:string='';
+  resultStyle:string='';
+
+  fnLogin(){
+    if(this.username==this.password){
+      this.result="Success";
+      this.resultStyle="alert alert-success";
+    }else{
+      this.result="Failure";
+      this.resultStyle="alert alert-danger";
+    }
+  }
+}
+
+------------------------------------------------------------
+
+in event binding some times, we may need to pass arguments
+
+------------------
+Task:
+------
+Create a country component, that accepts country name in the text box
+and an "Add" button.
+Whatever we add, is added to an array.
+Display the array values
+
+hint: we will use 
+	ngIf
+	ngSwitch
+	ngFor
+
+these directives also.
+
+i will give demo for these directives after this task.
+
+Till that, you complete the user interfaces and bindings
+
+
+
+Solution:
+------------
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-country',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './country.html',
+  styleUrl: './country.css'
+})
+export class Country {
+  countries:string[]=[];
+  country:string='';
+
+  fnAddCountry(){
+    if(this.country)
+      this.countries.push(this.country);
+    console.log(this.countries);
+    
+  }
+}
+
+
+<input type="text" name="country" [(ngModel)]="country" class="form-control">
+<input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
+<br/>
+<li *ngFor="let c of countries">{{c}}</li>
+
