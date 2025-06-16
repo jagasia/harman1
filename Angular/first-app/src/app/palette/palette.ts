@@ -10,4 +10,5 @@ import { FormsModule } from '@angular/forms';
 })
 export class Palette {
   color:string='white';
+  bgColor:string="yellow";
 }

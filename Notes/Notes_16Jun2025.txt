@@ -467,3 +467,105 @@ export class Palette {
 }
 
 
+
+
+Task:
+in the Palette component, use 2 textboxes
+
+Color:...............
+BgColor:...............
+
+if you are able to change color and background color using ngStyle
+
+
+
+<input type="text" name="color" [(ngModel)]="color" >
+<br/>
+<input type="text" name="bgColor" [(ngModel)]="bgColor">
+<div [ngStyle]="{'color':color,'backgroundColor':bgColor}">
+    <br/><br/><br/><br/><br/><br/><br/>This
+    is the content displayed inside
+</div>
+
+-----------------------------------------------------
+Introduction to Angular Framework, History & Overview				
+Environment Setup, Angular CLI, Installing Angular CLI				
+NPM commands & package.json				
+Bootstrapping Angular App, Components, AppModule				
+Project Setup, Editor Environments				
+First Angular App & Directory Structure				
+Angular Fundamentals, Building Blocks				
+Component Basics				
+Setting up the templates				
+Creating Components using CLI				
+Nesting Components				
+Data Binding - Property & Event Binding, String Interpolation, Style binding				
+Two-way data binding				
+Input Properties, Output Properties, Passing Event Data				
+Component Communication - Parent to Child and Child to Parent				
+Template, Styles, View Encapsulation, adding bootstrap to angular app				
+Built-in Directives, Creating Attribute Directive				
+Using Renderer to build attribute directive				
+
+
+
+-------------------------------------------
+Event binding
+----------------
+we use normal brackets 	(	)
+used to refer to a function that is defined in the .ts file
+
+
+in html:
+
+<input type="button" onClick="fn1()" />
+
+in angular
+
+<input type="button" (click)="fn1()" />
+	this fn1 must be defined in the .ts file
+
+Lets learn this using a new component.
+
+Maths component, that is used to add 2 numbers
+
+
+
+Example:
+
+<input type="number" name="no1" [(ngModel)]="no1" class="form-control" />
+<input type="number" name="no2" [(ngModel)]="no2" class="form-control" />
+<br/>
+<input type="button" value="Add" class="btn btn-primary" (click)="fnAdd()">
+<br/>
+{{result}}
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-maths',
+  imports: [FormsModule],
+  templateUrl: './maths.html',
+  styleUrl: './maths.css'
+})
+export class Maths {
+  no1:number=0;
+  no2:number=0;
+  result:number=0;
+
+  fnAdd(){
+    this.result=this.no1+this.no2;
+  }
+}
+
+
+
+
+Task:
+
+create a login component to check if username and password are same, then login is successful and else failure.
+
+print the result below.
+

@@ -1,9 +1,11 @@
 import { Component } from "@angular/core";
-import { Palette } from "./palette/palette";
+import { FormsModule } from "@angular/forms";
+import { Maths } from "./maths/maths";
+
 
 @Component({
   selector: 'app-root',
-  imports: [Palette],
+  imports: [FormsModule, Maths],
   templateUrl: './app.html',
   // template:`Hi this is template`,
   styleUrl: './app.css'
