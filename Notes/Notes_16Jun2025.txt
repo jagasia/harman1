@@ -293,3 +293,92 @@ but, if i use following code:
 by using [], we mean, that we are passing value to this property, but
 we are passing variable to this property. So "title" is not value, it is variable
 
+Task:
+------
+create couple of variables of different typescript types and bind them to properties in html page.
+You can try differently, not only value property
+
+
+
+
+
+
+<form>
+    Username: <input type="text" name="" id="" class="form-control">
+    Password: <input type="password" name="" id="" class="form-control">
+    <br/>
+    <label for="chkShowPassword">Show password:</label> <input id="chkShowPassword" type="checkbox" name=""><br/><br/>
+    <input type="button" value="Login" class="btn btn-info">
+</form>
+
+
+
+
+
+
+Password: <input [type]="type" name="" id="" class="form-control">
+
+type:string='password';
+
+
+based on the value of this string variable "type", the input becomes, a textbox or password field
+
+
+
+<label for="chkShowPassword">Show password:</label> <input id="chkShowPassword" type="checkbox" name="" [checked]="showPassword"><br/><br/>
+
+showPassword:boolean=true;
+
+
+Thus, property binding is one-way.
+
+now, how to make 2 - way data binding?
+
+a change in the variable, should reflect in the property and
+a change in the property, should reflect in the variable.
+
+FormsModule
+	we need to import FormsModule 
+	
+	html element must not have a blank name property
+		name="" is not allowed. name must not be blank
+
+
+
+
+
+
+Username: <input type="text" name="username" class="form-control" [(ngModel)]="username">
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  imports: [FormsModule],
+  templateUrl: './login.html',
+  styleUrl: './login.css'
+})
+export class Login {
+showPassword:boolean=true;
+type:string='password';
+username:string="raja";
+}
+
+
+
+
+
+
+now that you observe that, a change in the input text, reflects in the variable. We prove that using interpolation.
+
+now, can we bind the checked property to a boolean variable?
+
+Task:
+-------
+create a color component, that has 3 ranges, viz., red, green and blue, each can be of range 0 to 255.
+
+on changing any range, should update corresponding variables in ts,
+and overall, the background color of the component changes accordingly.
+

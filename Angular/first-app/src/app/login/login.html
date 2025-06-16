@@ -1,0 +1,12 @@
+<form>
+    Username: <input type="text" name="username" class="form-control" [(ngModel)]="username">
+    Password: <input [type]="type" name="" id="" class="form-control">
+    <br/>
+    <label for="chkShowPassword">Show password:</label> <input id="chkShowPassword" type="checkbox" name="showPassword" [(ngModel)]="showPassword"><br/><br/>
+    <input type="button" value="Login" class="btn btn-info">
+    <br/>
+    
+</form>
+<br/>
+{{username}}<br/>
+{{showPassword}}
