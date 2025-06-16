@@ -419,3 +419,51 @@ Use ngClass, (ref to my code)
 
 and identify how to use ngStyle
 
+----------------------------------------------------------------------------------
+class binding
+style binding
+
+these are done by using
+	ngClass directive
+	ngStyle directive
+
+
+
+
+<p [ngStyle]="{'color':color}">This is a paragraph</p>
+<input type="text" [ngClass]="{'form-control':true, 'is-invalid':false}" />
+
+
+Task:
+for ngStyle
+
+create a component, that accepts the color in a textbox as input.
+Apply the entered color as background color of the component.
+
+This happens whenever the input changes. (no event handling yet)
+
+
+
+
+solution:
+
+<input type="text" name="color" [(ngModel)]="color" >
+<div [ngStyle]="{'backgroundColor':color}">
+    <br/><br/><br/><br/><br/><br/><br/>
+</div>
+
+import { NgStyle } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-palette',
+  imports: [NgStyle, FormsModule],
+  templateUrl: './palette.html',
+  styleUrl: './palette.css'
+})
+export class Palette {
+  color:string='white';
+}
+
+

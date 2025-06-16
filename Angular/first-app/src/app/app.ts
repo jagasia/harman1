@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { Color } from "./color/color";
+import { Palette } from "./palette/palette";
 
 @Component({
   selector: 'app-root',
-  imports: [Color],
+  imports: [Palette],
   templateUrl: './app.html',
   // template:`Hi this is template`,
   styleUrl: './app.css'
