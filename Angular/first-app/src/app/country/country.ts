@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './country.css'
 })
 export class Country {
+  show=true;
   countries:string[]=[];
   country:string='';
 

@@ -665,3 +665,58 @@ export class Country {
 <br/>
 <li *ngFor="let c of countries">{{c}}</li>
 
+-----------------------------
+-----------------------
+
+ngIf directive
+---------------
+conditionally render a html element.
+
+example:
+
+<p *ngIf="true">This is a paragraph</p>
+
+
+
+true means, render the element
+false means, hide
+
+
+complete example:
+
+<label for="show">Show:&nbsp;&nbsp;</label> <input type="checkbox" name="show" id="show" [(ngModel)]="show">
+<p *ngIf="show">This is a paragraph</p>
+<br/>
+<input type="text" name="country" [(ngModel)]="country" class="form-control">
+<input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
+<br/>
+<li *ngFor="let c of countries">{{c}}</li>
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-country',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './country.html',
+  styleUrl: './country.css'
+})
+export class Country {
+  show=true;
+  countries:string[]=[];
+  country:string='';
+
+  fnAddCountry(){
+    if(this.country)
+      this.countries.push(this.country);
+    console.log(this.countries);
+    
+  }
+}
+
+
+

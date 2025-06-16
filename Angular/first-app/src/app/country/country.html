@@ -1,3 +1,6 @@
+<label for="show">Show:&nbsp;&nbsp;</label> <input type="checkbox" name="show" id="show" [(ngModel)]="show">
+<p *ngIf="show">This is a paragraph</p>
+<br/>
 <input type="text" name="country" [(ngModel)]="country" class="form-control">
 <input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
 <br/>
