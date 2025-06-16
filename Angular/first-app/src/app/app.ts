@@ -1,11 +1,12 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { Login } from "./login/login";
+import { Signin } from "./signin/signin";
+import { User } from "./user";
 
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, Login],
+  imports: [FormsModule, Signin],
   templateUrl: './app.html',
   // template:`Hi this is template`,
   styleUrl: './app.css'
@@ -14,4 +15,8 @@ import { Login } from "./login/login";
 })
 export class App {
   protected title = 'first-app';
+
+  fnLogin(e:User){
+    alert(JSON.stringify(e))
+  }
 }

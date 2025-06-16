@@ -830,3 +830,116 @@ in parent component:
 in child component:
 @Input() title!:string;
 
+next about ngContent
+
+
+Task:
+Observe the use of @Input() decorator, to send input from parent component
+and display it in child component
+
+-------------------------------------
+@Output() decorator
+
+like input= parent to child
+then output= child to parent
+
+For example, Login form should not have the login functionality in itself.
+Because, to be re-usable, the parent, who plug the child component, must be provided the option to write the logic for login.
+
+
+
+in child component (Signin)
+
+  @Output() loginEvent:EventEmitter<string>=new EventEmitter()
+
+on login button click event handler function, we will emit the event:
+
+
+
+
+Do you know how to create a class?
+	ng g class user
+
+user.ts:
+--------
+export class User {
+    username:string='';
+    password:string='';
+    constructor(username:string, password:string){
+        this.username=username;
+        this.password=password;        
+    }
+
+}
+
+
+
+
+in child:
+
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { User } from '../user';
+
+@Component({
+  selector: 'app-signin',
+  imports: [FormsModule],
+  templateUrl: './signin.html',
+  styleUrl: './signin.css'
+})
+export class Signin {
+  username:string='';
+  password:string='';
+  result:string='';
+  resultStyle:string='';
+  @Output() loginEvent:EventEmitter<User>=new EventEmitter<User>()
+
+  fnLogin(){
+    
+    // if(this.username==this.password){
+    //   this.result="Success";
+    //   this.resultStyle="alert alert-success";
+    // }else{
+    //   this.result="Failure";
+    //   this.resultStyle="alert alert-danger";
+    // }
+    //we have commented the above code
+    //because, this is done by parent
+    
+    var user:User=new User(this.username, this.password);
+    // user.username=this.username;
+    // user.password=this.password;
+    this.loginEvent.emit(user);
+  }
+}
+
+
+
+
+
+
+parent:
+
+import { Component } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { Signin } from "./signin/signin";
+import { User } from "./user";
+
+
+@Component({
+  selector: 'app-root',
+  imports: [FormsModule, Signin],
+  templateUrl: './app.html',
+  // template:`Hi this is template`,
+  styleUrl: './app.css'
+  // styleUrls:[]
+  
+})
+export class App {
+  protected title = 'first-app';
+
+  fnLogin(e:User){
+    alert(JSON.stringify(e))
+  }
+}
+
