@@ -233,3 +233,63 @@ this command will tell you what are all the files created.
 
 Task:
 create a component and plug it in app component.
+-----------------------------------------
+
+Basics of a component.
+
+what to do where?
+
+in a component, all html codes can be done in 
+	counter.html
+
+
+What is interpolation?
+	string interpolation
+
+{{	}}
+
+read-only
+
+display
+
+
+interpolation is used to display the output of
+	a variable
+	an expression
+	use pipes to transform the format of output
+
+Binding
+---------
+what is binding?
+	associating a variable or expression to a property or many things
+there are various types of binding:
+
+property binding
+event binding
+two way data binding
+style or class binding
+attributes binding
+
+
+
+Property binding
+--------------------
+A property in html code will be bound to a variable in ts code
+
+1 way, not vice versa.
+
+whatever the value of the variable changes, they are reflected in the html element's attribute
+
+
+
+<input type="text" name="" id="" value="Hello">
+
+there is no binding in above text box.
+
+but, if i use following code:
+
+<input type="text" name="" id="" [value]="title">
+
+by using [], we mean, that we are passing value to this property, but
+we are passing variable to this property. So "title" is not value, it is variable
+
