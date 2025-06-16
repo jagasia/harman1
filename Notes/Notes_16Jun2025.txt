@@ -720,3 +720,47 @@ export class Country {
 
 
 
+try this *ngIf now.
+
+
+ngSwitchCase
+-----------
+we need this directive because, ngIf does not have else part.
+
+ngSwitch offers multiple possible matches for an expression.
+
+
+
+
+
+<select name="grade" [(ngModel)]="grade" class="form-select">
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+    <option>D</option>
+</select>
+<br/>
+
+<div [ngSwitch]="grade">
+    <p *ngSwitchCase="'A'">Excellent</p>
+    <p *ngSwitchCase="'B'">Good</p>
+    <p *ngSwitchCase="'C'">Fair</p>
+    <p *ngSwitchCase="'D'">Satisfactory</p>
+</div>
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-switch-demo',
+  imports: [FormsModule,CommonModule],
+  templateUrl: './switch-demo.html',
+  styleUrl: './switch-demo.css'
+})
+export class SwitchDemo {
+  grade:string='A';
+}
