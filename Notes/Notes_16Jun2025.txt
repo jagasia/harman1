@@ -382,3 +382,40 @@ create a color component, that has 3 ranges, viz., red, green and blue, each can
 on changing any range, should update corresponding variables in ts,
 and overall, the background color of the component changes accordingly.
 
+
+
+<input type="password" />
+
+type is an attribute.
+so, 
+
+given, "type" is a variable in .ts file, what is the difference between:
+<input [type]="type" />
+<input [attr.type]="type" />
+
+
+
+
+Class Binding:
+----------------
+very useful for applying mutliple class for a html element
+esp when we do form validations
+
+[ngClass]="{'form-control':true, 'is-invalid':false}"
+
+
+<input type="text" [ngClass]="{'form-control':true, 'is-invalid':false}" />
+
+
+wherever true, that class is applied
+false, then not applied
+
+like ngClass, there is ngStyle also.
+
+
+TasK
+------
+Use ngClass, (ref to my code)
+
+and identify how to use ngStyle
+

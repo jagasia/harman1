@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
-import { Counter } from "./counter/counter";
-import { Login } from "./login/login";
+import { Color } from "./color/color";
 
 @Component({
   selector: 'app-root',
-  imports: [Counter, Login],
+  imports: [Color],
   templateUrl: './app.html',
   // template:`Hi this is template`,
   styleUrl: './app.css'
