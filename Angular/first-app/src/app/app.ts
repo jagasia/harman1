@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { SwitchDemo } from "./switch-demo/switch-demo";
+import { Login } from "./login/login";
 
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, SwitchDemo],
+  imports: [FormsModule, Login],
   templateUrl: './app.html',
   // template:`Hi this is template`,
   styleUrl: './app.css'

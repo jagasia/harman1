@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -12,5 +12,5 @@ showPassword:boolean=true;
 type:string='password';
 username:string="raja";
 str:string="jag";
-
+@Input() title:string='';
 }

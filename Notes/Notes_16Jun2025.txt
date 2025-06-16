@@ -764,3 +764,69 @@ import { FormsModule } from '@angular/forms';
 export class SwitchDemo {
   grade:string='A';
 }
+
+
+Task:
+Practise the switch case now using
+	ngSwitchCase directive
+
+this is used inside ngSwitch
+
+
+From Angular 17, and esp we are using 20,
+
+
+<select name="grade" [(ngModel)]="grade" class="form-select">
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+    <option>D</option>
+</select>
+<br/>
+
+<!-- <div [ngSwitch]="grade">
+    <p *ngSwitchCase="'A'">Excellent</p>
+    <p *ngSwitchCase="'B'">Good</p>
+    <p *ngSwitchCase="'C'">Fair</p>
+    <p *ngSwitchCase="'D'">Satisfactory</p>
+</div> -->
+
+@switch (grade) {
+    @case ('A') {
+        <p>Excellent</p>
+    }
+    @case ('B') {
+        <p>Good</p>
+    }
+    @case ('C') {
+        <p>Fair</p>
+    }
+    @case ('D') {
+        <p>Satisfactory</p>
+    }
+}
+----------------------------------------------
+
+Input Properties, Output Properties, Passing Event Data				
+What is input?
+	from parent component to child component
+		(in reactjs, this is "props")
+	in angular,
+		@Input() decorator is used
+
+
+In our project, App component is the parent for other components.
+
+
+
+
+
+
+
+
+in parent component:
+<app-login title="Login Form"></app-login>
+
+in child component:
+@Input() title!:string;
+

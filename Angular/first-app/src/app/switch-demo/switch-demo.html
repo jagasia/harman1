@@ -7,9 +7,24 @@
 </select>
 <br/>
 
-<div [ngSwitch]="grade">
+<!-- <div [ngSwitch]="grade">
     <p *ngSwitchCase="'A'">Excellent</p>
     <p *ngSwitchCase="'B'">Good</p>
     <p *ngSwitchCase="'C'">Fair</p>
     <p *ngSwitchCase="'D'">Satisfactory</p>
-</div>
+</div> -->
+
+@switch (grade) {
+    @case ('A') {
+        <p>Excellent</p>
+    }
+    @case ('B') {
+        <p>Good</p>
+    }
+    @case ('C') {
+        <p>Fair</p>
+    }
+    @case ('D') {
+        <p>Satisfactory</p>
+    }
+}
