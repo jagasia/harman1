@@ -507,3 +507,9 @@ We will come to back to reactjs and angular
 
 
 ----------------------------------------------------
+Debugging with React DevTools				
+
+
+React Query for cache.
+
+----------------------------

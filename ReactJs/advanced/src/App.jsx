@@ -30,7 +30,7 @@ function App() {
       </div>
       <div className='row text-center'>
         <div className='col-md-2'>
-          <Counter />
+          <Counter color="blue" />
         </div>
         <div className='col-md-8'>
           {/* <ProductForm /> */}
