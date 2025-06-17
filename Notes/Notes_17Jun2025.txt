@@ -509,3 +509,46 @@ Solution:		make the pipe impure
   pure:false
 })
 
+--------------------------------------------------
+I have pushed the code to git. You can complete this now.
+
+After break, we will learn Reactive Forms module.
+
+---------------------------------------------------------------
+Reactive Forms module
+----------------------------
+in reactjs, we used formik and yup for form handling and validation.
+
+Here, in angular, we use "Reactive Forms module" for form handling and validation.
+
+1) import ReactiveFormsModule	instead of FormsModule
+2) we are not template driven any more. So,
+	we will start from .ts file and create an object representation of the form.
+3) we can define validation rules for each member of the form object
+we can also define custom validation, where a function can do the validation.
+
+Demo:
+--------
+register component
+	username
+	password
+	confirm password
+	email
+	phone
+
+
+
+I have created an user object initialized by a form builder
+the html form is bound to this object using formGroup
+
+<form [formGroup]="user">
+
+each input element is bound to property of group object using "formControlName" attribute
+
+
+user.value		gives the object rep of the form
+
+Task:
+------
+You can try with different entity like Student or Department etc.
+
