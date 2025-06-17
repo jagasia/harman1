@@ -1,0 +1,12 @@
+Id: <input type="number" class="form-control" name="id" [(ngModel)]="product.id" />
+Name: <input type="text" class="form-control" name="name" [(ngModel)]="product.name" />
+Category: <select class="form-select" name="category" [(ngModel)]="product.category">
+    <option>Stationery</option>
+    <option>Sports</option>
+    <option>Music</option>
+    <option>Electronics</option>
+</select>
+Price: <input type="number" class="form-control" name="price" [(ngModel)]="product.price" /><br/>
+<input type="button" value="Add" class="btn btn-info" />
+<br/>
+{{product | json}}

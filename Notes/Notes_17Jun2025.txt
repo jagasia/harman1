@@ -156,3 +156,109 @@ ng g d <<directive name>>
 
 import the directive in a component, where we use it
 
+-----------------------------------------------------
+Using Renderer to build attribute directive				
+
+
+using DOM manipulation:
+  @HostListener('mouseenter') onEnter() {
+    this.el.nativeElement.style.backgroundColor = this.highlight;
+  }
+
+  @HostListener('mouseleave') onLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+
+-----------------------------------------------------
+
+using Renderer:
+ @HostListener('mouseenter') onMouseEnter() {
+    this.renderer.setStyle(this.el.nativeElement, 'color', this.textEffect);
+    this.renderer.setStyle(this.el.nativeElement, 'fontWeight', 'bold');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.renderer.removeStyle(this.el.nativeElement, 'color');
+    this.renderer.removeStyle(this.el.nativeElement, 'fontWeight');
+  }
+
+
+
+
+
+
+
+after using renderer2,:
+
+import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]'
+})
+export class Highlight {
+@Input() highlight:string='yellow';
+
+  constructor(private el:ElementRef, private renderer:Renderer2) { }
+
+ 
+  // @HostListener('mouseenter') onEnter() {
+  //   this.el.nativeElement.style.backgroundColor = this.highlight;
+  // }
+
+  // @HostListener('mouseleave') onLeave() {
+  //   this.el.nativeElement.style.backgroundColor = '';
+  // }
+
+   @HostListener('mouseenter') onMouseEnter() {
+    this.renderer.setStyle(this.el.nativeElement, 'backgroundColor', this.highlight);
+    this.renderer.setStyle(this.el.nativeElement, 'fontWeight', 'bold');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.renderer.removeStyle(this.el.nativeElement, 'backgroundColor');
+    this.renderer.removeStyle(this.el.nativeElement, 'fontWeight');
+  }
+
+
+}
+
+
+
+============================================
+Day 7: Angular 
+
+Angular Template Driven 
+Reactive Forms, 
+Components Deep Diving
+
+
+What is the difference between Template driven forms and Reactive Forms?
+
+in template driven forms,
+	HTML comes first
+	i will code HTML first, then bind the properties to variables in typescript
+	binding, 2 way binding etc to handle the form
+
+if a form has 5 input elements,
+	we can bind each input to a variable
+	or
+	we can have one object in typescript and bind that object properties to each input
+
+
+----------------------------------
+Lets take "product" as example and do form handling and form validation first in the template driven model.
+
+Product
+	id
+	name
+	category
+	price
+
+
+lets create the template for the above entity.
+
+
+
+  // product:Product={id:0, name:'',category:'',price:0};
+  product:Product=new Product(0,'','',0);
+
