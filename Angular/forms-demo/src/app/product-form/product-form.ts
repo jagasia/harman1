@@ -13,9 +13,11 @@ export class ProductForm {
   // product:Product={id:0, name:'',category:'',price:0};
   product:Product=new Product(0,'','',0);
   errors:any={id:'', name:'', category:'', price:''};
-  invalid:boolean=false;
+  touched:any={id:false, name:false, category:false, price:false};
+  invalid:boolean=true;
 
   fnValidateId(){
+    this.touched.id=true;
     console.log('validating id');
     
     //must be 3 digit positive number
@@ -28,6 +30,7 @@ export class ProductForm {
   }
 
   fnValidateName(){
+    this.touched.name=true;
     var str=this.product.name;
     var errMsg='';
     if (!str) {
@@ -47,6 +50,7 @@ export class ProductForm {
   }
  
   fnValidateCategory(){
+    this.touched.category=true;
     if(!this.product.category){
       this.errors.category="Category must be selected"
     }else{
@@ -56,6 +60,7 @@ export class ProductForm {
   }
 
   fnValidatePrice(){
+    this.touched.price=true;
     if(this.product.price<1){
       this.errors.price="Price must be positive number"
     }else{
@@ -65,6 +70,6 @@ export class ProductForm {
   }
 
   fnCheckValid(){
-    this.invalid=this.errors.id || this.errors.name || this.errors.category || this.errors.price;
+    this.invalid=this.errors.id || this.errors.name || this.errors.category || this.errors.price || !this.touched.id || !this.touched.name ||!this.touched.category ||!this.touched.price;
   }
 }

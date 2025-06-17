@@ -349,3 +349,103 @@ So, template driven forms we will conclude once you complete Employee form
 
 Task:
 refer to the product form and complete the employee form.
+
+---------------------------------------------------------------------
+Before we move to reactive forms module,
+one topic pending is Pipes
+-------------------------------
+
+Pipes
+------
+what is the need for pipe?
+	in html code, we use interpolation to print the
+		value of a variable or object
+		output of an expression
+		etc
+
+in interpolation, we print the value of an expression or variable.
+
+But that can be transformed to a specific format using pipes.
+
+ex:
+	we can use "uppercase" pipe to convert the text to upper case.
+
+morning/ yesterday, we used date pipe to transform date into
+	dd-MMM-yyyy
+
+What is a pipe?
+	is used to transform a data into another format
+
+it is called as pipe, because, the result of a pipe can be sent to another pipe, like cascading pipes.
+
+there are lot of built-in pipes.
+we can also create pipes called custom pipes.
+
+Lets explore what are the categories of pipes:
+
+	string
+	date
+	currency
+	number
+	
+
+        {{dt | date:'dd-MMM-yy'}}<br/>
+        {{dt | date:'longDate'}}<br/>
+        {{'this is a sentence' |titlecase}}<br/>
+        {{1234 | currency:'INR'}}
+
+
+Task:
+Understand what is pipe?
+and list of pipes
+and use the pipes 
+	by declaring pipe in ts file
+	and using the pipe in html file
+
+we can just import "CommonModule" to use all the pipes.
+
+--------------------------
+custom pipes
+
+custom pipe is user defined pipe
+that we create for transforming any data into a specific format (when built-in pipes do not serve the purpose).
+
+For example, we can create "length" pipe, that will transfrom a string into a number (its length).
+
+Steps for custom pipe:
+1) manually
+	we can create a class that is decorated by @Pipe() decorator
+	and that class implements PipeTransform interface
+	and override the transform method
+2) using cli
+	ng g pipe <<pipe name>>
+
+this command will create the class and decorate, implement etc automatically.
+
+
+
+{{'this is a long string' |length}}
+
+
+imports: [Highlight, ProductForm, EmployeeForm,CommonModule, LengthPipe],
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'length'
+})
+export class LengthPipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    var str:string=<string>value;
+    return str.length;
+  }
+
+}
+
+
+
+Task:
+create a custom pipe and use it in the component.
