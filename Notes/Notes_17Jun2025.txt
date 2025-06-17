@@ -299,3 +299,26 @@ now, bind the template elements to members of an object of employee
 display the object as json using json pipe for confirming that any change in the template form, reflects in the employee object.
 
 
+-------------------------------
+How to validate a template driven form?
+
+lets create functions in .ts file.
+bind them to the events 
+
+
+Id: <input type="number" min="1" class="form-control" name="id" [(ngModel)]="product.id" (ngModelChange)="fnValidateId()" />
+
+
+
+errors:any={};
+
+  fnValidateId(){
+    console.log('validating id');
+    
+    //must be 3 digit positive number
+    if(this.product.id<100){
+      this.errors.id='Product Id must be 3 digit number';
+    }else{
+      this.errors.id='';
+    }
+  }

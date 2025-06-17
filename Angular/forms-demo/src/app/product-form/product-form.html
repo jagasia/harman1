@@ -1,4 +1,4 @@
-Id: <input type="number" class="form-control" name="id" [(ngModel)]="product.id" />
+Id: <input type="number" min="1" class="form-control" name="id" [(ngModel)]="product.id" (ngModelChange)="fnValidateId()" />
 Name: <input type="text" class="form-control" name="name" [(ngModel)]="product.name" />
 Category: <select class="form-select" name="category" [(ngModel)]="product.category">
     <option>Stationery</option>
@@ -9,4 +9,5 @@ Category: <select class="form-select" name="category" [(ngModel)]="product.categ
 Price: <input type="number" class="form-control" name="price" [(ngModel)]="product.price" /><br/>
 <input type="button" value="Add" class="btn btn-info" />
 <br/>
-{{product | json}}
+{{product | json}}<br/>
+{{errors | json }}
