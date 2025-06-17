@@ -13,6 +13,7 @@ export class ProductForm {
   // product:Product={id:0, name:'',category:'',price:0};
   product:Product=new Product(0,'','',0);
   errors:any={id:'', name:'', category:'', price:''};
+  invalid:boolean=false;
 
   fnValidateId(){
     console.log('validating id');
@@ -23,6 +24,7 @@ export class ProductForm {
     }else{
       this.errors.id='';
     }
+    this.fnCheckValid();
   }
 
   fnValidateName(){
@@ -41,6 +43,7 @@ export class ProductForm {
   }
   
   this.errors.name=errMsg;
+  this.fnCheckValid();
   }
  
   fnValidateCategory(){
@@ -49,6 +52,7 @@ export class ProductForm {
     }else{
       this.errors.category="";
     }
+    this.fnCheckValid();
   }
 
   fnValidatePrice(){
@@ -57,5 +61,10 @@ export class ProductForm {
     }else{
       this.errors.price="";
     }
+    this.fnCheckValid();
+  }
+
+  fnCheckValid(){
+    this.invalid=this.errors.id || this.errors.name || this.errors.category || this.errors.price;
   }
 }

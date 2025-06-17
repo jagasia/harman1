@@ -335,3 +335,17 @@ department should be selected
 salary must be 6 digit number
 
 display the error object using json pipe
+
+
+We have implemented the form validation in a template driven form.
+I have done for product-form.
+After you complete this for employee-form, we will move to ReactiveFormsModule.
+
+------------------------------------------
+
+We will move to ReactiveForms module after that, we will only prefer that approach.
+
+So, template driven forms we will conclude once you complete Employee form
+
+Task:
+refer to the product form and complete the employee form.

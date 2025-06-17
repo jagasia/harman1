@@ -12,6 +12,7 @@ Category: <select [ngClass]="{'form-select':true, 'is-invalid':errors.category}"
 <div class="text-danger">{{errors.category}}</div>
 Price: <input type="number" [ngClass]="{'form-control':true, 'is-invalid':errors.price}" name="price" [(ngModel)]="product.price" (ngModelChange)="fnValidatePrice()" (blur)="fnValidatePrice()" /><br/>
 <div class="text-danger">{{errors.price}}</div>
-<input type="button" value="Add" class="btn btn-info" />
+<input type="button" value="Add" class="btn btn-info" [disabled]="invalid" />
 <br/>
 {{product | json}}<br/>
+{{invalid + ''}}
