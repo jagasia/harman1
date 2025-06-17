@@ -322,3 +322,16 @@ errors:any={};
       this.errors.id='';
     }
   }
+
+
+Task:
+
+in employee form component,
+implement the following validations.
+
+id must be atleast 2 digits positive number
+name must be atleast 6 characters, starting with alphabet only
+department should be selected
+salary must be 6 digit number
+
+display the error object using json pipe

@@ -1,13 +1,17 @@
-Id: <input type="number" min="1" class="form-control" name="id" [(ngModel)]="product.id" (ngModelChange)="fnValidateId()" />
-Name: <input type="text" class="form-control" name="name" [(ngModel)]="product.name" />
-Category: <select class="form-select" name="category" [(ngModel)]="product.category">
+{{errors | json }}<br/>
+Id: <input type="number" min="1" [ngClass]="{'form-control':true, 'is-invalid':errors.id}" name="id" [(ngModel)]="product.id" (ngModelChange)="fnValidateId()" (blur)="fnValidateId()" />
+<div class="text-danger">{{errors.id}}</div>
+Name: <input type="text" [ngClass]="{'form-control':true, 'is-invalid':errors.name}" name="name" [(ngModel)]="product.name" (ngModelChange)="fnValidateName()" (blur)="fnValidateName()" />
+<div class="text-danger">{{errors.name}}</div>
+Category: <select [ngClass]="{'form-select':true, 'is-invalid':errors.category}" name="category" [(ngModel)]="product.category" (ngModelChange)="fnValidateCategory()" (blur)="fnValidateCategory()">
     <option>Stationery</option>
     <option>Sports</option>
     <option>Music</option>
     <option>Electronics</option>
 </select>
-Price: <input type="number" class="form-control" name="price" [(ngModel)]="product.price" /><br/>
+<div class="text-danger">{{errors.category}}</div>
+Price: <input type="number" [ngClass]="{'form-control':true, 'is-invalid':errors.price}" name="price" [(ngModel)]="product.price" (ngModelChange)="fnValidatePrice()" (blur)="fnValidatePrice()" /><br/>
+<div class="text-danger">{{errors.price}}</div>
 <input type="button" value="Add" class="btn btn-info" />
 <br/>
 {{product | json}}<br/>
-{{errors | json }}
