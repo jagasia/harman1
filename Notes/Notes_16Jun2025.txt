@@ -943,3 +943,10 @@ export class App {
   }
 }
 
+Task:
+
+use @Output() decorator along with EvenEmitter
+to not only send output to the parent,
+but also to allow parent component to handle user defined event.
+
+Example code is given above.

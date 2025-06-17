@@ -9,8 +9,9 @@ import { User } from "./user";
   imports: [FormsModule, Signin],
   templateUrl: './app.html',
   // template:`Hi this is template`,
-  styleUrl: './app.css'
+  styleUrl: './app.css',
   // styleUrls:[]
+  // styles:[`p{color:red}, div{color:blue}`]
   
 })
 export class App {

@@ -1,0 +1,158 @@
+Template, Styles, View Encapsulation, adding bootstrap to angular app	
+Built-in Directives, Creating Attribute Directive				
+Using Renderer to build attribute directive				
+
+Template:
+	html code
+	in a component (in @Component) 
+	we can either define 
+	"template" or 	internal or inline
+	"templateUrl"	for external html file
+	
+
+Style:
+	3 options in a component decorator
+	styles:[`p{color:red}, div{color:blue}`]
+	styleUrl:'./app.css'
+	styleUrls:['./app.css','./red.css']
+
+View encapsulation:
+
+	a component, uses "styleUrl" this file is used only in this component
+	we can modify the encapsulation level using "encapsulation" attribute and set it as global
+
+1) shadowDOM
+2) none		global
+3) emulated	default		scoped to current component
+
+
+  encapsulation: ViewEncapsulation.Emulated
+
+
+
+@Component({
+  selector: 'app-hello',
+  templateUrl: './hello.component.html',
+  styleUrls: ['./hello.component.css'],
+  encapsulation: ViewEncapsulation.Emulated
+})
+
+
+
+
+adding bootstrap to angular app	
+------------------------------------
+yesterday we used bootstrap in our project by 
+	using CDN	(not recommended for production)
+
+another approach, good approach is to
+	install bootstrap and import it in angular.json style section
+
+1) install boostrap
+	npm i bootstrap@5
+2) import bootstrap globally
+	in angular.json
+
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+
+3) restart the server.
+
+
+------------------------------------------
+Built-in Directives, Creating Attribute Directive				
+
+what are the directives, we have used so far:
+Attribute directives:
+	ngClass
+	ngStyle
+	ngModel
+
+Structural directives:	
+	ngIf
+	ngFor
+	ngSwitch
+
+
+normally, a html element has many attributes.
+ex:
+	<a href=""></a>
+
+href is an attribute
+
+angular directives are custom html attributes
+
+
+
+ngStyle:
+
+<p style="">		not allowing any variables
+<p [ngStyle]="">		variables can be used
+
+we have used around 6 built-in directives.
+
+can we create our own custom directive?
+
+ex:
+
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]'
+})
+export class Highlight {
+@Input() highlight:string='yellow';
+
+  constructor(private el:ElementRef) { }
+
+ 
+  @HostListener('mouseenter') onEnter() {
+    this.el.nativeElement.style.backgroundColor = this.highlight;
+  }
+
+  @HostListener('mouseleave') onLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+
+}
+
+
+
+
+
+
+to use this in other components, import this directive
+
+
+import { Component } from '@angular/core';
+import { Highlight } from './highlight';
+
+@Component({
+  selector: 'app-root',
+  imports: [Highlight],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  protected title = 'forms-demo';
+}
+
+
+
+
+and then use in html
+
+<h1 [highlight]="'blue'">This is heading 1</h1>
+<p highlight="green">This is a paragraph</p>
+
+
+Task:
+------
+create a custom directive that can be used on any html element 
+
+ng g d <<directive name>>
+
+import the directive in a component, where we use it
+
