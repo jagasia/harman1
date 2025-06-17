@@ -262,3 +262,39 @@ lets create the template for the above entity.
   // product:Product={id:0, name:'',category:'',price:0};
   product:Product=new Product(0,'','',0);
 
+
+
+
+
+Error: NG0400: A platform with a different configuration has been created. Please destroy it first.
+
+i use JsonPipe. 
+my ts code:
+imports: [FormsModule, JsonPipe],
+my html code:
+Id: <input type="number" class="form-control" name="id" [(ngModel)]="product.id" />
+Name: <input type="text" class="form-control" name="name" [(ngModel)]="product.name" />
+Category: <select class="form-select" name="category" [(ngModel)]="product.category">
+    <option>Stationery</option>
+    <option>Sports</option>
+    <option>Music</option>
+    <option>Electronics</option>
+</select>
+Price: <input type="number" class="form-control" name="price" [(ngModel)]="product.price" /><br/>
+<input type="button" value="Add" class="btn btn-info" />
+<br/>
+{{product | json}}
+
+
+----------------------------
+
+Task:
+
+Create an employee-form component
+Define an Employee class
+	id, name, department, salary
+
+now, bind the template elements to members of an object of employee
+
+display the object as json using json pipe for confirming that any change in the template form, reflects in the employee object.
+
