@@ -15,4 +15,5 @@ Price: <input type="number" [ngClass]="{'form-control':true, 'is-invalid':errors
 <input type="button" value="Add" class="btn btn-info" [disabled]="invalid" />
 <br/>
 {{product | json}}<br/>
-{{invalid + ''}}
+<!-- {{invalid + ''}} -->
+{{product | message}}

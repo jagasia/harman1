@@ -449,3 +449,63 @@ export class LengthPipe implements PipeTransform {
 
 Task:
 create a custom pipe and use it in the component.
+
+
+
+i created as custom pipe called "message" that will transform the product object into a sentence.
+
+export class Product {
+    id:number=0;
+    name:string='';
+    category:string='';
+    price:number=0;
+   
+    constructor(id:number, name:string, category:string, price:number){
+        this.id=id;
+        this.name=name;
+        this.category=category;
+        this.price=price;
+    }
+
+   
+
+}
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+import { Product } from './model/product';
+
+@Pipe({
+  name: 'message'
+})
+export class MessagePipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    var prd:Product=<Product>value;
+    // var str:string=prd.name+' costs '+prd.price;
+    var str=`${prd.name} costs ${prd.price}`;
+    return str;
+  }
+
+}
+
+
+
+
+
+in product component:
+
+{{product | message}}
+
+The product object undergo changes, but the output is not updated by message pipe. But only when i save file it get updated
+
+
+Solution:		make the pipe impure
+
+@Pipe({
+  name: 'message',
+  pure:false
+})
+

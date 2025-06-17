@@ -1,11 +1,12 @@
 import { CommonModule, JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MessagePipe } from '../message-pipe';
 import { Product } from '../model/product';
 
 @Component({
   selector: 'app-product-form',
-  imports: [FormsModule, JsonPipe, CommonModule],
+  imports: [FormsModule, JsonPipe, CommonModule, MessagePipe],
   templateUrl: './product-form.html',
   styleUrl: './product-form.css'
 })
