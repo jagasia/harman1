@@ -552,3 +552,115 @@ Task:
 ------
 You can try with different entity like Student or Department etc.
 
+------------------------------------------------
+Validation in reactive forms.
+-----------------------------------
+  constructor(private fb:FormBuilder){
+    this.user=fb.group({
+      username:[''],
+      password:[''],
+      cpassword:[''],
+      email:[''],
+      phone:['']
+    });
+  }
+
+there is a provision for validation.
+
+
+
+
+
+<div class="text-danger" *ngIf="f.email.errors.required">Email is mandatory</div>
+email:['',[Validators.required, Validators.email]],
+
+how to display error message for pat
+
+
+
+
+-------------------------------------
+Demo:
+create ts and html code for reactive form containing Employee (id, name, department, salary) with validations all having required validation and name length atleast 6 characters and salary must be above 1 lakh
+
+
+
+
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-employee-form',
+  templateUrl: './employee-form.component.html'
+})
+export class EmployeeFormComponent {
+  employeeForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.employeeForm = this.fb.group({
+      id: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(6)]],
+      department: ['', Validators.required],
+      salary: ['', [Validators.required, Validators.min(100000)]]
+    });
+  }
+
+  onSubmit() {
+    if (this.employeeForm.valid) {
+      console.log('Employee data:', this.employeeForm.value);
+    } else {
+      this.employeeForm.markAllAsTouched(); // To show validation errors
+    }
+  }
+
+  get f() {
+    return this.employeeForm.controls;
+  }
+}
+
+
+
+
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="id">Employee ID</label>
+    <input id="id" type="text" formControlName="id" />
+    <div *ngIf="f.id.touched && f.id.invalid" style="color: red;">
+      ID is required.
+    </div>
+  </div>
+
+  <div>
+    <label for="name">Name</label>
+    <input id="name" type="text" formControlName="name" />
+    <div *ngIf="f.name.touched && f.name.invalid" style="color: red;">
+      <div *ngIf="f.name.errors?.['required']">Name is required.</div>
+      <div *ngIf="f.name.errors?.['minlength']">
+        Name must be at least 6 characters long.
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <label for="department">Department</label>
+    <input id="department" type="text" formControlName="department" />
+    <div *ngIf="f.department.touched && f.department.invalid" style="color: red;">
+      Department is required.
+    </div>
+  </div>
+
+  <div>
+    <label for="salary">Salary</label>
+    <input id="salary" type="number" formControlName="salary" />
+    <div *ngIf="f.salary.touched && f.salary.invalid" style="color: red;">
+      <div *ngIf="f.salary.errors?.['required']">Salary is required.</div>
+      <div *ngIf="f.salary.errors?.['min']">Salary must be above ₹1,00,000.</div>
+    </div>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+
+
+

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -13,11 +13,15 @@ export class Register {
 
   constructor(private fb:FormBuilder){
     this.user=fb.group({
-      username:[''],
-      password:[''],
+      username:['', Validators.required],
+      password:['', [Validators.required]],
       cpassword:[''],
-      email:[''],
-      phone:['']
+      email:['',[Validators.required, Validators.email]],
+      phone:['', [Validators.required, Validators.pattern('[0-9]{5}')]]
     });
   }
+  get f(){
+    return this.user.controls;
+  }
+
 }
