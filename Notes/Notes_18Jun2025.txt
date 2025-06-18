@@ -473,3 +473,36 @@ Now, you need to ensure that, there is only one option
 if you login, then nav should show logout
 and vice versa.
 
+what are all the other things we can do in routing:
+	define routes
+	render the component in router-outlet
+	having multiple router-outlets with identifiers
+	having path variable/ params etc defined in the path
+	
+	routing/navigating from code.
+	accepting the params from the source
+
+
+
+
+for named router outlets:
+
+1) in app.routes.ts
+
+{path:'register', component:Register, outlet:'admin'}
+
+2) in nav.ts
+imports: [RouterLink]
+
+3) in nav.html
+
+<a class="nav-link" [routerLink]="[{ outlets: { admin: ['register'] } }]">Sign Up</a>
+
+4) in app.html
+
+<router-outlet name="admin"></router-outlet>
+
+Task:
+Refer above code.
+
+Kindly use named router outlets in app component. In that way, you use more than one router outlet.
