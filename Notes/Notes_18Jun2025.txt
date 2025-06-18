@@ -577,3 +577,10 @@ if i login and then access about us link, then i am allowed.
 
 if i have logged out and then access about us, i am redirected to login component.
 
+-----------------------------------------------------
+Task:
+
+use canActivate route
+
+so that, only logged in users are allowed to access a particular route.
+
