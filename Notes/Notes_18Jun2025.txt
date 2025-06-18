@@ -584,3 +584,40 @@ use canActivate route
 
 so that, only logged in users are allowed to access a particular route.
 
+
+
+
+
+Sure! Here's the **summary in a plain, notepad-friendly format** with clear line-by-line explanation:
+
+```
+Angular Route Guards Summary
+----------------------------
+
+1. canActivate
+   - Purpose : Prevent access to a route
+   - Trigger : Before the route is activated
+   - Use Case: Check if user is logged in before accessing a page
+
+2. canDeactivate
+   - Purpose : Prevent leaving a route/component
+   - Trigger : When navigating away from a route
+   - Use Case: Warn user if form has unsaved changes
+
+3. canLoad
+   - Purpose : Prevent loading of lazy-loaded modules
+   - Trigger : Before module code is loaded
+   - Use Case: Block loading of admin module if user is not an admin
+
+4. resolve
+   - Purpose : Pre-fetch data before loading the component
+   - Trigger : Before the component is initialized
+   - Use Case: Load user profile data before showing profile page
+
+5. canActivateChild
+   - Purpose : Apply guard to all child routes
+   - Trigger : Before any child route is activated
+   - Use Case: Protect all settings sub-pages from unauthorized access
+```
+
+
