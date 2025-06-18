@@ -1,0 +1,108 @@
+## 🔹 Angular Component Lifecycle Hooks (In Correct Order)
+
+---
+
+### 1. `ngOnChanges()`
+
+* **Runs:** When an input (`@Input`) property changes.
+* **Use:** Respond to input-bound property changes.
+
+```ts
+ngOnChanges(changes: SimpleChanges) { }
+```
+
+---
+
+### 2. `ngOnInit()`
+
+* **Runs:** Once after the first `ngOnChanges`.
+* **Use:** Perform component initialization, API calls, setup.
+
+```ts
+ngOnInit() { }
+```
+
+---
+
+### 3. `ngDoCheck()`
+
+* **Runs:** During every change detection run.
+* **Use:** Detect and act upon changes not caught by Angular’s default change detection.
+
+```ts
+ngDoCheck() { }
+```
+
+---
+
+### 4. `ngAfterContentInit()`
+
+* **Runs:** After content (like `<ng-content>`) is projected into the component.
+* **Use:** React once to projected content initialization.
+
+```ts
+ngAfterContentInit() { }
+```
+
+---
+
+### 5. `ngAfterContentChecked()`
+
+* **Runs:** After every check of projected content.
+* **Use:** Respond after projected content is checked.
+
+```ts
+ngAfterContentChecked() { }
+```
+
+---
+
+### 6. `ngAfterViewInit()`
+
+* **Runs:** After component’s view and child views have been initialized.
+* **Use:** Access `@ViewChild` or perform DOM operations.
+
+```ts
+ngAfterViewInit() { }
+```
+
+---
+
+### 7. `ngAfterViewChecked()`
+
+* **Runs:** After every check of the component’s views and child views.
+* **Use:** Detect view changes after the view update.
+
+```ts
+ngAfterViewChecked() { }
+```
+
+---
+
+### 8. `ngOnDestroy()`
+
+* **Runs:** Just before the component is destroyed.
+* **Use:** Clean up resources, unsubscribe from observables, cancel timers.
+
+```ts
+ngOnDestroy() { }
+```
+
+---
+
+## 🧠 Summary: Lifecycle Hook Execution Order
+
+```
+1. ngOnChanges
+2. ngOnInit
+3. ngDoCheck
+4. ngAfterContentInit
+5. ngAfterContentChecked
+6. ngAfterViewInit
+7. ngAfterViewChecked
+8. ngOnDestroy
+```
+
+---
+
+Let me know if you want a diagram version or a quick quiz format to help your learners revise this!

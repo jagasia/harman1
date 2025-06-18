@@ -1,0 +1,272 @@
+Host Listener to listen to Host Events				
+Using Host Binding to bind to Host Properties				
+Services & Dependency Injections				
+Creating Data Service				
+Understanding Hierarchical Injector				
+Built-in Validators & Using HTML5 Validation				
+Grouping Form Controls				
+FormGroup, FormControl, FormBuilder				
+Forms with Reactive Approach				
+Predefined Validators & Custom Validators				
+Showing validation errors				
+Component Life Cycle Hooks				
+
+
+
+custom directives can be used over various html elements.
+unlike, input decorate variable, where we know, on which component element, we are going to use,
+
+the custom directives are not specific to a particular element.
+
+so, it is complex to access the attributes of an element, where our custom directives are used.
+
+ex:
+
+<h2 redcolor>this is the content</h2>
+
+our redcolor directive should be able to read the contents between h2 and /h2
+
+h2 here is the native element, whose attributes and content needs to be extracted by our directive.
+
+solution:
+	we can use
+		@HostListener
+			over methods/functions
+		@HostBinding	
+			over properties
+
+in a customer directive
+
+
+@HostListener('mouseenter')
+  onMouseEnter() {
+    this.bgColor = 'lightblue';
+  }
+
+this above function uses @HostListener to bind a native event to this function as an event handler
+
+
+@HostBinding('style.backgroundColor') bgColor!: string;
+
+the property bgColor wants to extract the value from the native (host) element. so we use @HostBinding
+
+
+-------------------------------------------------
+Services & Dependency Injections				
+Creating Data Service				
+Understanding Hierarchical Injector				
+
+What is a service?
+	is a re-usable, injectable class that can be created using
+		ng generate service <<servicename>>
+
+	this is a class
+		that can contain variables and functions
+	this can be injected into a component using constructor.
+
+ex:
+
+ng g s my-service
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MyService {
+
+  constructor() { }
+
+  fnAdd(){
+    return "Adding..."
+  }
+
+  fnUpdate(){
+    return "Updating..";
+  }
+}
+
+
+
+to inject the my-service into hello component, use constructor.
+
+import { Component } from '@angular/core';
+import { MyService } from '../my-service';
+
+@Component({
+  selector: 'app-hello',
+  imports: [],
+  templateUrl: './hello.html',
+  styleUrl: './hello.css'
+})
+export class Hello {
+
+  constructor(private ms:MyService){
+
+  }
+
+  fnAdd(){
+    alert(this.ms.fnAdd());
+  }
+
+  fnUpdate(){
+    alert(this.ms.fnUpdate());
+  }
+}
+
+
+
+-------------------------------------
+Custom validation
+----------------------
+when the built-in validators do not serve the purpose, we can create our own validators called as "custom validators".
+
+for example, we can create a function that can be used to validate Password vs Confirm password
+whether they match or not.
+
+such function, should follow the signature and return type so that they can be used as custom validator.
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-register',
+  standalone:true,
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  templateUrl: './register.html',
+  styleUrl: './register.css'
+})
+export class Register {
+  user:any;
+
+  constructor(private fb:FormBuilder){
+    this.user=fb.group({
+      username:['', Validators.required],
+      password:['', [Validators.required]],
+      cpassword:[''],
+      email:['',[Validators.required, Validators.email]],
+      phone:['', [Validators.required, Validators.pattern('[0-9]{5}')]],
+      },{
+        validators: this.confirmPasswordMatch
+      });
+  }
+  get f(){
+    return this.user.controls;
+  }
+
+  confirmPasswordMatch(control:AbstractControl):ValidationErrors|null
+  {
+    var pwd=control.get('password')?.value;    
+    var cpwd=control.get('cpassword')?.value;
+    if(pwd!==cpwd){
+      return {'passwordMismatch':true};
+    }
+    return null;
+  }
+}
+
+
+
+
+
+
+
+{{user.value | json}}
+<br/>
+<form [formGroup]="user">
+Username: <input type="text" formControlName="username" [ngClass]="{'form-control':true, 'is-invalid':f.username.errors}" >
+<div class="text-danger" *ngIf="f.username.errors">Username is invalid</div>
+Password: <input type="password" formControlName="password" class="form-control" >
+Confirm Password: <input type="password" formControlName="cpassword" class="form-control" >
+ <div class="text-danger" *ngIf="user.hasError('passwordMismatch') && f.cpassword.touched">
+    Passwords do not match
+  </div>
+Email: <input type="email" formControlName="email" class="form-control" >
+<div class="text-danger" *ngIf="f.email.errors?.['required']">Email is mandatory</div>
+<div class="text-danger" *ngIf="f.email.errors?.['email']">Email is invalid</div>
+Phone: <input type="number" formControlName="phone" class="form-control" >
+<div class="text-danger" *ngIf="f.phone.errors?.['required']">Phone is mandatory</div>
+<div class="text-danger" *ngIf="f.phone.errors?.['pattern']">Phone is invalid</div>
+<br/>
+</form>
+<br/>
+{{user.controls['phone'].errors.pattern | json}}
+
+
+
+
+
+
+
+in reactive form validations,
+	touched		entering the field and bluring/leaving
+	dirty		field value changed
+
+
+	
+
+Angular Form Control State Properties
+1. touched
+Description: Becomes true when the user has visited the field and then left (blurred).
+
+Use Case: Useful to show error messages only after the user interacts with the field.
+
+2. untouched
+Description: The opposite of touched. It's true when the field has not been visited.
+
+Use Case: Useful for detecting if the field was never interacted with.
+
+3. dirty
+Description: Becomes true when the field’s value has changed from its original value.
+
+Use Case: Used to check whether the user has modified the input.
+
+4. pristine
+Description: The opposite of dirty. It's true if the user hasn’t changed the value.
+
+Use Case: Good for detecting whether the form is untouched or still in its original state.
+
+5. valid
+Description: Becomes true if all validators pass for the control.
+
+Use Case: Used to check whether the field is ready for submission.
+
+6. invalid
+Description: Becomes true if at least one validator fails.
+
+Use Case: Trigger display of validation error messages.
+
+7. pending
+Description: Becomes true if any async validator is still running.
+
+Use Case: Show a loading spinner or prevent form submission until async validation is complete.
+
+8. disabled
+Description: Becomes true if the form control is disabled.
+
+Use Case: Used to make the control uneditable or skip validation.
+
+9. enabled
+Description: Opposite of disabled. It’s true if the control is active and can be edited.
+
+
+
+
+<Register color="blue" />
+
+@Input() color:string='';
+
+-------------------------------------------
+Component Life Cycle Hooks				
+
+
+export class LifeCycle implements OnChanges
+ {
+  ngOnChanges(changes: SimpleChanges): void {
+    throw new Error('Method not implemented.');
+  }
+
+
+}
