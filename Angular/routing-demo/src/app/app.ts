@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { Hello } from './hello/hello';
 import { LifeCycle } from './life-cycle/life-cycle';
+import { Nav } from './nav/nav';
 import { Register } from './register/register';
 
 @Component({
   standalone:true,
   selector: 'app-root',
-  imports: [Hello, Register, LifeCycle, FormsModule, RouterOutlet],
+  imports: [Hello, Register, LifeCycle, FormsModule, RouterOutlet, Nav],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

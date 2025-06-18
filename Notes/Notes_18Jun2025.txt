@@ -451,3 +451,25 @@ create few components and define routes for them
 and use <router-outlet></router-outlet>
 
 where, the component will render when we change the url.
+
+
+We cannot ask the users to enter the url in browser's address bar.
+
+So, we provide links.
+
+
+
+Task:
+------
+I have defined the routes
+i have placed a nav component in app
+the nav provides links for each option
+
+Try this by yourself.
+
+Now, you need to ensure that, there is only one option
+	either "Login" or "Logout"
+
+if you login, then nav should show logout
+and vice versa.
+
