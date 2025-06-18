@@ -270,3 +270,7 @@ export class LifeCycle implements OnChanges
 
 
 }
+
+Refer the file: 
+https://github.com/jagasia/harman1/blob/jag/Angular/angular_lifecycle_2025.txt
+
