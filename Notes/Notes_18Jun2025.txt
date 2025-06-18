@@ -274,3 +274,78 @@ export class LifeCycle implements OnChanges
 Refer the file: 
 https://github.com/jagasia/harman1/blob/jag/Angular/angular_lifecycle_2025.txt
 
+
+Task:
+-------
+Observe upto what we have discussed.
+Then we will move to today's topics.
+
+------------------------
+ng-content
+
+	input from parent to child
+
+already we use @Input() to send input from parent to child
+
+ex:
+App (parent)
+
+	<app-register color="blue"></app-register>
+
+Register (child)
+
+	@Input() color:string='';
+
+
+now,
+
+
+<app-register></app-register>
+
+<app-register />		this is enough, right?, why we need start and end tag?
+
+if there are start and end tag, then there must be a purpose for the place between start and end tag.
+
+
+
+<app-register>
+	Hello, this is the content parent has provided...
+</app-register>
+
+
+the content, we provide between the start and end tags, 
+	is the "ng-content"
+
+
+
+
+in hello component:
+----------------------------
+
+<ng-content select="[d1]"></ng-content>
+<br>
+<input type="button" value="Add" class="btn btn-info" (click)="fnAdd()">&nbsp;
+<input type="button" value="Update" class="btn btn-warning" (click)="fnUpdate()">
+
+<br/>
+<ng-content select="[p1]"></ng-content>
+
+
+
+
+in parent, app component:
+--------------------------------
+<app-hello>
+      <p p1>Hi, app component has provided this content in between start and end tags....</p>
+      <div d1>THis is inside div</div>
+    </app-hello>
+
+
+
+Task:
+-------
+create multiple ng-contents in your child component, each having different select.
+
+from parent, supply multiple contents mentioning the select.
+
+Refer to notes above.

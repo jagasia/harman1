@@ -6,7 +6,10 @@
     <app-register></app-register>
   </div>
   <div class="col-md-4">
-    <app-hello></app-hello>
+    <app-hello>
+      <p p1>Hi, app component has provided this content in between start and end tags....</p>
+      <div d1>THis is inside div</div>
+    </app-hello>
   </div>
   <div class="col-md-4">
     <input type="text" name="color" [(ngModel)]="color" >

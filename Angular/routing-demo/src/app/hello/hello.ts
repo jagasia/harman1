@@ -14,10 +14,10 @@ export class Hello {
   }
 
   fnAdd(){
-    alert(this.ms.fnAdd());
+    // alert(this.ms.fnAdd());
   }
 
   fnUpdate(){
-    alert(this.ms.fnUpdate());
+    // alert(this.ms.fnUpdate());
   }
 }

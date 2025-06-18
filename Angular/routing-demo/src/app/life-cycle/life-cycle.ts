@@ -10,7 +10,7 @@ export class LifeCycle implements OnChanges
  {
   @Input() color:string='';
   ngOnChanges(changes: SimpleChanges): void {
-    alert("onChange event occurred");
+    // alert("onChange event occurred");
   }
   //how to handle onChange event?
 }
