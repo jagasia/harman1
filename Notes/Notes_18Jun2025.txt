@@ -506,3 +506,74 @@ Task:
 Refer above code.
 
 Kindly use named router outlets in app component. In that way, you use more than one router outlet.
+
+--------------------------------------------------------------
+Before lunch, we learned basic routing.
+
+Now, advanced routing.
+
+1) one link, to render multiple components in different router-outlet
+
+<!-- Activate both -->
+<a [routerLink]="[{ outlets: { primary: ['dashboard'], side: ['sidebar'] } }]">Open Both</a>
+
+
+in Angular Routing, "primary" is a special keyword used to refer to the default unnamed outlet.
+
+
+2) Lazy loading Standalone components:
+
+export const routes: Routes = [
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.component').then(m => m.RegisterComponent)
+  }
+];
+
+
+here, the path 'register' is mapped to a stand-alone component.
+instead of creating a component separately, it is created here itself.
+
+
+Route Guards:
+------------------
+1) define the guard logic using a service class.
+
+// auth.guard.ts
+import { DOCUMENT } from '@angular/common';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const AuthGuard: CanActivateFn = () => {
+  const doc = inject(DOCUMENT);
+  const router = inject(Router);
+
+  const win = doc.defaultView as Window | null;
+
+  if (win && win.localStorage) {
+    const isLoggedIn = !!win.localStorage.getItem('token');
+    if (!isLoggedIn) {
+      router.navigate(['/login']);
+    }
+    return isLoggedIn;
+  }
+
+  // fallback if not running in browser
+  return false;
+};
+
+
+2) in routes, use canActivate
+
+{path:'about', component:About, canActivate:[AuthGuard]}
+
+3) use routerLink and not href in links
+
+<a class="nav-link" routerLink="/about">About Us</a>
+
+observation:
+
+if i login and then access about us link, then i am allowed.
+
+if i have logged out and then access about us, i am redirected to login component.
+

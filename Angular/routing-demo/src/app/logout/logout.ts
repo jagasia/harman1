@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-logout',
@@ -6,6 +6,15 @@ import { Component } from '@angular/core';
   templateUrl: './logout.html',
   styleUrl: './logout.css'
 })
-export class Logout {
+export class Logout implements OnInit, OnChanges {
+  ngOnInit(): void {
+    localStorage.clear();
+    console.log("logout on init");
+    
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("logout on changes");
+    
+  }
 
 }
