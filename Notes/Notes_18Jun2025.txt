@@ -621,3 +621,134 @@ Angular Route Guards Summary
 ```
 
 
+
+
+
+Task:
+
+use 
+	Router
+	ActivatedRoute
+
+define, params in the route,
+
+and in a component, redirect to another component on button click
+and send params and receive them and display there.
+
+
+
+ref my code in
+	country component		navigates to contact
+	contact component		receives the params
+
+------------------------------------------
+Passing Query Parameters and Fragments				
+Setting up Child (Nested) Routes				
+Outsourcing Route Configuration (create custom module)				
+
+
+pathvariable		/pathvariable
+requestparam		?key=value
+
+http://localhost:4200/?id=1&name=Pencil&price=20
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-home',
+  imports: [],
+  templateUrl: './home.html',
+  styleUrl: './home.css'
+})
+export class Home implements OnInit {
+  
+  constructor(private route:ActivatedRoute){
+
+  }
+
+    ngOnInit() {
+        const id = this.route.snapshot.paramMap.get('id');
+      console.log(id);
+      
+  }
+
+}
+
+console.log(this.route.snapshot.queryParamMap.keys);
+
+
+
+---------------------------------------------------------
+API calls.
+-----------
+We are actually creating the front end of the application.
+
+The frontend must be able to access the backend (api).
+
+How can we call an api?
+	from angular, we can use HttpClientModule to access apis
+
+
+in module projects, we need to import HttpClientModule in app.module.ts
+
+in standalone projects, we can import them in each component or app.config.ts
+
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideHttpClient()
+  ]
+};
+
+
+
+
+
+good practise is to use a service class where all api calls are coded.
+the service class can be injected into the components.
+
+
+Task:
+
+https://fakestoreapi.com/products
+
+access this api using http client module
+
+1) app.config.ts
+
+add provideHttpClient() to providers.
+
+2) create a service class where you code the api calls.
+
+ng g s product-service
+
+3) in service, constructor, inject HttpClient
+
+4) use the httpClient to make api calls get/post/etc
+	create separate functions for them
+
+5) inject the service in a component's constructor
+
+call the service function in ngOnInit
+override this method after implementing OnInit interface.
+
+6) by calling the service method, you get Observable.
+Remind me about Observable tomorrow.
+
+you can subscribe an observable and provide callback functions viz., 
+	next, error, complete
+
+we can bind the result to an array and display result in html.
+
