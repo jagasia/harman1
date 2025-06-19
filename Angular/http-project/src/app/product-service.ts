@@ -12,7 +12,7 @@ export class ProductService {
     return this.http.get(this.URL);
   }
 
-  fnFindById(id:number){
+  fnFindById(id:string){
     return this.http.get(`${this.URL}/${id}`);
   }
 
@@ -24,7 +24,7 @@ export class ProductService {
     return this.http.put(`${this.URL}/${product.id}`,product);
   }
 
-  fnDeleteProduct(id:number){
+  fnDeleteProduct(id:string){
     return this.http.delete(`${this.URL}/${id}`);
   }
 }
