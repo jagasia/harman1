@@ -1568,3 +1568,103 @@ Activity:
 Understand the SOLID principles.
 Notes, observations provided above in the notes file.
 
+
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer		----------------------------------------------------------
+Singleton
+	what is singleton means?
+		there exists only one object for a particular class,
+			then it is called as singleton class
+		ex:
+			Runtime is a singleton class
+
+
+			
+
+		Runtime rt=Runtime.getRuntime();
+		Runtime rt2=Runtime.getRuntime();
+		//we have not created any object of Runtime.
+		//there already exists an object of Runtime,
+		//we got 2 reference variables referring to the one and only
+		//Runtime object available
+
+
+How can we create a Singleton class?
+
+	1) create a private constructor. So, we are not allowing anyone to create object of this class.
+	2) provide a public static method to get object of this class
+	3) keep a static object of the same class in itself. Because, static means, there is only 1 copy. it is not specific to every object.
+
+
+
+
+
+public class Singleton {
+	private static Singleton obj=null;
+	
+	private Singleton() {}
+	
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public static Singleton getSingleton() {
+		if(obj==null) {
+			obj=new Singleton();
+		}
+		return obj;
+	}
+	
+}
+
+
+
+
+
+public class AppSingleton {
+
+	public static void main(String[] args) {
+		Singleton s1=Singleton.getSingleton();
+		Singleton s2=Singleton.getSingleton();
+		
+		s1.setName("Raja");
+		s2.setName("Suresh");
+		s1.setName("Ravi");
+		System.out.println(s1.getName());
+		System.out.println(s2.getName());
+		
+	}
+
+}
+
+
+
+
+
+--------------------------
+volatile:		any variable can be declared as volatile
+		to ensure, the threads do not keep the value in their 			cache
+---------------------------------------------
+
+Task:
+-------
+What are 
+Singleton,Factory, Adaptor, Observer					
+
+creational design patterns
+	Singleton
+	Factory
+	AbstractFactory
+
+structural design patterns
+	Adaptor
+behavioral design patterns
+	Observer
+	Chain of responsibility
+
+There are more design patterns available in each category
