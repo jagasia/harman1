@@ -1112,3 +1112,459 @@ public class AnonymousGreeting {
 4. Use anonymous classes when you need more control or multiple method implementations.
 
 ---
+Task:
+-------
+I have pushed the notes to git.
+Observe the same
+
+-------------------------
+Functional Interfaces:-
+ Predicates, Functions, Consumers, Suppliers etc	Stream API
+
+				
+
+
+
+SOLID Principles					
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer					
+
+SOLID
+	Single Responsibility principle
+	Open Close principle
+	Liskov Substitution principle
+	Interface Seggregation principle
+	Dependency Inversion principle
+
+
+
+Single Responsibility principle
+	A class can be created for serving one responsibility
+
+ex:
+
+class Account{
+	sendInvoice()
+	printReceipt()
+	emailClient()
+}
+
+class Invoice{
+	sendInvoice()
+}
+
+class Receipt{
+	printReceipt()
+}
+
+class Client{
+	emailClient()
+}
+
+---------------------
+# Single Responsibility Principle (SRP) in Java
+
+## Definition:
+
+A class should have only one reason to change.
+This means a class should do only one job or task.
+
+## Why Use SRP:
+
+* Makes your code easier to understand.
+* Easier to test and debug.
+* Changes in one part won't break unrelated features.
+
+## Bad Example - Violates SRP:
+
+This class handles data, saving to database, and sending emails.
+
+```java
+public class Employee {
+    private String name;
+    private String email;
+
+    public void saveToDatabase() {
+        System.out.println("Saving employee to database...");
+    }
+
+    public void sendEmail() {
+        System.out.println("Sending email to " + email);
+    }
+}
+```
+
+Problem:
+
+* If database logic changes → you must edit this class.
+* If email format changes → you must edit this class.
+* Too many responsibilities.
+
+## Good Example - Follows SRP:
+
+Each class has a single responsibility.
+
+```java
+public class Employee {
+    private String name;
+    private String email;
+
+    public Employee(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+}
+```
+
+```java
+public class EmployeeRepository {
+    public void save(Employee employee) {
+        System.out.println("Saving " + employee.getName() + " to database...");
+    }
+}
+```
+
+```java
+public class EmailService {
+    public void sendEmail(Employee employee) {
+        System.out.println("Sending email to " + employee.getEmail());
+    }
+}
+```
+
+Main class to use everything:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Employee emp = new Employee("John Doe", "john@example.com");
+
+        EmployeeRepository repo = new EmployeeRepository();
+        repo.save(emp);
+
+        EmailService emailService = new EmailService();
+        emailService.sendEmail(emp);
+    }
+}
+```
+
+## Benefits:
+
+* Easy to maintain.
+* Clear roles for each class.
+* Safe to change email or DB logic separately.
+
+## Summary:
+
+* One class = one job.
+* One reason to change.
+* Split logic into separate classes if needed.
+
+---
+
+
+---------------------------------------
+Open Close principle
+
+A class is open for extension, but closed for modification.
+	means, you can inherit a class to extend the features.
+	but you cannot modify the existing class.
+
+
+
+Open/Closed Principle (OCP)
+
+Definition:
+A software module (class, function, etc.) should be open for extension but closed for modification.
+
+Explanation:
+This means you should be able to add new features or behavior to a class without changing its existing code. The goal is to avoid breaking existing functionality when new requirements come in.
+
+Problem Example:
+
+```
+class AreaCalculator {
+    public double calculateArea(Object shape) {
+        if (shape instanceof Circle) {
+            Circle c = (Circle) shape;
+            return Math.PI * c.radius * c.radius;
+        } else if (shape instanceof Rectangle) {
+            Rectangle r = (Rectangle) shape;
+            return r.length * r.width;
+        }
+        return 0;
+    }
+}
+```
+
+This design violates the Open/Closed Principle because every time a new shape is added, the AreaCalculator class must be modified.
+
+Improved Example using OCP:
+
+```
+interface Shape {
+    double calculateArea();
+}
+
+class Circle implements Shape {
+    double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle implements Shape {
+    double length;
+    double width;
+
+    public Rectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    public double calculateArea() {
+        return length * width;
+    }
+}
+
+class AreaCalculator {
+    public double calculateArea(Shape shape) {
+        return shape.calculateArea();
+    }
+}
+```
+
+Now, if you want to support a new shape like Triangle, you can add a new class that implements the Shape interface without changing the AreaCalculator.
+
+Conclusion:
+Follow the Open/Closed Principle to make your code easier to maintain and extend. Use abstraction, interfaces, and polymorphism to achieve this.
+------------------------------------
+
+Liskov Substitution Principle (LSP)
+
+Definition:
+Objects of a subclass should be able to replace objects of the superclass without affecting the correctness of the program.
+
+Explanation:
+This principle is about inheritance. A derived (child) class must behave in a way that does not break the expectations of the base (parent) class. In other words, wherever a base class is used, you should be able to use any subclass without causing errors or incorrect behavior.
+
+Bad Example (Violates LSP):
+
+```
+class Bird {
+    public void fly() {
+        System.out.println("Bird is flying");
+    }
+}
+
+class Ostrich extends Bird {
+    @Override
+    public void fly() {
+        throw new UnsupportedOperationException("Ostrich can't fly");
+    }
+}
+```
+
+In this case, `Ostrich` is a type of `Bird`, but it cannot fly. If someone uses an `Ostrich` where a `Bird` is expected and calls `fly()`, the program will crash. This violates LSP.
+
+Better Design:
+
+```
+interface Bird {
+    void eat();
+}
+
+interface FlyingBird extends Bird {
+    void fly();
+}
+
+class Sparrow implements FlyingBird {
+    public void eat() {
+        System.out.println("Sparrow is eating");
+    }
+
+    public void fly() {
+        System.out.println("Sparrow is flying");
+    }
+}
+
+class Ostrich implements Bird {
+    public void eat() {
+        System.out.println("Ostrich is eating");
+    }
+}
+```
+
+Now, `Ostrich` does not implement `FlyingBird`, so there's no problem. This design respects LSP because each class only promises behavior it can actually support.
+
+Conclusion:
+Follow LSP to ensure that subclasses can be safely substituted for their parent classes. This makes your code more reliable and easier to extend. Use interfaces and proper class design to avoid breaking this principle.
+
+
+-------------------------------------------------------
+---
+
+Interface Segregation Principle (ISP)
+
+Definition:
+Clients should not be forced to depend on interfaces they do not use.
+
+Explanation:
+An interface should have only the methods that are relevant to the implementing class. Splitting large interfaces into smaller, more specific ones helps avoid unnecessary method implementations.
+
+Bad Example (Violates ISP):
+
+```
+interface Worker {
+    void work();
+    void eat();
+}
+
+class Robot implements Worker {
+    public void work() {
+        System.out.println("Robot is working");
+    }
+
+    public void eat() {
+        // Robot does not eat
+        throw new UnsupportedOperationException();
+    }
+}
+```
+
+Here, `Robot` is forced to implement `eat()` even though it does not make sense. This violates ISP.
+
+Better Design:
+
+```
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+class Human implements Workable, Eatable {
+    public void work() {
+        System.out.println("Human is working");
+    }
+
+    public void eat() {
+        System.out.println("Human is eating");
+    }
+}
+
+class Robot implements Workable {
+    public void work() {
+        System.out.println("Robot is working");
+    }
+}
+```
+
+Now, each class implements only the interfaces it needs. This respects the Interface Segregation Principle.
+
+Conclusion:
+Design small, specific interfaces instead of large, general ones. This keeps your code flexible, avoids unnecessary code, and follows the ISP.
+
+
+--------------------------------------------------
+
+
+---
+
+Dependency Inversion Principle (DIP)
+
+Definition:
+High-level modules should not depend on low-level modules.
+Both should depend on abstractions.
+Abstractions should not depend on details.
+Details should depend on abstractions.
+
+Explanation:
+Instead of a high-level class directly creating or depending on a low-level class, both should depend on interfaces or abstract classes. This reduces tight coupling and makes code more flexible and testable.
+
+Bad Example (Violates DIP):
+
+```
+class LightBulb {
+    public void turnOn() {
+        System.out.println("LightBulb is on");
+    }
+
+    public void turnOff() {
+        System.out.println("LightBulb is off");
+    }
+}
+
+class Switch {
+    private LightBulb bulb;
+
+    public Switch() {
+        bulb = new LightBulb();
+    }
+
+    public void operate() {
+        bulb.turnOn();
+    }
+}
+```
+
+Here, `Switch` depends directly on the `LightBulb` class. You cannot easily replace `LightBulb` with another type of device.
+
+Better Design (Follows DIP):
+
+```
+interface Switchable {
+    void turnOn();
+    void turnOff();
+}
+
+class LightBulb implements Switchable {
+    public void turnOn() {
+        System.out.println("LightBulb is on");
+    }
+
+    public void turnOff() {
+        System.out.println("LightBulb is off");
+    }
+}
+
+class Switch {
+    private Switchable device;
+
+    public Switch(Switchable device) {
+        this.device = device;
+    }
+
+    public void operate() {
+        device.turnOn();
+    }
+}
+```
+
+Now `Switch` depends on the `Switchable` interface, not on a specific class. You can easily switch to a `Fan`, `Heater`, or any other device that implements `Switchable`.
+
+Conclusion:
+Use interfaces or abstract classes to invert dependencies.
+High-level logic should not be tightly coupled to low-level implementation details.
+This makes your code more modular, flexible, and easier to test.
+
+
+Activity:
+----------
+Understand the SOLID principles.
+Notes, observations provided above in the notes file.
+
