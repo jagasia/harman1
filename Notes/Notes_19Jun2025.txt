@@ -1660,9 +1660,13 @@ creational design patterns
 	Singleton
 	Factory
 	AbstractFactory
-
+	Builder
+	Prototype
 structural design patterns
 	Adaptor
+	Bridge
+	Decorator
+	Proxy
 behavioral design patterns
 	Observer
 	Chain of responsibility
