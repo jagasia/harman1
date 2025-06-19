@@ -723,32 +723,19 @@ the service class can be injected into the components.
 Task:
 
 https://fakestoreapi.com/products
-
 access this api using http client module
-
 1) app.config.ts
-
-add provideHttpClient() to providers.
-
-2) create a service class where you code the api calls.
-
-ng g s product-service
-
+add provideHttpClient() to providers.2) create a service class where you code the api calls.ng g s product-service
 3) in service, constructor, inject HttpClient
-
 4) use the httpClient to make api calls get/post/etc
 	create separate functions for them
-
 5) inject the service in a component's constructor
-
 call the service function in ngOnInit
 override this method after implementing OnInit interface.
-
 6) by calling the service method, you get Observable.
 Remind me about Observable tomorrow.
-
 you can subscribe an observable and provide callback functions viz., 
 	next, error, complete
-
 we can bind the result to an array and display result in html.
 
+-------------------------------------------------------------------

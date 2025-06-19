@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <form [formGroup]="productForm">
+            Id: <input type="number" class="form-control" formControlName="id" />
+            Title: <input type="text" class="form-control"  formControlName="title" />
+            Price: <input type="number" class="form-control"  formControlName="price" />
+            Description: <input type="text" class="form-control"  formControlName="description" />
+            Category: <input type="text" class="form-control"  formControlName="category" />
+            Image: <input type="text" class="form-control"  formControlName="image" />
+            <br/>
+            <input type="button" value="Add" class="btn btn-info" (click)="fnAdd()">&nbsp;
+            <input type="button" value="Update" class="btn btn-warning">&nbsp;
+            <input type="button" value="Delete" class="btn btn-danger">&nbsp;
+        </form>
+    </div>
+    <div class="col-sm-4">
+        {{productForm.value |json}}
+    </div>
+</div>
+<br/>
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let p of products">
+            <td>{{p.id}}</td>
+            <td>{{p.title}}</td>
+            <td>{{p.price}}</td>
+            <td>{{p.description}}</td>
+            <td>{{p.category}}</td>
+            <td><img src="{{p.image}}" height="100" alt=""></td>
+        </tr>
+    </tbody>
+</table>
