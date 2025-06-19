@@ -118,3 +118,148 @@ https://github.com/jagasia/harman1/tree/jag/Angular/http-project
 
 Now, i have completed Add, Update, Delete
 
+------------------------------------------------------
+find product by id or select product.
+
+I have completed the Select product.
+We faced issues like:
+	select button works only in devtool open in browser.
+
+found that the mouse hover over the button did not change the icon.
+
+So, it was html container issue.
+
+By using proper bootstrap column layout, we solved.
+But still while resizing the browser, the select button did not work.
+
+by using a container for the table that is responsive, we solved it.
+
+<div class="table-responsive">
+	placing the table here...
+</div>
+
+
+--------------------------------------------
+Introduction to RxJS and Observables				
+
+RxJS		Reactive Extension for Javascript
+
+RxJS (Reactive Extensions for JavaScript) is a library for reactive programming using Observables, to make it easier to work with asynchronous data streams.
+
+Angular uses RxJS heavily, especially for:
+
+HTTP requests
+
+Form input changes
+
+Event handling
+
+Route parameters
+
+WebSockets and more
+
+
+
+it is based on Publish Subscribe model.
+
+normally, when we call a function, caller and called functions are sync.
+
+But in pub-sub model,
+
+the publisher do not directly know the subscriber.
+
+when publisher publishes, all the subscribers get response.
+
+publisher uses
+	next method to publish
+
+
+
+
+import { Observable } from 'rxjs';
+
+  fnAllProducts():Observable<any>
+  {
+    return this.http.get(this.URL);
+  }
+
+
+
+
+------------------------------
+Demo:
+
+manual-observable component
+
+allows subscribe, unsubscribe.
+
+By subscribing, we do not get next response immediately. We get only when the publisher publish the response.
+
+by unsubscribing, we do not get published, whenever observer publish.
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Observable, Observer } from 'rxjs';
+
+@Component({
+  selector: 'app-manual-observable',
+  imports:[CommonModule],
+  template: `
+    <h2>Manual Observable Demo</h2>
+    <button (click)="subscribe()">Subscribe</button>
+    <button (click)="unsubscribe()">Unsubscribe</button>
+    <button (click)="publish()">Publish</button>
+    <p *ngIf="receivedValue !== null">Received: {{ receivedValue }}</p>
+  `
+})
+export class ManualObservable {
+  private observer!: Observer<string>;
+  private observable: Observable<string>;
+  private subscription: any;
+  private publishCount = 1;
+
+  receivedValue: string | null = null;
+
+  constructor() {
+    // Define a custom Observable and capture the observer
+    this.observable = new Observable<string>((obs) => {
+      console.log('Observable created');
+      this.observer = obs;
+    });
+  }
+
+  subscribe() {
+    if (!this.subscription) {
+      console.log('Subscribing...');
+      this.subscription = this.observable.subscribe({
+        next: (value) => {
+          console.log('Received:', value);
+          this.receivedValue = value;
+        },
+        error: (err) => console.error('Error:', err),
+        complete: () => console.log('Completed')
+      });
+    }
+  }
+
+  unsubscribe() {
+    if (this.subscription) {
+      console.log('Unsubscribing...');
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
+  }
+
+  publish() {
+    if (this.observer) {
+      const value = `Message ${this.publishCount++}`;
+      console.log('Publishing:', value);
+      this.observer.next(value);
+      
+    } else {
+      console.warn('No observer to publish to (subscribe first)');
+    }
+  }
+}
+
+

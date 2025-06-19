@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,8 @@ export class ProductService {
   URL='http://localhost:3000/products';
   constructor(private http:HttpClient) { }
 
-  fnAllProducts(){
+  fnAllProducts():Observable<any>
+  {
     return this.http.get(this.URL);
   }
 

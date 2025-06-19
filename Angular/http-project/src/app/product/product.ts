@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../product-service';
 
 @Component({
+  standalone:true,
   selector: 'app-product',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './product.html',
@@ -12,7 +13,7 @@ import { ProductService } from '../product-service';
 export class Product implements OnInit {
   products:any;
   productForm:any;
-  constructor(private ps:ProductService, private fb:FormBuilder){
+  constructor(private ps:ProductService, private fb:FormBuilder,private cdr:ChangeDetectorRef,private zone: NgZone){
     this.productForm=this.fb.group({
       id:[''],
       title:[''],
@@ -92,4 +93,9 @@ export class Product implements OnInit {
     })
   }
 
+  fnSelect(p:any){
+    // alert('selecting: '+JSON.stringify(p))
+     this.productForm.patchValue(p);
+     this.cdr.detectChanges(); 
+  }
 }
