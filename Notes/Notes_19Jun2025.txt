@@ -890,3 +890,225 @@ public class TestApp {
 * Both were added in **Java 8** to support better **interface evolution**.
 
 ---
+Task:
+-------
+Complete the revision of Module 2 and ask doubts if any.
+Java 8 interfaces
+	static methods
+	default methods
+	all about what is allowed and not
+
+---------------------------------------------------
+
+Lambda
+
+Java 8 onwards, we can use Lambda (anonymous method)
+is used only to provide quick implementation of Functional interfaces.
+
+what is a functional interface?
+	an interface that has only 1 abstract method
+		Comparator
+		Runnable
+		Predicate
+		
+
+what is a marker interface?
+	an interface that has 0 abstract method
+		Serializable
+
+
+for lambda:
+
+Collections.sort(<<expects an implementation of Comparator>>);
+
+Collections.sort((a,b)->b-a));	//descending order
+
+Task:
+
+can you modify the below code, to sort the arr in descending order?
+
+import java.util.Arrays;
+
+public class App {
+
+	public static void main(String[] args) {
+		Integer arr[]= {41,24,53,45,65};
+		Arrays.sort(arr);
+		for(Integer x:arr)
+		{
+			System.out.println(x);
+		}
+	}
+
+}
+-----------------
+Task:
+
+create a Thread that displays 1 to 10 each with a delay of 1000 ms.
+
+Create the thread using lambda.
+
+
+
+
+
+public class App2 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(()->{
+			for(int i=1;i<=10;i++) {
+				System.out.println(i);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		t1.start();
+	}
+
+}
+
+
+
+
+
+
+public class App3 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				for(int i=1;i<=10;i++) {
+					System.out.println(i);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
+}
+
+
+
+
+--------------------------------------------------
+
+---
+
+# Java Lambda Expressions and Anonymous Methods (Anonymous Classes)
+
+1. Lambda Expression (Java 8+)
+
+---
+
+* Lambda expressions are used to implement functional interfaces (interfaces with only one abstract method) using a short syntax.
+
+Syntax:
+
+```
+(parameters) -> expression
+```
+
+Or with a block:
+
+```
+(parameters) -> {
+    // statements
+    return result;
+}
+```
+
+Example 1: Using lambda with Runnable
+
+```java
+public class LambdaExample {
+    public static void main(String[] args) {
+        Runnable r = () -> System.out.println("Hello from Lambda!");
+        new Thread(r).start();
+    }
+}
+```
+
+Example 2: Lambda with custom functional interface
+
+```java
+interface Calculator {
+    int operate(int a, int b);
+}
+
+public class LambdaCalc {
+    public static void main(String[] args) {
+        Calculator add = (a, b) -> a + b;
+        Calculator multiply = (a, b) -> a * b;
+
+        System.out.println("Add: " + add.operate(10, 5));
+        System.out.println("Multiply: " + multiply.operate(10, 5));
+    }
+}
+```
+
+---
+
+2. Anonymous Class
+
+---
+
+* Anonymous classes are used to create a subclass or implement an interface inline without creating a separate class.
+
+Example 1: Anonymous class with Runnable
+
+```java
+public class AnonymousExample {
+    public static void main(String[] args) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Hello from Anonymous Class!");
+            }
+        };
+        new Thread(r).start();
+    }
+}
+```
+
+Example 2: Anonymous class with interface
+
+```java
+interface Greeting {
+    void sayHello();
+}
+
+public class AnonymousGreeting {
+    public static void main(String[] args) {
+        Greeting g = new Greeting() {
+            @Override
+            public void sayHello() {
+                System.out.println("Hello from Anonymous Greeting!");
+            }
+        };
+        g.sayHello();
+    }
+}
+```
+
+---
+
+## Lambda vs Anonymous Class Summary
+
+1. Lambdas are short and used for functional interfaces only.
+2. Anonymous classes are more flexible and can override multiple methods.
+3. Use lambdas for simplicity and cleaner code when applicable.
+4. Use anonymous classes when you need more control or multiple method implementations.
+
+---
