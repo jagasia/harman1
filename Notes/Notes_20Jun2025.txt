@@ -112,3 +112,77 @@ Map
 	Hashtable	(legacy)
 	ConcurrentHashMap
 
+
+-------------------------------------
+
+---------------------------------------
+
+---
+
+```
+Java Collections - Important Interfaces & Classes
+
+1. Core Interfaces
+-------------------
+- Collection
+- List
+- Set
+- Queue
+- Map  (Note: Map is not a subtype of Collection)
+
+2. List Implementations
+------------------------
+- ArrayList        --> Fast random access, not thread-safe
+- LinkedList       --> Good for insert/delete, implements List & Deque
+- Vector           --> Legacy, synchronized
+- Stack            --> Legacy, LIFO, extends Vector
+
+3. Set Implementations
+-----------------------
+- HashSet          --> No duplicates, no order
+- LinkedHashSet    --> Maintains insertion order
+- TreeSet          --> Sorted order, uses TreeMap internally
+
+4. Queue/Deque Implementations
+-------------------------------
+- PriorityQueue    --> Elements ordered by priority (natural or custom)
+- ArrayDeque       --> Faster than Stack/LinkedList for stack/queue ops
+- LinkedList       --> Also works as Queue and Deque
+
+5. Map Implementations
+-----------------------
+- HashMap          --> Key-value pairs, no order, allows 1 null key
+- LinkedHashMap    --> Maintains insertion order
+- TreeMap          --> Sorted order (by key)
+- Hashtable        --> Legacy, synchronized, no null keys/values
+- ConcurrentHashMap --> Thread-safe, modern alternative to Hashtable
+
+6. Utility Classes
+-------------------
+- Collections      --> Static utility methods (sort, reverse, shuffle, etc.)
+- Arrays           --> Static methods for array manipulation
+
+7. Comparators
+---------------
+- Comparable       --> Natural ordering (implements compareTo())
+- Comparator       --> Custom ordering (implements compare())
+
+8. Iterators
+-------------
+- Iterator         --> Universal cursor for Collection
+- ListIterator     --> Bidirectional for List
+- Enumeration      --> Legacy (for Vector, Hashtable)
+
+```
+
+---
+
+
+
+
+
+Task:
+
+Identify the collection api interfaces and implementations.
+Refer to today's notes.
+
