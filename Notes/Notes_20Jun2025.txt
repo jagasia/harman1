@@ -324,3 +324,146 @@ i have given
 you need to make it sorted by
 	department, id
 
+
+Hint:
+	use 
+		Comparable in Employee (or)
+		Comparator in sort method
+
+
+
+	@Override
+	public int compareTo(Employee o) {
+		if(this.getDepartment().equals(o.getDepartment())) {
+			return this.getId().compareTo(o.getId());
+		}else
+		{
+			return this.getDepartment().compareTo(o.getDepartment());
+		}
+	}
+
+
+
+---------------------------------------------------------------------
+What is Comparable?
+	is an interface, that a class can implement and override the
+		compareTo method
+
+All wrapper classes, Date class, String class, have implemented Comparable.
+
+
+
+What is the difference between Comparable and Comparator?
+
+
+
+```
+Difference Between Comparable and Comparator in Java
+-----------------------------------------------------
+
+1. Purpose
+-----------
+- Comparable: Used to define natural ordering of objects.
+- Comparator: Used to define custom ordering (external control).
+
+2. Interface Location
+----------------------
+- Comparable: java.lang package
+- Comparator: java.util package
+
+3. Method to Implement
+-----------------------
+- Comparable: int compareTo(Object o)
+- Comparator: int compare(Object o1, Object o2)
+
+4. Where to Use
+----------------
+- Comparable: Implemented by the class itself.
+  Example: public class Student implements Comparable<Student>
+- Comparator: Separate class or anonymous/lambda, passed during sorting.
+  Example: Collections.sort(list, new StudentComparator());
+
+5. Number of Sort Conditions
+-----------------------------
+- Comparable: Only ONE sort logic can be defined.
+- Comparator: MULTIPLE sort logics can be created and passed as needed.
+
+6. Used With
+-------------
+- Comparable: Collections.sort(list); (uses natural order)
+- Comparator: Collections.sort(list, comparator);
+
+7. Example
+-----------
+Using Comparable (natural order):
+----------------------------------
+public class Student implements Comparable<Student> {
+    int id;
+    public int compareTo(Student s) {
+        return this.id - s.id;
+    }
+}
+
+Using Comparator (custom order):
+---------------------------------
+public class Student {
+    int id;
+}
+
+public class StudentNameComparator implements Comparator<Student> {
+    public int compare(Student s1, Student s2) {
+        return s1.name.compareTo(s2.name);
+    }
+}
+Collections.sort(list, new StudentNameComparator());
+
+Or using lambda:
+Collections.sort(list, (a, b) -> a.name.compareTo(b.name));
+
+```
+
+---
+
+### ✅ Summary Table:
+
+| Feature    | Comparable               | Comparator                      |
+| ---------- | ------------------------ | ------------------------------- |
+| Package    | `java.lang`              | `java.util`                     |
+| Method     | `compareTo(Object o)`    | `compare(Object o1, Object o2)` |
+| Affects    | Current class            | External/custom class           |
+| Sort types | One (natural)            | Many (customizable)             |
+| Used with  | `Collections.sort(list)` | `Collections.sort(list, comp)`  |
+
+---
+-----------------------------------------
+
+
+
+
+
+import java.util.HashSet;
+
+public class App5_Set {
+
+public static void main(String[] args) {
+	HashSet<Employee> set=new HashSet<>();
+	set.add(new Employee(11L, "Raja", "IT", 100000.0));
+	set.add(new Employee(1L, "Abdul", "CSE", 100000.0));
+	set.add(new Employee(15L, "Zaheer", "CSE", 100000.0));
+	set.add(new Employee(4L, "Babu", "IT", 100000.0));
+	set.add(new Employee(6L, "Rajeesh", "CSE", 100000.0));
+	set.add(new Employee(5L, "Chandru", "ECE", 100000.0));
+	set.add(new Employee(10L, "Ravi", "IT", 100000.0));
+	for(Employee e:set)
+	{
+		System.out.println(e);
+	}
+	
+}
+
+}
+
+Task:
+
+Display the employees based on Name asc order.
+

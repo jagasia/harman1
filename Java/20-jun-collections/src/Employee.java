@@ -1,5 +1,5 @@
 
-public class Employee {
+public class Employee implements Comparable<Employee> {
 	private Long id;
 	private String name;
 	private String department;
@@ -50,6 +50,16 @@ public class Employee {
 	@Override
 	public String toString() {
 		return "Employee [id=" + id + ", name=" + name + ", department=" + department + ", salary=" + salary + "]";
+	}
+
+	@Override
+	public int compareTo(Employee o) {
+		if(this.getDepartment().equals(o.getDepartment())) {
+			return this.getId().compareTo(o.getId());
+		}else
+		{
+			return this.getDepartment().compareTo(o.getDepartment());
+		}
 	}
 	
 	

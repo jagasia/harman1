@@ -16,7 +16,8 @@ public class App4 {
 		
 		//How can we sort this list?
 		
-		Collections.sort(list, (a,b)->a.getDepartment().compareTo(b.getDepartment()));	
+//		Collections.sort(list, (a,b)->a.getDepartment().compareTo(b.getDepartment()));
+		Collections.sort(list);
 		
 		for(Employee employee : list)
 		{
