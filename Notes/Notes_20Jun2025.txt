@@ -800,3 +800,599 @@ public class App {
 
 
 
+Check the above solution for the location count map exercise.
+
+
+-----------------------------------------------------------
+Generics
+----------
+Java version 5 introduced generics that allows a class can be customized for any type
+
+before java 5, 
+ArrayList was object type
+
+it is similar to ArrayList<Object> in generics
+
+It is called as generics because, it is not created for a particular type. It can be used for different types. So it is generic.
+
+Objects created for generic classes are specific types. But the class is generic type.
+
+Advantage?
+	it is type safe. 
+	If a class is Object type, then it will allow any type
+	but when it is generic type, the type is mentioned while creating objects. then only that type is allowed.
+
+LinkedList vs LinkedList<T>
+
+
+
+public class Node<T> {
+	T data;
+	Node<T> next;
+	
+	public Node(){}
+
+	public Node(T data, Node<T> next) {
+		super();
+		this.data = data;
+		this.next = next;
+	}
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
+	public Node<T> getNext() {
+		return next;
+	}
+
+	public void setNext(Node<T> next) {
+		this.next = next;
+	}
+	
+}
+
+
+
+public class LinkedList<T> {
+	Node<T> start;	
+
+	public LinkedList() {}
+
+	public LinkedList(Node<T> start) {
+		super();
+		this.start = start;
+	}
+	
+	public void add(T data) {
+		Node<T> curr=new Node<>();
+		curr.setData(data);
+		if(start==null) {
+			//adding the first node
+			start=curr;
+		}else
+		{
+			//find ref to last node
+			Node temp=null;
+			for(temp=start;temp.next!=null;temp=temp.next);
+			temp.next=curr;
+		}
+	}
+	
+	public void traverse() {
+		for(Node temp=start;temp!=null;temp=temp.next) {
+			System.out.println(temp.getData());
+		}
+	}
+	
+}
+
+
+
+
+
+public class App {
+
+	public static void main(String[] args) {
+		LinkedList<String> list1=new LinkedList<>();
+		list1.add("India");
+		list1.add("Australia");
+		list1.add("Sri lanka");
+		list1.add("Japan");
+		list1.add("China");
+		list1.add("Pakistan");
+		list1.add("Bangladesh");
+		
+		list1.traverse();
+		
+	}
+
+}
+
+
+
+
+----------------------------------
+Streams, Stream processing methods - map, filter, sorted, max, min etc.,					
+
+What is Stream api?
+	is read only access to collections.
+	every operation can return another stream without affecting 		the collection.
+	imo, it is like SELECT query in SQL.
+
+	in SELECT we do
+		filter
+		sort
+		map the row into specific column(s), expressions, 			functions
+		group by
+
+	stream api is used for that
+
+
+
+static Map<String, Integer> calculateLocationCount1(List<College> list) {
+    return list.stream()
+            .collect(Collectors.groupingBy(
+                    College::getLocation,
+                    TreeMap::new, // Use TreeMap instead of default HashMap
+                    Collectors.collectingAndThen(
+                            Collectors.counting(),
+                            Long::intValue // Convert Long to Integer
+                    )
+            ));
+}
+
+
+
+
+lets learn stream api step by step
+
+
+		List<String> countries=new ArrayList<>();
+		countries.add("India");
+		countries.add("Australia");
+		countries.add("Sri lanka");
+		countries.add("China");
+		countries.add("Japan");
+		countries.add("Iran");
+		countries.add("Germany");
+		
+		Stream<String> s1 = countries.stream();
+		Stream<String> s2 = s1.filter(new MyPredicate());
+		Stream<String> s3 = s2.sorted();
+		//terminal operation can be collect or forEach
+		
+		s3.forEach(System.out::println);
+
+
+
+
+
+
+same is refactored into:-
+
+		countries.stream()
+		.filter(new MyPredicate())
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+		
+		countries.stream()
+		.filter((t)->t.length()>5)
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+what is this :: operator????
+	this is "method reference" operator.
+
+
+What is method reference?
+	is a technique that can be used to utilize an existing method,
+		to consider it as an implementation of a functional
+			interface.
+
+
+What is the difference between lambda and method reference?
+	Lambda:- we are providing the implementation there only
+	method ref:- we are using an existing method as 			implementation
+
+
+
+ex: method reference:
+
+	static boolean test(String t) {
+		return t.length()>5;
+	}
+
+
+		countries.stream()
+		.filter(App::test)		//static method ref
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+if App class test method is not static:- then provide object name
+
+		countries.stream()
+		.filter(new App()::test)
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+-----------------------
+Stages of stream:
+
+CREATION
+INTERMEDIATE
+TERMINAL
+
+
+--------------------------------------
+Task:
+-------
+
+## 🔸 Beginner Level
+
+1. **Filter all even numbers** from a list of integers.
+
+2. **Convert all strings to uppercase** in a list.
+
+3. **Sort a list of strings** in alphabetical and reverse alphabetical order.
+
+4. **Count the number of elements** in a list that start with the letter "A".
+
+5. **Remove duplicates** from a list of integers.
+
+6. **Find the maximum and minimum value** from a list of integers using streams.
+
+7. **Create a list of squares** of all numbers from an integer list.
+
+---
+
+## 🔸 Intermediate Level
+
+8. **Find the first string** that starts with the letter "J" from a list.
+
+9. **Check if any number is divisible by 5** in a list.
+
+10. **Find the sum and average** of all numbers in a list.
+
+11. **Join a list of strings** into a single comma-separated string.
+
+12. **Find all strings longer than 5 characters** from a list.
+
+13. **Count how many strings start with a vowel** in a given list.
+
+14. **Skip the first 3 elements** in a stream and collect the rest.
+
+---
+
+## 🔸 Advanced Level
+
+15. **Group a list of strings by their length.**
+
+16. **Partition a list of numbers** into even and odd numbers.
+
+17. **Find the second highest number** from a list of integers.
+
+18. **Group employees by department** from a list of `Employee` objects.
+
+19. **Find the employee with the highest salary** from a list.
+
+20. **Sort a list of employees by name and then by age.**
+
+21. **Convert a list of strings into a map** where key is the string and value is its length.
+
+22. **Flatten a list of lists of strings** into a single list using flatMap.
+
+---
+
+
+check if a given number is prime or not.
+display all prime numbers between x and y.
+display all prime numbers between x and y, where each digit of that number is also prime.
+display all prime number between x and y, where each digit of that number is also prime, and the sum of digits also prime.
+
+if there is method called "isPrime(num)" then it is easy.
+
+we can call that number for each number between x and y
+and if yes, take each digit of that number and check isPrime(digit)
+and if yes, sum up those digits and then check isPrime(digitsSum)
+
+Complete these stream api hands on till break.
+
+We have Angular test today at 16:30 pm.
+----------------------------------------------------------
+MultiThreading - Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+
+
+Basically, any program that we execute, becomes a process. 
+A microprocessor, allocates resources (time and memory) for each process.
+
+
+So far, we have created java programs, that run as single threaded process.
+
+a program runs when there is a main method.
+So, main method defines the flow of execution.
+
+A process that contains only 1 thread then it is main thread.
+
+We can use multi-threading where main will be the main thread, and other threads will be child threads.
+
+Why we need multi-threading?
+	we need multiple simultaneous execution
+	asynchronous execution
+	parallel execution
+
+parallelism and concurrency
+	a processor that has multiple cores like
+		dual core, core 2 duo processor
+		quadcore processor
+		octa core processor
+
+	each core can run separate thread. that is parallelism
+	if same core, runs multiple threads, that is concurrency.
+
+
+how to create a child thread in our java program. 
+	1) using extends Thread
+	2) using implements Runnable
+		in that case also, you will need Thread class later
+		without Thread class, we cannot create thread object. By using Runnable, we are defining the work of the thread.
+But we need thread object to start a thread.
+
+Runnable is a functional interface, that contains only 1 abstract method, called "run()" method.
+
+
+
+Source code of Runnable interface:
+
+
+
+package java.lang;
+
+@FunctionalInterface
+public interface Runnable {
+    void run();
+}
+
+
+
+
+-----------------------
+Example for creating threads by implementing Runnable interface.:
+
+
+class Odd implements Runnable{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i+=2) {
+			System.out.println("Odd: "+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+
+class Even implements Runnable{
+
+	@Override
+	public void run() {
+		for(int i=2;i<=20;i+=2) {
+			System.out.println("Even: "+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+
+public class App1 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(new Odd());
+		Thread t2=new Thread(new Even());
+		
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+
+----------------------------------------------
+Example by extending Thread class:-
+
+
+class One extends Thread
+{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i++) {
+			System.out.println("One");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+class Two extends Thread
+{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i++) {
+			System.out.println("Two");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+public class App2 {
+
+	public static void main(String[] args) {
+		One t1=new One();
+		Two t2=new Two();
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+start()		start the thread execution and perform the work 			mentioned in the run method.
+sleep()		pause the execution for the mentioned milliseconds
+
+notify()
+notifyAll()
+yield()
+join()	
+
+t1.join();		//until whoever started already, completes, the others are made wait
+
+
+
+
+what is a thread synchronization?
+	synchronized keyword.
+
+a method can be synchronized 
+a synchronized block
+
+
+only when multiple threads try to access a particular object, then synchornization can allow threads 1 by 1
+
+if multiple threads access multiple objects of same class also, there is no synchronization is possible.
+
+
+
+
+synchronized method example:
+----------------
+
+public class NumberGenerator {
+
+	public synchronized void display() throws InterruptedException {
+		for(int i=0;i<10;i++) {
+			System.out.println(Thread.currentThread().getName()+" : " + i);
+			Thread.sleep(1000);
+		}
+	}
+}
+
+
+
+
+
+public class MyThread extends Thread
+{
+	NumberGenerator ng=null;
+	
+	public MyThread(NumberGenerator ng) {
+		this.ng=ng;
+	}
+	
+	public void run() {
+		try {
+			ng.display();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+
+public class AppSync1 {
+
+	public static void main(String[] args) {
+		NumberGenerator ng=new NumberGenerator();
+		MyThread t1=new MyThread(ng);
+		MyThread t2=new MyThread(ng);
+		
+		t1.setName("Jag");
+		t2.setName("Raja");
+		
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+
+--------------------------------
+now, only a portion of the method needs to be synchronized.
+
+we use synchronized block.
+
+
+
+public class NumberGenerator {
+
+	public void display() throws InterruptedException {
+		String name=Thread.currentThread().getName();
+		
+		System.out.println(name+" has entered the display method");
+		System.out.println(name+" has entered the first for loop");
+		for(int i=0;i<10;i++) {			
+			System.out.println(name+" : " + i);
+			Thread.sleep(1000);
+		}
+		
+		synchronized (this) {
+			System.out.println(name+" has entered the sync block");
+			for(int i=0;i<10;i++) {				
+				System.out.println(name+" : " + i);
+				Thread.sleep(1000);
+			}
+			System.out.println("Last line of sync block by "+name);
+		}
+
+		System.out.println(name+" has exited the display method");
+	}
+}
+

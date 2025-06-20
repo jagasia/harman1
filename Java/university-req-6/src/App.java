@@ -32,7 +32,7 @@ public class App {
 			collegeList.add(college);
 		}
 		
-		Map<String, Integer> map = College.calculateLocationCount(collegeList);
+		Map<String, Integer> map = College.calculateLocationCount2(collegeList);
 		
 		System.out.format("%-15s %s\n","Location","Count");
 		for(Entry<String, Integer> e:map.entrySet()) {

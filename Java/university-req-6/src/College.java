@@ -2,6 +2,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class College {
 	private String name;
@@ -95,5 +96,23 @@ public class College {
 			map.put(college.getLocation(), map.getOrDefault(college.getLocation(),0)+1);
 		}
 		return map;
+	}
+	
+	
+	static Map<String,Long> calculateLocationCount1(List<College> list){
+		return list.stream()
+				.collect(Collectors.groupingBy(College::getLocation, Collectors.counting()));
+	}
+	
+	static Map<String, Integer> calculateLocationCount2(List<College> list) {
+	    return list.stream()
+	            .collect(Collectors.groupingBy(
+	                    College::getLocation,
+	                    TreeMap::new, // Use TreeMap instead of default HashMap
+	                    Collectors.collectingAndThen(
+	                            Collectors.counting(),
+	                            Long::intValue // Convert Long to Integer
+	                    )
+	            ));
 	}
 }
