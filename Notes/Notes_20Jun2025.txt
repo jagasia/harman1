@@ -1,0 +1,114 @@
+We have completed
+ReactJs
+Angular
+Now, we are in the 3rd module.
+
+	
+Functional Interfaces  , Predicates, Functions, Consumers, Suppliers etc					
+Generics					
+Collections - Iterator, Iterable, Collection Interface, List, Set					
+Collections - Comparable, Comparator, Maps, Collections class					
+Streams, Stream processing methods - map, filter, sorted, max, min etc.,					
+MultiThreading - Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+Introduction to time complexity , Introduction to Big O Notation					
+Optional Methods - empty, of, ofNullable, get, isPresent,, ifPresent					
+SOLID Principles					
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer					
+----------------------------------------------------
+Collections API
+-----------------
+Array is the first datastructure, i learned
+
+there are some limitations of array:
+
+What are the limitations of array?
+----------------------------------------
+	arrays are fixed length
+	the length of the array must be known in the beginning
+	arrays are contiguous in memory. Means, the elements are present in continuous / adjacent locations.
+	insertion or deletion requires shifting elements
+	deletion does not save memory/ release memory
+
+arrays can be primitive type also.
+	int []arr;		//possible
+
+
+Collections 
+-------------
+	can always be reference type. Can never be primitive type.
+	Integer is allowed. int is not allowed
+
+	ArrayList<Integer> alist;		//allowed
+	ArrayList<int> alist2;		//not allowed
+
+Collections advantage:
+	we do not need to know the size of collection when we create it.
+	ArrayList over Array
+		array list also has index.
+		all collections that implement List are having index
+		LinkedList have index
+		Vector have index
+
+List, Set categories.
+
+what are the differences between List and Set?
+
+List
+	allows adding duplicate entries
+	allows any number of nulls	
+	always maintains the order of insertion
+
+Set
+	Set rejects duplicate entries
+	allows adding 1 null. The 2nd null will be considered as 		duplicate
+	only LinkedHashSet is ordered. ("ordered" means insertion order). 
+	sorted is different from ordered
+	sorted = ascending or descending
+	ordered = insertion order
+
+	Set elements are arranged in order decided by algorithm.
+
+	HashSet
+		order is decided by equals() and hashCode() 			methods
+	TreeSet
+		order is decided by either Comparable/ 			Comparatoro implementations
+	LinkedHashSet
+		is ordered
+
+legacy	=	old
+all legacy collections are synchronized (means, threads allowed 1 by 1)
+	Vector
+	Stack
+	Hashtable	key-value pair
+
+
+the collection classes:
+
+
+List	(interface)
+	ArrayList
+	LinkedList
+	Vector		(legacy)
+	Stack		(legacy)
+
+Set	(interface)
+	HashSet
+	TreeSet
+	LinkedHashSet
+
+Queue	(interface)
+	PriorityQueue
+	ArrayDeque
+	LinkedList
+
+	
+
+the application of collection, Map
+
+Map
+	HashMap
+	TreeMap
+	LinkedHashMap
+	Hashtable	(legacy)
+	ConcurrentHashMap
+
