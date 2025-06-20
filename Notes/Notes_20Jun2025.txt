@@ -467,3 +467,336 @@ Task:
 
 Display the employees based on Name asc order.
 
+Collections.sort 	does not work for Set
+		Collections.sort works only for list.
+
+
+while adding elements to a list, the new element is added at the end of the list.
+list allows sorting (after adding elements)
+
+Set
+	while adding elements, an algorithm decides the location where the elements to be placed.
+	for ex, TreeSet means, it will add elements in such a way, it is always in sorted fashion (in order traversal)
+	HashSet will use hashCode and equals methods to decide where the element needs to added
+
+later, sorting a set is not allowed.
+
+but we can convert a set into list and then use Collections.sort method.
+
+or get stream from any collection and call the sorted method.
+stream api, sort method returns another stream (modified stream)
+so you need to know terminal operations like
+	collect
+	forEach
+
+to get or print the result
+
+-------------------------
+TreeSet uses Comparable or Comparator to maintain the elements in sorted manner.
+
+How Comparable or Comparator used in TreeSet?
+
+Whenever we add elements to a TreeSet, it either uses Comparable or Comparator.
+
+If the type class itself implements Comparable, then it will use it.
+
+If an instance of Comparator or lambda is provided to the constructor of a TreeSet, then it is considered.
+
+We will discuss this with practical example after break.
+
+
+import java.util.Comparator;
+import java.util.TreeSet;
+
+class EmployeeIdComparator implements Comparator<Employee>{
+
+	@Override
+	public int compare(Employee o1, Employee o2) {
+		return o1.getId().compareTo(o2.getId());
+	}
+	
+}
+
+public class App5_TreeSet {
+
+	public static void main(String[] args) {
+	TreeSet<Employee> set=new TreeSet<>(new EmployeeIdComparator());
+	set.add(new Employee(11L, "Raja", "IT", 100000.0));
+	set.add(new Employee(1L, "Abdul", "CSE", 100000.0));
+	set.add(new Employee(15L, "Zaheer", "CSE", 100000.0));
+	set.add(new Employee(4L, "Babu", "IT", 100000.0));
+	set.add(new Employee(6L, "Rajeesh", "CSE", 100000.0));
+	set.add(new Employee(5L, "Chandru", "ECE", 100000.0));
+	set.add(new Employee(10L, "Ravi", "IT", 100000.0));
+
+	for(Employee e:set)
+	{
+		System.out.println(e);
+	}
+		
+}
+
+}
+
+
+
+-------------------------
+Map
+----
+key value pair
+
+does not have add method like collections have.
+we use put() method to add an entry
+
+what is an entry?
+	key - value pair
+
+put(key,value);		adds an entry to the map
+get(key) returns the value	if the key is found. else returns null.
+
+how to iterate a map?
+	map does not have iterator.
+	but you can get
+		keySet()	method returns all keys as a Set
+			set has iterator
+		
+		entrySet() method returns all entries as a Set
+
+
+		values() method returns all values as Collection
+
+
+To understand a map, let me give you a small task:
+
+Task:
+-------
+
+write a java program, that accepts a sentence as input string and
+displays each character found in the sentence along with their occurrence.
+
+sample input:
+this is a sentence typed by me
+
+sample output:
+t	3
+h	1
+i	2
+s	3
+	6
+a	1
+e	5
+n	2
+c	1
+y	2
+p	1
+d	1
+b	1
+m	1
+
+
+How you solved this problem?
+
+
+HashMap
+	order is not same as the input order
+
+LinkedHashMap	
+	should be the best option because, the order of keys are same as we put the entries.
+
+
+
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+public class AppCharsCount {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		String input=sc.nextLine();
+		Map<Character, Integer> map=new LinkedHashMap<>();
+		//lets iterate each character present in the input string
+		
+		for(char c : input.toCharArray()) {
+//			Integer count = map.get(c);
+//			if(count==null) {
+//				count=0;
+//			}
+//			count++;
+//			map.put(c, count);
+			map.put(c, map.getOrDefault(c, 0)+1);
+		}
+		
+		for(Entry<Character, Integer> e:map.entrySet()) {
+			System.out.printf("%c\t%d\n",e.getKey(),e.getValue());
+		}
+	}
+
+}
+
+
+
+
+
+Task:
+
+https://github.com/jagasia/harman1/blob/jag/Java/University_Map_Challenge.docx
+
+
+
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class College {
+	private String name;
+	private String website;
+	private String mobile;
+	private String founder;
+	private Integer numberOofDept;
+	private String location;
+	private Date createdDate;
+	
+	public College() {}
+
+	public College(String name, String website, String mobile, String founder, Integer numberOofDept, String location,
+			Date createdDate) {
+		super();
+		this.name = name;
+		this.website = website;
+		this.mobile = mobile;
+		this.founder = founder;
+		this.numberOofDept = numberOofDept;
+		this.location = location;
+		this.createdDate = createdDate;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getFounder() {
+		return founder;
+	}
+
+	public void setFounder(String founder) {
+		this.founder = founder;
+	}
+
+	public Integer getNumberOofDept() {
+		return numberOofDept;
+	}
+
+	public void setNumberOofDept(Integer numberOofDept) {
+		this.numberOofDept = numberOofDept;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	@Override
+	public String toString() {
+		return "College [name=" + name + ", website=" + website + ", mobile=" + mobile + ", founder=" + founder
+				+ ", numberOofDept=" + numberOofDept + ", location=" + location + ", createdDate=" + createdDate + "]";
+	}
+	
+	static Map<String,Integer> calculateLocationCount(List<College> list){
+		Map<String,Integer> map=new TreeMap<>();
+		//logic here...
+		for(College college:list) {
+			map.put(college.getLocation(), map.getOrDefault(college.getLocation(),0)+1);
+		}
+		return map;
+	}
+}
+
+
+
+
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+public class App {
+
+	public static void main(String[] args) throws ParseException {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter the number of colleges:");
+		int noOfColleges=sc.nextInt();
+		List<College> collegeList=new ArrayList<>();
+		for(int i=0;i<noOfColleges;i++) {
+			String detail=sc.nextLine();
+			if(detail.equals(""))
+				detail=sc.nextLine();
+			//split the detail string by ,
+			String[] arr = detail.split(",");
+			College college=new College();
+			college.setName(arr[0]);
+			college.setWebsite(arr[1]);
+			college.setMobile(arr[2]);
+			college.setFounder(arr[3]);
+			college.setNumberOofDept(Integer.valueOf(arr[4]));
+			college.setLocation(arr[5]);
+			SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+			college.setCreatedDate(sdf.parse(arr[6]));
+			
+			collegeList.add(college);
+		}
+		
+		Map<String, Integer> map = College.calculateLocationCount(collegeList);
+		
+		System.out.format("%-15s %s\n","Location","Count");
+		for(Entry<String, Integer> e:map.entrySet()) {
+			System.out.format("%-15s %s\n",e.getKey(),e.getValue());
+		}
+
+	}
+
+}
+
+
+
+
