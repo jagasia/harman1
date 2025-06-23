@@ -505,11 +505,11 @@ Each RDBMS has their own varient of SQL
 	MySQL			mySql
 	
 SQL is further divided into
-	Data Definition Language
-	Data Query Language
-	Data Manipulation Language
-	Data Control Language
-	Transaction Control Language
+	Data Definition Language		CREATE, ALTER, DROP, TRUNCATE
+	Data Query Language		SELECT
+	Data Manipulation Language		INSERT, UPDATE, DELETE
+	Data Control Language		GRANT REVOKE
+	Transaction Control Language		COMMIT, SAVEPOINT, ROLLBACK
 	PL/SQL		Procedural Language extension to SQL
 
 
@@ -835,4 +835,64 @@ Lost Update        | Use Locking or MVCC
 ```
 
 
+
+Activity:
+
+Ensure that you are comfortable with
+contraints
+ddl
+dml
+transaction properties
+concurrency issues and isolation levels to address them
+
+---------------------------------------------------------------------------
+SELECT statement
+---------------------
+
+is read only statement.
+
+SELECTION	selecting rows that meets condition
+PROJECTION	projecting columns that are relevant
+UNION		combining the result of 2 queries
+UNION ALL	including duplicates repeating
+INTERSECT	only common rows between 2 query results
+MINUS		All rows from 1st query result - common rows
+
+select * from tablename;
+	--very simple select statement
+	what is * means?
+		all columns of the table
+
+select col1, col3, col4 from tablename;
+	--we are projecting only specified columns
+
+we can also, specify column names and expression
+
+select col1*col2 from tablename;
+	the result of multiplication will be returned as output.
+
+this multiplication does not affect the original data in the table
+
+
+what are all the clauses in select statements?
+
+	WHERE
+	ORDER BY
+	GROUP BY 
+	HAVING
+	JOIN	
+		INNER JOIN
+		OUTER JOIN
+			LEFT, RIGHT, FULL
+		CROSS JOIN
+		NATURAL JOIN
+		SELF JOIN
+		EQUI, NON EQUI JOIN
+	SUB QUERIES
+		in-line subqueries
+		regual subqueries
+
+	FUNCTIONS used in select statements
+	
+	CASE function / statement
 
