@@ -475,3 +475,154 @@ Activity:
 Database Schema, Tables, Rows, and Columns and Primary Key & Foreign Key					
 
 --------------------------------------
+Constraints
+----------------
+NOT NULL
+UNIQUE
+PRIMARY KEY
+FOREIGN KEY
+CHECK
+
+These constraints are created to implement INTEGRITY
+
+Entity Integerity		
+	PRIMARY KEY, UNIQUE
+Domain Integrity
+	CHECK 
+Referential Integrity
+	FOREIGN KEY
+User defined Integrity
+	Triggers
+
+
+Structured Query Language:
+----------------------------------
+SQL is considered as the language to interact with RDBMS.
+
+Each RDBMS has their own varient of SQL
+	Microsoft SQL Server	Transact-SQL	t-sql
+	Oracle			iSQL
+	MySQL			mySql
+	
+SQL is further divided into
+	Data Definition Language
+	Data Query Language
+	Data Manipulation Language
+	Data Control Language
+	Transaction Control Language
+	PL/SQL		Procedural Language extension to SQL
+
+
+MySQL server and MySQL Workbench are installed in cloud lab.
+
+username:	root
+password:	rootuser
+
+
+Data Definition language
+	when you create a table, you are defining the data
+	that each row should have n columns and each column on x data type etc
+	altering a table is also changing the data definition
+	droping the table
+	truncating a table is like drop and create a table
+
+CREATE
+ALTER
+DROP
+TRUNCATE
+
+Not only tables, data definition includes other database objects also.
+
+like CREATE VIEW, DROP VIEW, etc.
+
+
+creating constraints 
+	while creating table
+	altering table
+	
+dropping constraints later
+
+
+
+CREATE TABLE STUDENT(
+ID INT PRIMARY KEY,
+NAME VARCHAR(50) NOT NULL,
+DOB DATE,
+PHONE CHAR(10)
+);
+
+
+
+
+
+DESC STUDENT;
+
+ID	int(11)	NO	PRI		
+NAME	varchar(50)	NO			
+DOB	date	YES			
+PHONE	char(10)	YES			
+
+
+Alter the table to add one more column.
+
+ALTER TABLE STUDENT ADD ADDRESS VARCHAR(100);
+
+
+
+DESC STUDENT;
+
+
+ID	int(11)	NO	PRI		
+NAME	varchar(50)	NO			
+DOB	date	YES			
+PHONE	char(10)	YES			
+ADDRESS	varchar(100)	YES			
+
+Alter the table to change the datatype of PHONE
+
+
+ALTER TABLE STUDENT MODIFY DOB CHAR(10);
+
+DESC STUDENT;
+
+
+
+
+ALTER
+	add
+	modify
+	drop
+	rename
+
+DDL cannot be rolled back. Only DML can be rolled back.
+
+
+DROP vs TRUNCATE
+	drop table removes not only data, but also the schema
+	TRUNCATION removes only the data. But actually it is like DROP and CREATE. Very fast and does not notify delete triggers.
+	There is no options to conditionally delete certain records using TRUNCATE. It will always makes table into 0 rows.
+	Cannot rollback also.
+
+ALTER to
+	add, remove constraints also
+
+
+Task:
+------
+Pracitally observer
+	DDL
+		CREATE, ALTER, DROP, TRUNCATE
+	add, drop constraints while creating or altering tables.
+
+
+DML
+	INSERT
+		for adding 1 row to a table
+		for adding multiple rows to a table
+	UPDATE
+		0 or more records or all records
+	DELETE
+		0 or more or all records
+
+commit vs rollback for DML (in case multiple simultaneous sessions)
+
