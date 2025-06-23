@@ -1282,3 +1282,18 @@ unmanaged
 ---------------------------------
 
 
+Task:
+-------
+Refer to my project:
+https://github.com/jagasia/harman1/tree/jag/Java/23-jun-hibernate-1
+
+And create a simple hibernate project using maven.
+Ask me if you face any issues.
+
+And check if the table, records are created by hibernate in your mysql database.
+
+Notes:
+	in hibernate.cfg.xml
+		url needs to be updated with your db name
+		password in my case is empty. but yours is rootuser
+
