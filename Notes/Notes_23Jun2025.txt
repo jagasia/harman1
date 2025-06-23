@@ -896,3 +896,120 @@ what are all the clauses in select statements?
 	
 	CASE function / statement
 
+	DISTINCT
+
+
+
+select distinct * from trandetails;
+
+
+select distinct * from trandetails where acnumber='A00001';
+
+
+-------------------
+What is the purpose of GROUP BY in SELECT statement?
+	Whenever we use aggregate functions, we get 1 result per relation (ex: table. and tables if join is used)
+	if we use group by, we get 1 aggregate result per group
+
+
+ex:
+
+	select sum(salary) from employees;
+		you will get 1 result
+
+	select sum(salary) from employees group by department;
+		you will get 1 result per department
+
+	select department, sum(salary) from employees group by department;
+
+having:
+	you want to give a condition, and those groups that meat this condition only resulted
+
+not all group. so i use having
+
+
+select acnumber, count(transaction_amount) from trandetails group by acnumber;
+
+
+A00001	6
+A00002	3
+A00007	3
+
+
+
+--------------------------------------
+when to use JOINs and when to use sub queries?
+--------------------------------------------------------
+for example, there are 2 tables:
+
+CUSTOMER
+
+C00001	Ramesh	Chandra	Sharma	Delhi	9543198345	Service	1976-12-06
+C00002	Avinash	Sunder	Minha	Delhi	9876532109	Service	1974-10-16
+C00003	Rahul		Rastogi	Delhi	9765178901	Student	1981-09-26
+C00004	Parul		Gandhi	Delhi	9876532109	Housewife	1976-11-03
+C00005	Naveen	Chandra	Aedekar	Mumbai	8976523190	Service	1976-09-19
+C00006	Chitresh		Barwe	Mumbai	7651298321	Student	1992-11-06
+C00007	Amit	Kumar	Borkar	Mumbai	9875189761	Student	1981-09-06
+C00008	Nisha		Damle	Mumbai	7954198761	Service	1975-12-03
+C00009	Abhishek		Dutta	Kolkata	9856198761	Service	1973-05-22
+C00010	Shankar		Nair	Chennai	8765489076	Service	1976-07-12
+							
+LOAN
+
+
+C00001	B00001	100000
+C00002	B00002	200000
+C00009	B00008	400000
+C00010	B00009	500000
+C00001	B00003	600000
+C00002	B00001	600000
+		
+
+Write a query to display the customer numbers who have taken atleast 1 loan.
+
+customer table has custid
+loan table has custid
+
+
+we can write query for the above requirement using
+	join
+	subquery
+
+
+JOIN
+	use inner join on custid as common, Only where custid found in loan only comes.
+
+Sub query
+	you use WHERE EXISTS with correlated sub query
+	the sub query depends on outer query
+
+	
+both of the above is product only.
+
+
+
+
+SELECT DISTINCT C.CUSTID
+FROM CUSTOMER C
+JOIN LOAN L
+ON C.CUSTID=L.CUSTID;
+
+
+
+SELECT C.CUSTID
+FROM CUSTOMER C
+WHERE EXISTS
+(SELECT L.CUSTID FROM LOAN L WHERE L.CUSTID=C.CUSTID);
+
+Since both above queries produce same result, you have a doubt, when to use joins?
+
+ans:
+	use join only when you need to retrieve columns from multiple tables.
+	to retrieve columns from 1 table, you dont need to use joins.
+
+
+for the given above scenario, we return only 1 columns. So, i use sub query.
+
+Activity:
+	What are the types of JOINs?
