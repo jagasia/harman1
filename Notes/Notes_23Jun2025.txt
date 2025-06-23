@@ -626,3 +626,213 @@ DML
 
 commit vs rollback for DML (in case multiple simultaneous sessions)
 
+--------------------------------------------------------------
+INSERT INTO employees (id, name, dept) VALUES (101, 'Alice', 'HR');
+
+in this syntax, we can specify all or only required columns in any order, then VALUES followed by the values corresponding to the mentioned columns
+
+but ensure, all columns that are NOT NULL must be present in the list
+
+Another:
+
+INSERT INTO employees VALUES (101, 'Alice', 'HR');
+
+in above method, all columns present in the table must be supplied with values in same order only.
+
+suppose, if any column allows null, you can use NULL
+if any column has default value, you can use DEFAULT
+
+INSERT INTO employees VALUES (101, 'Alice', NULL);
+
+INSERT INTO employees VALUES (101, 'Alice', DEFAULT);
+
+
+
+the above all are single row insert statements.
+
+--------------------------------------------
+
+Multiple rows:
+
+INSERT INTO employees (id, name, dept)
+VALUES 
+  (102, 'Bob', 'Finance'),
+  (103, 'Charlie', 'IT');
+
+
+
+
+UPDATE:
+
+
+ UPDATE
+Updates 0, 1, or many rows based on the condition.
+
+UPDATE employees SET dept = 'Sales' WHERE dept = 'Marketing';
+
+
+If WHERE clause is omitted, then all rows are updated.
+
+if where clause conditions returns false, then those rows are not updated.
+
+
+an UPDATE statement may affect 0 or 1 or more or all rows based on condition.
+
+no condition = all rows affected
+
+DELETE also behaves same,
+	when no condition, all rows deleted
+	when condition is false, those rows are not deleted
+
+
+COMMIT
+	is used to make previously executed DML statements permanent.
+	Depending on the environment (like workbench/ sql plus / sql developer, etc), the commit is automatic when the env is closed properly.
+
+some env provide auto commit mode. There, rollback will not work.
+
+ROLLBACK
+	undos the changes done by DML, (which are not yet committed).
+
+Demo:
+--------
+Session 1 updates a row. Not yet commit/rollback.
+Session 2 updates same row. Is waiting...
+Session 1 commits or rollsback, then Session 2 update is completed.
+
+commit		changes are considered final. permanent.
+rollback		changes are undo
+
+Every DML statement is itself a transaction.
+	So, if dml is successful, it is commited
+	any error, it is rolledback.
+
+multiple DML statements can be considered as 1 transaction
+and make sure you commit after all those DML together as 1 commit.
+
+a commit/ rollback will confirm all dml executed which are pending to commit/rollback.
+
+Concurrency problems:-
+Dirty read
+Panthom read
+non repeatable read
+
+What is dirty read?
+-----------------------
+	when a transaction reads data which is under change by another transaction, it is dirty read because, there is a risk that the another transaction may rollback those changes.
+
+most of client tools like sql workbench, sql developer etc, does not allow "Read Uncommitted". So dirty reads are addressed by these environements.
+
+transactions can choose their concurrency mode:
+	read uncommitted-	dirty, panthom, non repeatable read
+	read committed- panthom, non repeatable read			
+	serialized
+	snapshot
+
+
+What is panthom read?
+	the data which is under modification, the changes which are not yet committed are not visible to others.
+	but it is possible that within a range of data we access, they may add or remove records.
+
+	range lock solve this
+
+
+
+
+
+==============================
+TRANSACTION CONCURRENCY ISSUES
+==============================
+
+1. Dirty Read
+   - A transaction reads uncommitted data from another transaction.
+   - Risk: If the other transaction rolls back, data becomes inconsistent.
+   - Example:
+     T1: UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+     T2: SELECT balance FROM accounts WHERE id = 1;  -- Dirty read
+
+2. Non-Repeatable Read
+   - A row is read twice, and the value is different the second time.
+   - Caused by another transaction modifying and committing in between.
+   - Example:
+     T1: SELECT salary FROM emp WHERE id = 101;  -- 50,000
+     T2: UPDATE emp SET salary = 60000 WHERE id = 101; COMMIT;
+     T1: SELECT salary FROM emp WHERE id = 101;  -- 60,000
+
+3. Phantom Read
+   - Re-executing a query returns different row sets due to inserts/deletes.
+   - Example:
+     T1: SELECT * FROM orders WHERE customer_id = 5;
+     T2: INSERT INTO orders (...) VALUES (..., 5); COMMIT;
+     T1: SELECT * FROM orders WHERE customer_id = 5;  -- Extra row appears
+
+4. Lost Update
+   - Two transactions read the same data and update it, but one update is lost.
+   - Example:
+     T1: SELECT balance FROM account WHERE id = 1;  -- 1000
+     T2: SELECT balance FROM account WHERE id = 1;  -- 1000
+     T1: UPDATE account SET balance = 900 WHERE id = 1;
+     T2: UPDATE account SET balance = 800 WHERE id = 1;  -- T1 lost
+
+==============================
+ISOLATION LEVELS (SQL STANDARD)
+==============================
+
+Level              | Dirty Read | Non-Repeatable Read | Phantom Read
+------------------|------------|----------------------|--------------
+Read Uncommitted  | Possible   | Possible             | Possible
+Read Committed    | Not Possible | Possible           | Possible
+Repeatable Read   | Not Possible | Not Possible       | Possible
+Serializable      | Not Possible | Not Possible       | Not Possible
+
+==============================
+DESCRIPTION OF ISOLATION LEVELS
+==============================
+
+1. Read Uncommitted
+   - Can read uncommitted data (dirty read)
+   - Fastest, least safe
+
+2. Read Committed
+   - Only committed data can be read
+   - Prevents dirty reads
+
+3. Repeatable Read
+   - Re-reading rows returns same data
+   - Prevents dirty and non-repeatable reads
+
+4. Serializable
+   - Highest isolation level
+   - Full isolation, prevents all anomalies
+
+==============================
+CONCURRENCY CONTROL METHODS
+==============================
+
+1. Pessimistic Locking
+   - Locks rows during read/write
+   - Ensures safety, may cause blocking
+
+2. Optimistic Locking
+   - No locks; uses version checks before commit
+   - Good for low-conflict scenarios
+
+3. MVCC (Multi-Version Concurrency Control)
+   - Each transaction sees its own snapshot
+   - Readers don’t block writers and vice versa
+   - Used in PostgreSQL, MySQL InnoDB, Oracle
+
+==============================
+SUMMARY
+==============================
+
+Issue              | How to Prevent
+------------------|----------------------------
+Dirty Read         | Use Read Committed or higher
+Non-Repeatable Read| Use Repeatable Read or higher
+Phantom Read       | Use Serializable
+Lost Update        | Use Locking or MVCC
+```
+
+
+
