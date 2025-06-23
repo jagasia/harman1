@@ -1,0 +1,477 @@
+MultiThreading - 
+Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+
+Thread Pools
+what is a pool. Pool means, ready to serve.
+Instead of creating objects of threads whenever required, we may obtain the objects from the pool.
+	readily available
+	same set of instances can be re-used
+	avoid, unnecessarily creating lot of threads, exhaust
+	performace
+	
+
+
+3 Threads executing 10 tasks using executer service:-
+---------------------------------------------------------
+
+class Task implements Runnable {
+    private String name;
+
+    public Task(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(name + " is running on " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(2000); // Simulate processing
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(name + " completed.");
+    }
+}
+
+
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadPoolExample {
+    public static void main(String[] args) {
+        // Step 1: Create a thread pool with 3 threads
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        // Step 2: Create and submit tasks (Runnable)
+        for (int i = 1; i <= 10; i++) {
+            Runnable task = new Task("Task-" + i);
+            executor.execute(task);
+        }
+
+        // Step 3: Shut down the executor
+        executor.shutdown();
+    }
+}
+
+
+
+Output:-
+-----------
+Task-2 is running on pool-1-thread-2
+Task-3 is running on pool-1-thread-3
+Task-1 is running on pool-1-thread-1
+Task-3 completed.
+Task-4 is running on pool-1-thread-3
+Task-2 completed.
+Task-1 completed.
+Task-5 is running on pool-1-thread-2
+Task-6 is running on pool-1-thread-1
+Task-5 completed.
+Task-4 completed.
+Task-8 is running on pool-1-thread-3
+Task-6 completed.
+Task-7 is running on pool-1-thread-2
+Task-9 is running on pool-1-thread-1
+Task-9 completed.
+Task-10 is running on pool-1-thread-1
+Task-7 completed.
+Task-8 completed.
+Task-10 completed.
+
+
+
+------------
+
+8. ExecutorService Important Methods
+-------------------------------------
+- execute(Runnable): run a task
+- submit(Runnable/Callable): run a task and get result using Future
+- shutdown(): stop accepting new tasks
+- shutdownNow(): stop all tasks immediately
+- awaitTermination(): wait for tasks to finish
+
+9. Best Practices
+------------------
+- Always shutdown the executor
+- Use try-catch inside tasks to handle exceptions
+- Choose correct pool size to avoid overload
+
+10. Summary
+-------------
+- Thread pools manage threads efficiently
+- Use ExecutorService to work with thread pools
+- Improves performance and scalability
+
+----------------------------------------------------
+----------------------------------------------------
+
+Time complexity:
+--------------------
+
+A program becomes process when it is executed in a processor.
+A processor allocates resources to a process.
+resources are:
+	time
+	memory
+
+A performance is measures in terms of effective utilization of resources.
+
+Time complexity
+	for a given program, how much time is taken to execute.
+
+Time complexity describes how the runtime of an algorithm increases with the size of input.
+
+Big O notations
+	are used to describe, how the time complexity changes when
+		the input size changes
+	it is always the worst case scenario taken for consideration
+
+
+
+
+
+
+
+Here's a brief and beginner-friendly explanation of each of the listed topics, suitable for training sessions or self-study:
+
+✅ Introduction to Time Complexity
+Time complexity describes how the runtime of an algorithm increases with the size of input.
+
+It helps us compare algorithms based on performance.
+
+Expressed using Big O notation: e.g.,
+
+O(1) → Constant time
+
+O(n) → Linear time
+
+O(n²) → Quadratic time
+
+📌 Example:
+
+java
+Copy
+Edit
+for(int i = 0; i < n; i++) {
+    System.out.println(i); // O(n)
+}
+✅ Introduction to Big O Notation
+Big O notation represents the worst-case time complexity.
+
+Focuses on how fast an algorithm grows with increasing input size.
+
+📘 Common notations:
+
+O(1) – Constant (best)
+
+O(log n) – Logarithmic
+
+O(n) – Linear
+
+O(n log n) – Linearithmic (e.g., merge sort)
+
+O(n²) – Quadratic (e.g., nested loops)
+
+
+------------------------------------------------
+Before Optional was introduced, we used to return null when something not found
+
+for example, there is a CRUD method called
+	findEmployeeById(id)
+
+if we enter an invalid id, then there is no employee found.
+
+So, we return null
+
+null.<anything> gives null pointer exception.
+
+that is why they introduced Optional
+
+
+
+
+
+
+Here’s a **Notepad-friendly explanation** of important methods from the `java.util.Optional` class. Suitable for quick reference or training notes.
+
+---
+
+```
+Optional Methods in Java
+-------------------------
+
+1. Optional.empty()
+   ------------------
+   - Returns an empty Optional instance.
+   - Used to represent absence of a value.
+
+   Example:
+   Optional<String> emptyOpt = Optional.empty();
+
+
+2. Optional.of(value)
+   --------------------
+   - Returns an Optional with the specified non-null value.
+   - Throws NullPointerException if the value is null.
+
+   Example:
+   Optional<String> nameOpt = Optional.of("John");
+
+   // Optional.of(null); // throws NullPointerException
+
+
+3. Optional.ofNullable(value)
+   ----------------------------
+   - Returns an Optional describing the specified value,
+     or an empty Optional if the value is null.
+
+   Example:
+   String name = getName(); // may return null
+   Optional<String> nameOpt = Optional.ofNullable(name);
+
+
+4. get()
+   -------
+   - Returns the value if present, otherwise throws NoSuchElementException.
+   - Should be used carefully, only if value is guaranteed to be present.
+
+   Example:
+   Optional<String> opt = Optional.of("Test");
+   String value = opt.get(); // returns "Test"
+
+
+5. isPresent()
+   -------------
+   - Returns true if a value is present, false otherwise.
+
+   Example:
+   Optional<String> opt = Optional.of("Hello");
+   if (opt.isPresent()) {
+       System.out.println("Value: " + opt.get());
+   }
+
+
+6. ifPresent(Consumer)
+   ---------------------
+   - Performs the given action if a value is present.
+
+   Example:
+   Optional<String> opt = Optional.of("Skill");
+   opt.ifPresent(val -> System.out.println("Value: " + val));
+
+
+Summary:
+---------
+| Method          | Null-safe | Throws Exception | Usage                           |
+|-----------------|-----------|------------------|----------------------------------|
+| empty()         | Yes       | No               | Create empty Optional            |
+| of(value)       | No        | Yes              | Wrap non-null value              |
+| ofNullable(val) | Yes       | No               | Wrap value (null-safe)           |
+| get()           | No        | Yes              | Extract value (if present only)  |
+| isPresent()     | Yes       | No               | Check if value is present        |
+| ifPresent()     | Yes       | No               | Perform action if value present  |
+```
+
+---
+
+Let me know if you want this as a `.txt` or `.pptx` file.
+
+
+
+-------------------------------------------------------
+What is a Database and Characteristics of RDBMS					
+Transaction Management and ACID Properties					
+Database Schema, Tables, Rows, and Columns and Primary Key & Foreign Key					
+CREATE, ALTER, DROP (DDL)					
+INSERT, UPDATE, DELETE (DML)					
+SELECT with WHERE, ORDER BY, LIMIT					
+Aggregate Functions (SUM, AVG, COUNT, MIN, MAX)					
+Joins - Inner, Left, Right and Outer					
+Transactions and Concurrency Control 					
+Commit and Rollback					
+Isolation Levels (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE)					
+Query Optimization Techniques					
+Indexing Strategies					
+Partitioning and Sharding					
+
+
+
+RDBMS
+---------
+Relational Database Management system
+
+Relational
+------------
+Dr. E.F. Codd in 1970s, defined 12 rules to consider a software as a relational dbms
+
+What is a relation?
+	any data in row column format
+
+	table is an example for relation.
+	
+
+
+What is a database?
+	a database is made up of objects including tables, views, indexes, 
+
+
+
+Here's a **Notepad-friendly** version of the requested database concepts and SQL operations. It's formatted with minimal styling for plain-text readability:
+
+---
+
+```
+DATABASE AND RDBMS BASICS
+-------------------------
+A Database is an organized collection of data, typically stored and accessed electronically.
+
+RDBMS (Relational Database Management System) stores data in tabular form (rows and columns).
+
+CHARACTERISTICS OF RDBMS:
+- Data stored in tables (relations)
+- Each table has a schema (structure)
+- Uses SQL for querying
+- Ensures data integrity via constraints
+- Supports ACID transactions
+
+TRANSACTION MANAGEMENT AND ACID PROPERTIES
+------------------------------------------
+Transaction: A unit of work (e.g., INSERT, UPDATE) that must either fully complete or fully fail.
+
+ACID Properties:
+- A - Atomicity: All or nothing
+- C - Consistency: DB must remain valid before and after transaction
+- I - Isolation: Transactions should not interfere
+- D - Durability: Once committed, changes are permanent
+
+DATABASE OBJECTS
+----------------
+- Schema: Logical structure of the database (tables, views, etc.)
+- Table: Collection of rows and columns
+- Row: Record (also called tuple)
+- Column: Attribute (also called field)
+
+KEYS
+----
+Primary Key: Uniquely identifies each row in a table  
+Foreign Key: Refers to primary key in another table
+
+DDL - DATA DEFINITION LANGUAGE
+------------------------------
+CREATE TABLE:
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT
+);
+
+ALTER TABLE:
+ALTER TABLE students ADD email VARCHAR(100);
+
+DROP TABLE:
+DROP TABLE students;
+
+DML - DATA MANIPULATION LANGUAGE
+--------------------------------
+INSERT:
+INSERT INTO students (id, name, age) VALUES (1, 'John', 20);
+
+UPDATE:
+UPDATE students SET age = 21 WHERE id = 1;
+
+DELETE:
+DELETE FROM students WHERE id = 1;
+
+SELECT QUERIES
+--------------
+SELECT * FROM students;
+
+WHERE:
+SELECT * FROM students WHERE age > 18;
+
+ORDER BY:
+SELECT * FROM students ORDER BY age DESC;
+
+LIMIT:
+SELECT * FROM students LIMIT 5;
+
+AGGREGATE FUNCTIONS
+-------------------
+SELECT COUNT(*) FROM students;
+SELECT AVG(age) FROM students;
+SELECT SUM(age) FROM students;
+SELECT MIN(age) FROM students;
+SELECT MAX(age) FROM students;
+
+JOINS
+-----
+INNER JOIN:
+SELECT * FROM students s
+JOIN scores sc ON s.id = sc.student_id;
+
+LEFT JOIN:
+SELECT * FROM students s
+LEFT JOIN scores sc ON s.id = sc.student_id;
+
+RIGHT JOIN:
+SELECT * FROM students s
+RIGHT JOIN scores sc ON s.id = sc.student_id;
+
+FULL OUTER JOIN (if supported):
+SELECT * FROM students s
+FULL OUTER JOIN scores sc ON s.id = sc.student_id;
+
+TRANSACTIONS AND CONCURRENCY CONTROL
+------------------------------------
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+UPDATE accounts SET balance = balance + 500 WHERE id = 2;
+COMMIT;
+
+ROLLBACK:
+ROLLBACK;  -- Undo all operations since BEGIN or SAVEPOINT
+
+ISOLATION LEVELS
+----------------
+- READ UNCOMMITTED: Dirty reads allowed
+- READ COMMITTED: Only committed data visible
+- REPEATABLE READ: Same rows read multiple times are consistent
+- SERIALIZABLE: Full isolation (slowest, safest)
+
+QUERY OPTIMIZATION TECHNIQUES
+-----------------------------
+- Use SELECT columns instead of SELECT *
+- Use WHERE clauses to reduce result set
+- Use indexes on frequently filtered/joined columns
+- Avoid nested subqueries if JOINs can be used
+- Analyze and tune execution plans
+
+INDEXING STRATEGIES
+-------------------
+- Create indexes on primary key and foreign key columns
+- Use composite indexes for multiple-column filters
+- Avoid indexing columns with low selectivity (like boolean fields)
+- Too many indexes can slow down INSERT/UPDATE
+
+PARTITIONING AND SHARDING
+-------------------------
+Partitioning: Splitting table data across partitions (by range, list, hash)
+  - Horizontal partitioning = row-based
+  - Improves query performance and maintenance
+
+Sharding: Splitting data across multiple databases/servers
+  - Used for scalability in distributed systems
+  - Each shard holds a portion of the data
+```
+
+---
+
+Let me know if you'd like this exported as a `.txt` file.
+
+
+Activity:
+
+Database Schema, Tables, Rows, and Columns and Primary Key & Foreign Key					
+
+--------------------------------------
