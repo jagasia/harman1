@@ -393,4 +393,156 @@ public class AppQueries {
 
 
 
+Task:
+
+check above example and try HQL
+
+
+
+--------------------------------------
+--------------------------------------
+
+---
+
+## 🔍 Hibernate Query Language (HQL) Tutorial
+
+### ✅ What is HQL?
+
+**HQL (Hibernate Query Language)** is an object-oriented query language similar to SQL but operates on **entity objects** (Java classes) rather than directly on database tables.
+
+* SQL works with tables and columns.
+* HQL works with **entities and their properties**.
+
+---
+
+### 🧱 Basic Syntax
+
+```java
+String hql = "FROM Employee";
+Query query = session.createQuery(hql);
+List<Employee> employees = query.list();
+```
+
+---
+
+### 🧭 Common HQL Queries
+
+#### 1. **Select all records**
+
+```java
+String hql = "FROM Employee";
+List<Employee> list = session.createQuery(hql).list();
+```
+
+#### 2. **Select with WHERE clause**
+
+```java
+String hql = "FROM Employee e WHERE e.salary > :minSalary";
+Query query = session.createQuery(hql);
+query.setParameter("minSalary", 50000);
+List<Employee> list = query.list();
+```
+
+#### 3. **Select specific columns (projection)**
+
+```java
+String hql = "SELECT e.name, e.salary FROM Employee e";
+List<Object[]> list = session.createQuery(hql).list();
+
+for (Object[] row : list) {
+    String name = (String) row[0];
+    Double salary = (Double) row[1];
+}
+```
+
+#### 4. **Order By**
+
+```java
+String hql = "FROM Employee e ORDER BY e.salary DESC";
+List<Employee> list = session.createQuery(hql).list();
+```
+
+#### 5. **Update Query**
+
+```java
+String hql = "UPDATE Employee SET salary = :salary WHERE id = :id";
+Query query = session.createQuery(hql);
+query.setParameter("salary", 60000);
+query.setParameter("id", 2);
+int rowsAffected = query.executeUpdate();
+```
+
+#### 6. **Delete Query**
+
+```java
+String hql = "DELETE FROM Employee WHERE id = :id";
+Query query = session.createQuery(hql);
+query.setParameter("id", 3);
+int rowsAffected = query.executeUpdate();
+```
+
+#### 7. **Aggregate Functions**
+
+```java
+String hql = "SELECT COUNT(e.id), AVG(e.salary) FROM Employee e";
+Object[] result = (Object[]) session.createQuery(hql).uniqueResult();
+
+Long count = (Long) result[0];
+Double averageSalary = (Double) result[1];
+```
+
+---
+
+### 🔄 Joins in HQL
+
+#### 1. **Inner Join**
+
+```java
+String hql = "SELECT e.name, d.name FROM Employee e INNER JOIN e.department d";
+List<Object[]> list = session.createQuery(hql).list();
+```
+
+#### 2. **Left Join**
+
+```java
+String hql = "SELECT e.name, d.name FROM Employee e LEFT JOIN e.department d";
+```
+
+> Note: This assumes `Employee` has a field `Department department` with `@ManyToOne`.
+
+---
+
+### 📦 Pagination
+
+```java
+Query query = session.createQuery("FROM Employee");
+query.setFirstResult(0);  // offset
+query.setMaxResults(10);  // limit
+List<Employee> list = query.list();
+```
+
+---
+
+### ⚠️ Tips
+
+* Always use **entity names and property names** in HQL.
+* For **native SQL**, use `session.createSQLQuery(...)`.
+* HQL supports **named queries** and **parameterized queries**.
+
+---
+
+### 📘 Example Entity
+
+```java
+@Entity
+public class Employee {
+    @Id
+    private int id;
+    private String name;
+    private double salary;
+
+    @ManyToOne
+    private Department department;
+}
+```
 

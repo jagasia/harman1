@@ -16,7 +16,7 @@ public class AppQueries {
 		String name=sc.nextLine();
 		SessionFactory sf = DbUtil.getSessionFactory();
 		Session session = sf.openSession();
-		Query<Customer> query = session.createQuery("from Customer c where c.name=:name", Customer.class);
+		Query<Customer> query = session.createQuery("select c from Customer c where c.name=:name", Customer.class);
 		query.setParameter("name", name);
 		List<Customer> customers = query.list();
 		for(Customer c:customers)
