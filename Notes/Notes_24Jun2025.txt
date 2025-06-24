@@ -546,3 +546,684 @@ public class Employee {
 }
 ```
 
+After completing HQL, we will discuss Relationships between entities
+--------------------------------------------
+Relationship between entities
+---------------------------------
+Basically, when we do projects, it is important to identify the entities and their relationships
+
+E-R diagrams can be the artifacts, that evolves at the end of this activity on identifying the entities and relationships
+
+Entity becomes table in database
+Entity becomes class in java code.
+
+If 2 entities have relationship, then it can be
+	One to One
+	One to Many
+	Many to One
+	Many to Many
+
+
+These relationships can be exactly represented in our code using annotations like
+	@OneToOne
+	@OneToMany
+	@ManyToOne
+	@ManyToMany
+
+Why these are important?
+	when we create tables, we will also create constraints like foreign key, that establishes the relationship between 2 tables. Parent-child or Master-details or Master-transaction etc.
+
+Now that, Hibernate is going to create the tables, we need to help hibernate to understand the relationship, like what is foreign key that references which primary key of which table etc.
+
+Apart from this, lot of advantages in having these relationships, lazy or eager loading, cascading, etc.
+
+
+ Introduction to Hibernate Relationships
+In real-world applications, data in a database is often related. For example:
+
+A user might have one profile.
+
+A department has many employees.
+
+A student can register for many courses, and a course can have many students.
+
+These relationships between tables are known as associations or entity relationships in Hibernate (and JPA).
+
+Hibernate lets you map Java classes (entities) to database tables and also define how those classes relate to each other — just like relationships in a relational database (MySQL, PostgreSQL, etc.).
+
+📘 Why Relationships Are Important
+They let you represent real-world data structures (e.g., one user has many orders).
+
+You can navigate through related data easily using Java objects.
+
+They help maintain data integrity with constraints like foreign keys.
+
+Hibernate handles automated joins, cascading, and fetching — reducing manual SQL.
+
+🔗 Types of Relationships in Hibernate
+Hibernate supports four main types of relationships:
+
+Relationship Type	Real-Life Example	Description
+One-to-One	A person and their passport	Each entity has exactly one related entity.
+One-to-Many	A department and its employees	One entity is related to many entities.
+Many-to-One	Many employees belong to one department	Inverse of One-to-Many.
+Many-to-Many	Students and courses	Many entities are related to many others.
+
+Each of these can be:
+
+Unidirectional: Navigation is allowed in only one direction.
+
+Bidirectional: Navigation is allowed in both directions (more common).
+
+
+
+
+------------------
+Demo
+-------
+I will give demo for one to many using
+	Employee
+	Department
+
+Many Employees belong to a Department	@ManyToOne
+A Department has many Employees		@OneToMany
+
+
+
+in Employee class:
+	Department department;	//department object. Not just 					departmentId
+
+in Department class
+	List<Employee> employees;		//lazy or eager can be 						specified
+
+
+lazy means:	when i get an object of department, it will contain 			list of employees
+
+eager means:	when i get an object of department, it will not 			contain list of employees. But when i call 			"getEmployees" method, then it 					will retrieve all employees from database.
+
+
+Task:
+
+Complete the learnings in HQL. 
+After lunch break, i will give demo on Hibernate relationships.
+
+-------------------------------------------------------------------------
+Hibernate relationships.
+
+Demo:
+---------
+Department
+	id
+	name
+	list of employees
+
+Employee
+	id
+	name
+	department		ref to Department.id
+
+
+Department to Employee 		is OneToMany
+Employee to Department		is ManyToOne
+
+1) create a maven quickstart archetype project "24-jun-hibernate-relationships"
+
+2) in pom.xml
+<dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.4.0</version>
+    </dependency>
+
+    <!-- JPA API -->
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.5.3.Final</version>
+    </dependency>
+
+
+3) create hibernate.cfg.xml file in src/main/java directly.
+
+
+<hibernate-configuration>
+  <session-factory>
+    <!-- JDBC connection settings -->
+    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/harman</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password"></property>
+
+    <!-- Hibernate settings -->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">false</property>
+
+    <!-- Annotated class -->
+    <!-- <mapping class="com.harman.demo.model.Product"/> -->
+    
+<!--       <property name="hibernate.cache.use_second_level_cache">true</property>
+    <property name="hibernate.cache.region.factory_class">
+      org.hibernate.cache.ehcache.EhCacheRegionFactory
+    </property> -->
+  </session-factory>
+</hibernate-configuration>
+
+
+4) DbUtil.java
+
+package com.harman.demo.util;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+
+public class DbUtil {
+
+	public static SessionFactory getSessionFactory() {
+		Configuration cfg=new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory sf = cfg.buildSessionFactory();
+		return sf;
+	}
+}
+
+
+5) create the entity classes and add them to the cfg
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
+public class Department {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	
+	public Department() {}
+
+	public Department(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Department [id=" + id + ", name=" + name + "]";
+	}
+	
+}
+
+
+6) Employee.java
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
+@Entity
+public class Employee {
+	private Long id;
+	private String name;
+	@ManyToOne
+	private Department department;
+	
+	public Employee() {}
+
+	public Employee(Long id, String name, Department department) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.department = department;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", name=" + name + ", department=" + department + "]";
+	}
+	
+	
+}
+
+
+7) DaoImp for Department:
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class DepartmentDaoImpl implements DepartmentDao {
+	@Override
+	public void create(Department department) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(department);
+		txn.commit();
+		session.close();
+		System.out.println("Department is created. ID is: "+id);		
+	}
+	@Override
+	public List<Department> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Department> query = session.createQuery("from Department", Department.class);
+		List<Department> departments = query.list();
+		session.close();
+		return departments;
+	}
+	@Override
+	public Department read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Department department = session.get(Department.class, id);
+		session.close();
+		return department;
+	}
+		
+	@Override
+	public void update(Department department) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(department);
+				txn.commit();
+				session.close();
+				System.out.println("Department is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Department department = session.get(Department.class, id);
+				if(department!=null) {
+				session.delete(department);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+8) extract the dao interface for Department:
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface DepartmentDao {
+
+	void create(Department department);
+
+	List<Department> read();
+
+	Department read(Long id);
+
+	void update(Department department);
+
+	void delete(Long id);
+
+}
+
+
+9) EmployeeDaoImpl
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class EmployeeDaoImpl implements EmployeeDao {
+	@Override
+	public void create(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(employee);
+		txn.commit();
+		session.close();
+		System.out.println("Employee is created. ID is: "+id);		
+	}
+	@Override
+	public List<Employee> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Employee> query = session.createQuery("from Employee", Employee.class);
+		List<Employee> employees = query.list();
+		session.close();
+		return employees;
+	}
+	@Override
+	public Employee read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Employee employee = session.get(Employee.class, id);
+		session.close();
+		return employee;
+	}
+		
+	@Override
+	public void update(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(employee);
+				txn.commit();
+				session.close();
+				System.out.println("Employee is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Employee employee = session.get(Employee.class, id);
+				if(employee!=null) {
+				session.delete(employee);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+
+
+
+10) EmployeeDao interface
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface EmployeeDao {
+
+	void create(Employee employee);
+
+	List<Employee> read();
+
+	Employee read(Long id);
+
+	void update(Employee employee);
+
+	void delete(Long id);
+
+}
+
+11) App.java
+
+test the code
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	Department d1=new Department(null, "IT");
+    	Department d2=new Department(null, "CSE");
+    	Department d3=new Department(null, "EEE");
+    	Department d4=new Department(null, "AI & ML");
+    	Department d5=new Department(null, "AI & DS");
+    	
+    	DepartmentDao ddao2 = new DepartmentDaoImpl();
+    	ddao2.create(d1);
+    	ddao2.create(d2);
+    	ddao2.create(d3);
+    	ddao2.create(d4);
+    	ddao2.create(d5);
+    	
+    	
+    	
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+12) now, lets test the employee dao impl.
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class EmployeeDaoImpl implements EmployeeDao {
+	@Override
+	public void create(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(employee);
+		txn.commit();
+		session.close();
+		System.out.println("Employee is created. ID is: "+id);		
+	}
+	@Override
+	public List<Employee> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Employee> query = session.createQuery("from Employee", Employee.class);
+		List<Employee> employees = query.list();
+		session.close();
+		return employees;
+	}
+	@Override
+	public Employee read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Employee employee = session.get(Employee.class, id);
+		session.close();
+		return employee;
+	}
+		
+	@Override
+	public void update(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(employee);
+				txn.commit();
+				session.close();
+				System.out.println("Employee is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Employee employee = session.get(Employee.class, id);
+				if(employee!=null) {
+				session.delete(employee);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+
+
+13) EmployeeDao interface
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface EmployeeDao {
+
+	void create(Employee employee);
+
+	List<Employee> read();
+
+	Employee read(Long id);
+
+	void update(Employee employee);
+
+	void delete(Long id);
+
+}
+
+
+14) App.java to test Department dao impl
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	Department d1=new Department(null, "IT");
+    	Department d2=new Department(null, "CSE");
+    	Department d3=new Department(null, "EEE");
+    	Department d4=new Department(null, "AI & ML");
+    	Department d5=new Department(null, "AI & DS");
+    	
+    	DepartmentDao ddao2 = new DepartmentDaoImpl();
+    	ddao2.create(d1);
+    	ddao2.create(d2);
+    	ddao2.create(d3);
+    	ddao2.create(d4);
+    	ddao2.create(d5);
+    	
+    	
+    	
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
+15) App2.java for Employee dao impl
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+import com.harman.demo.model.Employee;
+import com.harman.demo.model.EmployeeDao;
+import com.harman.demo.model.EmployeeDaoImpl;
+
+public class App2 {
+
+	public static void main(String[] args) {
+		DepartmentDao ddao=new DepartmentDaoImpl();
+		EmployeeDao edao=new EmployeeDaoImpl();
+		
+//		Department dept = ddao.read(2L);
+//		Employee e1=new Employee(null, "Abdul", new Department(1L,null));
+		
+		Employee emp = edao.read(2L);
+		System.out.println(emp);
+//		edao.create(e1);
+	}
+}
+
+
+
+
+---------------------------------------------
