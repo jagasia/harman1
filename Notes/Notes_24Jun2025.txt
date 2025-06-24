@@ -1,0 +1,321 @@
+Hibernate
+-----------
+ORM	-	Object Relational Mapping
+
+Object in java is mapped to a table in database
+
+
+Many Customers buy Many Products
+	M - M
+
+in case of many to many, the relationship becomes a table
+so, it is 3 tables mapped to 2 entity classes.
+
+
+class - table
+object - record
+property - column
+
+why we do ORM?
+	so that the framework can take care of basic db operations
+
+
+
+Introduction to ORM, Persistence and Persistence Life Cycle					
+ORM gives us one liberty of working with java classes and objects, rather than the database tables and rows.
+
+
+
+
+if class name is JavaStudent, then table name will be JAVA_STUDENT
+this is the normal behavior, that can be modified by configuring
+
+
+
+What is Hibernate?					
+Hibernate Architecture					
+Hibernate Framework Components (SessionFactory, Session, Transaction, Query, Criteria API)					
+
+-------------------------------------------------
+-------------------------------------------------
+Demo:
+
+steps for hibernate:
+
+1) create a maven project of quickstart archetype.
+2) in pom.xml, add the following dependencies.
+
+  <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.4.0</version>
+    </dependency>
+
+    <!-- JPA API -->
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.5.3.Final</version>
+    </dependency>
+
+
+3) create a configuration file:	hibernate.cfg.xml
+
+
+<hibernate-configuration>
+  <session-factory>
+    <!-- JDBC connection settings -->
+    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/harman</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password"></property>
+
+    <!-- Hibernate settings -->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">false</property>
+
+    <!-- Annotated class -->
+    <!-- <mapping class="com.harman.demo.model.Product"/> -->
+  </session-factory>
+</hibernate-configuration>
+
+
+
+4) Entity class:
+Customer
+	id, name, address, phone
+
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="CUST")
+public class Customer {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String address;
+	private String phone;
+	
+	public Customer() {}
+
+	public Customer(Long id, String name, String address, String phone) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + "]";
+	}
+	
+}
+
+
+5) create an util class that contains code to get session factory
+
+package com.harman.demo.util;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class DbUtil {
+
+	public static SessionFactory getSessionFactory() {
+		Configuration cfg=new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory sf = cfg.buildSessionFactory();
+		return sf;
+	}
+}
+
+
+6) create a DAO Impl class
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class CustomerDAOImpl implements CustomerDAO {
+
+	@Override
+	public void create(Customer customer) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+//		session.persist(customer);
+		Object id = session.save(customer);
+		System.out.println("Customer created. Kindly note the ID: ");
+		System.out.println(id);
+		txn.commit();
+		session.clear();
+	}
+	@Override
+	public List<Customer> read() {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Query<Customer> query = session.createQuery("select c from Customer c",Customer.class);
+		return query.list();
+	}
+	
+	@Override
+	public Customer read(Long id) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Customer managed = session.get(Customer.class, id);
+		return managed;
+	}
+	
+	@Override
+	public void update(Customer customer) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+//		session.persist(customer);	 //detached entity error
+//		detached entity passed to persist: com.harman.demo.model.Customer
+		session.merge(customer);
+		txn.commit();
+		session.close();
+	}
+	@Override
+	public void delete(Long id) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+		Customer x = session.get(Customer.class, id);
+		if(x!=null) {
+			session.delete(x);
+		}else {
+			System.out.println("Nothing to delete");
+		}
+		
+		txn.commit();
+		session.close();
+	}
+	
+}
+
+
+7) extract dao interface from impl by right click code, refactor -> extract interface.
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface CustomerDAO {
+
+	void create(Customer customer);
+
+	List<Customer> read();
+
+	Customer read(Long id);
+
+	void update(Customer customer);
+
+	void delete(Long id);
+
+}
+
+8) Test the code in App.java
+
+
+package com.harman.demo;
+
+import java.util.List;
+
+import com.harman.demo.model.Customer;
+import com.harman.demo.model.CustomerDAO;
+import com.harman.demo.model.CustomerDAOImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+//    	Customer customer=new Customer(2L, "Suresh", "Raja street, New Delhi", "1212121212");
+    	CustomerDAO cdao=new CustomerDAOImpl();
+//    	cdao.update(customer);
+    	
+//    	List<Customer> customers = cdao.read();
+//    	for(Customer c:customers) {
+//    		System.out.println(c);
+//    	}
+    	
+//    	Customer x = cdao.read(1L);
+//    	System.out.println(x);
+    	
+    	cdao.delete(2L);
+
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
