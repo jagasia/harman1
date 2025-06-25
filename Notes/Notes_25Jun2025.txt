@@ -1069,3 +1069,83 @@ Task:
 25-jun-annotations
 check this project to understand how we can configure beans using annotations
 
+
+---------------------------
+Now, lets use a configuration class
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = {"com"})
+public class MyConfiguration {
+
+	
+}
+
+
+
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext(MyConfiguration.class);
+//        ctx.scan("com");
+//        ctx.refresh();
+        
+        Car car=ctx.getBean(Car.class);
+        
+        car.playMusic();
+    
+
+
+-----------------------
+lets see how we can configure beans using @Bean instead of @Component
+
+	@Component is used over class
+	@Bean is used over method that returns object of bean class
+
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.harman.demo.model.Jbl;
+
+@Configuration
+@ComponentScan(basePackages = {"com"})
+public class MyConfiguration {
+
+	@Bean
+	public Jbl jbl() {
+		return new Jbl();
+	}
+}
+
+
+
+Now, there are 2 beans, that implements Audio, 
+so when you autowire, error:
+
+Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type 'com.harman.demo.model.Audio' available: expected single matching bean but found 2: sony,jbl
+
+
+Lets give clarify on choosing the bean in autowire
+
+
+
+Task:
+
+refer to project 
+	25-jun-annotations-config
+
+and understand configuring beans using	
+	@Component		over the class
+	@Bean			in configuration class
+
+use @Qualifer to specify the bean name for autowiring
+
+in annotations, 
+	autowiring is by Type by default, 
+	only when you use @Qualifier annotation, it is autowire by name
+
