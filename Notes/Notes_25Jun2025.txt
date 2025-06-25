@@ -1984,3 +1984,113 @@ public class MyController {
 
 
 
+----------------------------
+Spring Boot
+-------------
+	convention over configuration
+		if you follow convention (guidelines) then you do 			not need to configure
+	0 xml
+		you can configure anything without xml.
+
+	internal app servers like apache tomcat server.
+		we do not need to download any server.
+		just add dependency
+
+	starter project
+		allows you to bootstrap a starter project from 	
+			start.spring.io
+
+	starter dependencies
+		related dependencies (jars) are combined together 		as starter dependencies that make is easy to 		manage.
+
+	annotations also simplified by combining many
+
+	Auto configuration
+
+
+
+how do you run a dynamic web project??????
+	there is no main method in dynamic web project
+		we right click project run as "Run on server"
+
+	how do you run web app in cmd prompt?
+
+
+Spring boot provides, java app feel, by providing main method to start the project. And while running, it will launch tomcat and deploy web components
+
+
+	
+
+
+
+
+Before break, we created a spring mvc project.
+
+Now, the same, we will create using spring boot.
+
+Steps for Spring boot MVC:
+--------------------------------
+1) create a spring boot project using spring initializr
+
+project: maven
+language: java
+group id: com.harman.demo
+artifact id: 25-jun-spring-boot-mvc
+package: same as group id
+java version: 21
+type: war
+dependencies:
+	spring web
+
+2) in pom.xml add tomcat
+
+<dependency>				<groupId>org.apache.tomcat.embed</groupId>
+	<artifactId>tomcat-embed-jasper</artifactId>
+	<version>10.1.36</version>
+</dependency>
+
+3) in application.properties (src/main/resources)
+
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+server.port=8085
+
+
+4) now, create "WEB-INF/views" folder inside src/main/webapp folder
+
+5) inside the views folder, create index.jsp
+
+6) create the controller class.
+	either in base package or its sub package.
+base package:
+	where main method is present.
+main method is present inside "Application.java"
+the package that contains this Application.java is the base package.
+
+package com.harman.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class MyController {
+
+	@GetMapping
+	public String home() {
+		return "index";
+	}
+}
+
+7) run the Application.java which has main method
+as Run as "Java Application"
+
+8) go to browser
+http://localhost:8085
+
+
+
+Task:
+
+Follow the above 8 steps to create a spring boot mvc project
+
