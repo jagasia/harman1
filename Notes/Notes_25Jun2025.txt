@@ -900,3 +900,172 @@ now, lets use autowire by name.
 
 now no error. by name, Jbl is injected.
 
+
+Task:
+-------
+using xml configuration, observe the difference between
+	tightly couple and loosely coupled
+	autowire by type and autowire by name
+
+
+---------
+<bean name="" class="">
+	<property name="">
+		<value></value>
+	</property>
+</bean>
+
+---------------------
+<bean name="" class="">
+	<property name="" value="" />
+</bean>
+-----------------------
+
+<bean name="" class="" p:name="value" />
+
+-----------------------------
+
+
+<bean name="" class="">
+	<property name="">
+		<list>
+			<value></value>
+			<value></value>
+		</list>
+	</property>
+</bean>
+--------------------------------------------
+
+difference between list and set?
+		<bean name="school" class="model.School">
+			<property name="name" value="Velammal School" />
+			<property name="board" value="ICSE" />
+			<property name="studentList">
+				<list>
+					<ref bean="student" />
+					<ref bean="s2" />
+					<ref bean="s3" />
+					<ref bean="s2" />					
+				</list>
+			</property>
+		</bean>
+
+		<bean name="school" class="model.School">
+			<property name="name" value="Velammal School" />
+			<property name="board" value="ICSE" />
+			<property name="studentList">
+				<set>
+					<ref bean="student" />
+					<ref bean="s2" />
+					<ref bean="s3" />
+					<ref bean="s2" />					
+				</set>
+			</property>
+		</bean>
+
+<bean name="" class="">
+	<property name="">
+		<map>
+			<entry key="" value="" />
+			<entry key="">
+				<value></value>
+			</entry>
+		</map>
+	</property>
+</bean>
+
+
+
+
+---------------------------------------------------
+---------------------------------------------------
+Annotations
+--------------
+instead of usign xml configuration file, lets use annotations.
+	i) without configuration class
+	ii) with configuration class
+
+
+
+A class can become "bean" by using
+	@Component
+	@Bean 
+
+
+@Component
+	is used on the class
+
+@Bean
+	is used on a method that returns an instance of a class
+
+
+
+
+
+package com.harman.demo.model;
+
+public interface Audio {
+	void play();
+}
+
+
+package com.harman.demo.model;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Sony implements Audio{
+	public void play() {
+		System.out.println("Sony music is good");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+	@Autowired
+	private Audio audio;
+	
+	public Car() {}
+
+	public Car(Audio audio) {
+		super();
+		this.audio = audio;
+	}
+
+	public Audio getAudio() {
+		return audio;
+	}
+
+	public void setAudio(Audio audio) {
+		this.audio = audio;
+	}
+	
+	public void playMusic() {
+		audio.play();
+	}
+}
+
+
+
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext();
+        ctx.scan("com");
+        ctx.refresh();
+        
+        Car car=ctx.getBean(Car.class);
+        
+        car.playMusic();
+    
+
+
+Task:
+------
+25-jun-annotations
+check this project to understand how we can configure beans using annotations
+
