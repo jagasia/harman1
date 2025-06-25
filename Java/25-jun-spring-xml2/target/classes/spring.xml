@@ -1,0 +1,19 @@
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="a1" class="com.harman.demo.model.Author">
+		<property name="id" value="1" />
+		<property name="name" value="Shiv Khera" />
+	</bean>
+	
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" ref="a1" />
+		<property name="price" value="105.0" />		
+	</bean>
+
+</beans>
