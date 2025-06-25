@@ -1149,3 +1149,110 @@ in annotations,
 	autowiring is by Type by default, 
 	only when you use @Qualifier annotation, it is autowire by name
 
+
+
+
+==============================
+Spring Core Annotations
+==============================
+
+1. @Component
+   - Marks a class as a Spring-managed bean (generic stereotype).
+
+2. @Service
+   - Specialized @Component for service-layer beans.
+
+3. @Repository
+   - Specialized @Component for DAO classes.
+   - Adds exception translation for database errors.
+
+4. @Controller
+   - Specialized @Component for Spring MVC controllers.
+
+5. @Configuration
+   - Marks a class as a configuration class (replaces XML).
+
+6. @Bean
+   - Declares a bean inside a @Configuration class.
+
+7. @Autowired
+   - Automatically injects dependent beans by type.
+
+8. @Qualifier("beanName")
+   - Helps resolve ambiguity when multiple beans of same type exist.
+
+9. @Value("${property}")
+   - Injects values from properties file or hardcoded string.
+
+10. @Scope("singleton"/"prototype")
+    - Defines bean scope.
+
+11. @Primary
+    - Marks a bean as the default when multiple candidates are available.
+
+12. @Lazy
+    - Delays bean initialization until first use.
+
+13. @PostConstruct
+    - Method to run **after** bean initialization.
+
+14. @PreDestroy
+    - Method to run **before** bean destruction.
+
+15. @DependsOn("beanName")
+    - Specifies bean initialization order.
+
+==============================
+Spring MVC / REST Annotations
+==============================
+
+1. @RestController
+   - Combines @Controller + @ResponseBody
+
+2. @RequestMapping("/path")
+   - Maps HTTP requests to methods or classes.
+
+3. @GetMapping, @PostMapping, @PutMapping, @DeleteMapping
+   - Shortcut annotations for specific HTTP methods.
+
+4. @PathVariable
+   - Binds a URI template variable to method argument.
+
+5. @RequestParam
+   - Binds a query parameter to method argument.
+
+6. @RequestBody
+   - Maps HTTP request body to a Java object.
+
+7. @ResponseBody
+   - Returns data (usually JSON) directly in HTTP response.
+
+==============================
+Spring Boot Specific
+==============================
+
+1. @SpringBootApplication
+   - Combines @Configuration, @EnableAutoConfiguration, and @ComponentScan
+
+2. @EnableAutoConfiguration
+   - Enables Spring Boot’s auto-configuration mechanism.
+
+3. @ComponentScan
+   - Scans packages for @Component and other stereotype annotations.
+
+4. @EnableScheduling
+   - Enables Spring’s scheduled task execution (@Scheduled).
+
+5. @Scheduled(fixedRate = 5000)
+   - Runs method on a schedule (e.g., every 5 sec).
+
+6. @EnableAsync
+   - Enables asynchronous method execution (@Async).
+
+7. @Async
+   - Runs method in a background thread.
+
+==============================
+Task:
+
+Above are the list of annotations used in spring framework.
