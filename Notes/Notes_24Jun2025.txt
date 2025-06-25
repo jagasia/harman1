@@ -1227,3 +1227,375 @@ public class App2 {
 
 
 ---------------------------------------------
+Task:
+------
+Referring to above demo of hibernate relationships using
+Employee and Department,
+
+Can you try by yourself for 
+	Customer
+	Product
+	Order
+
+Customer and Product are not directly related in our case study.
+it is possible that these 2 have relationship, then it is M-M
+
+but in our example, 
+	One Customer place Many Order
+	One Product has Many Order
+
+---------------------------------------------------
+Any annotation ends with "many" like
+	@OneToMany
+	@ManyToMany
+
+these are complex because, many values cannot be fit in 1 foregin key column 
+
+for ex:
+
+Many to One
+	Employees to Department
+
+so in employee class, department is 1
+	so it is simple
+
+but vice versa, department class, if you have many employees:
+	List<Employee> employeeList;
+	Set<Employee> employeeSet;
+
+in both cases, the hibernate will try to create a new table and maintain, for one department, multiple employees
+
+	d1	e1
+	d1	e2
+	d1	e3
+
+
+
+but, we do not want 3rd table. Just in Employee table, department_id column is there, and that is enought to maintain the relationship.
+
+so, in order to avoid new table creation, we have to use "mappedBy" attribute in @OneToMay or any annotation ending with Many.
+
+We can skip using "mappedBy" intentionally when we want a 3rd table to be created.
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
+public class Department {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+	private List<Employee> employees;
+	
+	public Department() {}
+
+	public Department(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	
+	
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<Employee> employees) {
+		this.employees = employees;
+	}
+
+	@Override
+	public String toString() {
+		return "Department [id=" + id + ", name=" + name + "]";
+	}
+
+	
+}
+
+
+
+-------------------------------------
+Demo for Many to Many
+
+
+
+
+
+
+
+Exception in thread "main" org.hibernate.AnnotationException: Association 'com.harman.demo.model.Product.categories' targets the type 'com.harman.demo.model.Category' which is not an '@Entity' type
+
+
+
+package com.harman.demo.model;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+@Entity
+public class Category {
+	@Id
+	private Long id;
+	private String name;
+	@ManyToMany
+	private List<Product> products;
+	
+	public Category() {}
+
+	public Category(Long id, String name, List<Product> products) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.products = products;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + ", products=" + products + "]";
+	}
+	
+	
+}
+
+
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+@Entity
+public class Product {
+	@Id
+	private Long id;
+	private String name;
+	@ManyToMany
+	private List<Category> categories;
+	
+	public Product() {}
+
+	public Product(Long id, String name, List<Category> categories) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.categories = categories;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", categories=" + categories + "]";
+	}
+	
+}
+
+
+
+Activity:
+----------
+check notes and programs and we conclude Hibernate.
+
+-----------------------------------
+Spring framework
+---------------------
+beans
+and managing beans
+spring season for EJB developers
+
+EJB = Enterprise Java Beans
+	Java Beans  +  services
+
+What is Java Bean?
+	any component developed in java language is a java bean
+
+What is a component?
+	any re-usable piece of code that can be plugged into various types of projects
+
+It is separating 2 things:
+	1) application specific services
+		bean developers will have to do
+	2) generic services
+		are common to most of the projects, 
+		we can customize or configure
+	ex:	
+		security is common service for any project
+		we can configure it
+
+declarative vs programmatic
+
+instead of writing code for everything, we make use of the "containers" that provide generic services.
+
+container
+	special jvm
+	provide generic services
+
+spring container is called as IOC container.
+
+IOC	Inversion of control
+
+declarative way of allowing us to decide/ control the beans and their dependent beans
+
+Dependency injection
+	keeping the dependent bean loosely coupled and
+		allowing injecting them using
+			setters or constructors
+
+constructor based dependency injection
+setter based dependency injection
+
+We will mark a class as a "bean"
+if that class has "compostion" or "aggregation" relationship with another class, then we provide options to inject them using
+	constructor or setter
+
+A has B
+
+Book has Author
+
+class Book
+{
+	id, title, author	//how you inject author?
+	public Book(){}
+	public Book(Long id,String title,Author author){
+		//this.id=id......
+	}
+
+	public void setAuthor(Author author){
+		this.author=author;
+	}
+}
+
+class Author
+{}
+
+
+
+
+Elaborate, notepad friendly:
+What is the Spring Framework?					
+The DI Container					
+Inversion of Control					
+Beans  and Bean Life cycle					
+
+
+Bean life cycle:
+	construction
+		postConstruct()
+	activation
+		ejbActivate()
+	passivation
+		ejbPassivate()
+	destruction
+		preDestroy()
+
+container will maintain a pool bean instances
+it will not create for each request.
+it will take object from pool
+
+if pool size is 100
+then 100 users accessing our application are provided with 1 bean
+what happens to 101st user?
+	container, identifies the most idle bean instance 
+		and passivate the state
+
+Passivate:
+	the state of the bean is stored in secondary storage 
+	and that bean instance memory is claimed
+
+	new requests will use that bean instance
+
+Activate:
+	what happens the idle user becomes active?
+	again, it will passivate another bean instance and provide this user with that instance again, filled with the state recovered from the secondary storage.
+
+this passivation and activation happens several iterations in a millisecond that we will not even be aware of this.
+
+in that way, a set of instances can serve as many requests
+
+Activity:
+
+Understand the need for a framework like Spring framework,
+and what is container
+and what is the need for marking a class as a bean? (component)
+
+how container manages the life cycle of a bean, thereby handling scalability of the application
+

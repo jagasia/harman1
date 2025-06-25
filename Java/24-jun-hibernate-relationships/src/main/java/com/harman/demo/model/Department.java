@@ -1,8 +1,12 @@
 package com.harman.demo.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Department {
@@ -10,6 +14,8 @@ public class Department {
 	@GeneratedValue
 	private Long id;
 	private String name;
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+	private List<Employee> employees;
 	
 	public Department() {}
 
@@ -35,9 +41,20 @@ public class Department {
 		this.name = name;
 	}
 
+	
+	
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<Employee> employees) {
+		this.employees = employees;
+	}
+
 	@Override
 	public String toString() {
 		return "Department [id=" + id + ", name=" + name + "]";
 	}
+
 	
 }

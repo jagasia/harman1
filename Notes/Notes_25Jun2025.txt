@@ -1,0 +1,279 @@
+Spring framework - Spring core
+
+Today we will be step by step learning the basics of Spring framework.
+
+I will create a maven "quickstart" project
+
+Demo:
+
+in maven project, in pom.xml
+add spring core dependency
+
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>6.2.6</version>
+  </dependency>
+
+
+I am creating a class Calculator
+and configure this as a bean
+	this time, i use xml configuration
+
+then in App main method, i will get bean
+
+
+Calculator.java
+
+package com.harman.demo.model;
+
+public class Calculator {
+	private Integer no1;
+	private Integer no2;
+	
+	public Calculator() {
+		
+	}
+
+	public Calculator(Integer no1, Integer no2) {
+		super();
+		this.no1 = no1;
+		this.no2 = no2;
+	}
+
+	public Integer getNo1() {
+		return no1;
+	}
+
+	public void setNo1(Integer no1) {
+		this.no1 = no1;
+	}
+
+	public Integer getNo2() {
+		return no2;
+	}
+
+	public void setNo2(Integer no2) {
+		this.no2 = no2;
+	}
+	
+	public Integer sum() {
+		return no1+no2;
+	}
+	
+	
+}
+
+
+
+
+create a xml configuration file in src/main/java (not inside any package)
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="c1" class="com.harman.demo.model.Calculator">
+		<property name="no1" value="2" />
+		<property name="no2" value="3" />
+	</bean>
+
+</beans>
+
+
+
+note:
+if you are using 
+	<property> tag, then you are using setter based injection
+	<constructor-arg> tag, then you are using constructor based 			injection
+
+
+
+
+
+Types of Appication contexts:
+
+===============================
+Types of ApplicationContext in Spring
+===============================
+
+1. ClassPathXmlApplicationContext
+-------------------------------
+- Loads Spring XML config from the classpath
+- Commonly used in standalone apps
+
+Example:
+ApplicationContext context = 
+    new ClassPathXmlApplicationContext("spring-config.xml");
+
+
+2. FileSystemXmlApplicationContext
+--------------------------------
+- Loads Spring XML config from a full file system path
+- Used when config is stored outside classpath
+
+Example:
+ApplicationContext context = 
+    new FileSystemXmlApplicationContext("C:/configs/spring-config.xml");
+
+
+3. AnnotationConfigApplicationContext
+-----------------------------------
+- Used with Java-based config using @Configuration and @Bean
+- No XML required
+
+Example:
+AnnotationConfigApplicationContext context = 
+    new AnnotationConfigApplicationContext(AppConfig.class);
+
+// AppConfig.java
+@Configuration
+public class AppConfig {
+    @Bean
+    public Calculator calculator() {
+        return new Calculator();
+    }
+}
+
+
+4. WebApplicationContext
+-----------------------
+- Used in Spring MVC web applications
+- Integrated with ServletContext
+
+Defined in web.xml:
+
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+</context-param>
+
+<listener>
+    <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+</listener>
+
+
+5. GenericApplicationContext
+--------------------------
+- A flexible context that supports both XML and annotation configs
+- Allows programmatic registration of beans
+
+Example:
+GenericApplicationContext context = new GenericApplicationContext();
+XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
+reader.loadBeanDefinitions("classpath:spring-config.xml");
+context.refresh();
+
+===============================
+
+1) create a maven project of quickstart archetype.
+2) in pom.xml add the following dependency:
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>6.2.6</version>
+  </dependency>
+3) create the bean class.
+package com.harman.demo.model;
+
+public class Calculator {
+	private Integer no1;
+	private Integer no2;
+	
+	public Calculator() {
+		
+	}
+
+	public Calculator(Integer no1, Integer no2) {
+		super();
+		this.no1 = no1;
+		this.no2 = no2;
+	}
+
+	public Integer getNo1() {
+		return no1;
+	}
+
+	public void setNo1(Integer no1) {
+		this.no1 = no1;
+	}
+
+	public Integer getNo2() {
+		return no2;
+	}
+
+	public void setNo2(Integer no2) {
+		this.no2 = no2;
+	}
+	
+	public Integer sum() {
+		return no1+no2;
+	}
+	
+	
+}
+
+4) create a xml configuration file directly in src/main/java
+spring.xml
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="c1" class="com.harman.demo.model.Calculator">
+		<property name="no1" value="2" />
+		<property name="no2" value="3" />
+	</bean>
+
+</beans>
+
+
+5) in App.java, main method,
+
+get bean from context:
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Calculator;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+    	Calculator calc = ctx.getBean(Calculator.class);
+    	System.out.println(calc.sum());
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
+When you run the program, you get 5 as output because, the bean already injected 2 and 3 for no1 and no2 properties using setter based injection.
+
+Task:
+
+Create a Book class 
+	id
+	title
+	price
+
+configure this Book as a bean in xml file
+
+and in App,
+
+get Bean and display the details.
