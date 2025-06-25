@@ -277,3 +277,106 @@ configure this Book as a bean in xml file
 and in App,
 
 get Bean and display the details.
+
+
+----------------------------------
+Singleton vs Prototype
+---------------------------
+The bean is "singleton" by default. Unless we change it to prototype.
+
+What is singleton?
+	it means, even if you "getBean" many times, you are going to get the reference to same instance of the bean.
+
+
+
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Book;
+import com.harman.demo.model.Calculator;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+//    	Calculator calc = ctx.getBean(Calculator.class);
+//    	System.out.println(calc.sum());
+//        System.out.println( "Hello World!" );
+    	
+    	Book book1=(Book) ctx.getBean("b1");
+    	book1.setTitle("Tale of two cities");
+    	
+    	Book book2=(Book) ctx.getBean("b1"); 
+    	
+    	System.out.println(book1);
+    	System.out.println(book2);
+    }
+}
+
+
+THe output is same for book1 and book2.
+We have not created 2 objects of Book. But we have obtained the reference of book.
+
+A bean is singleton by default.
+
+How to change the bean scope to "prototype"?
+
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" value="Shiv Khera" />
+		<property name="price" value="105.0" />
+	</bean>
+
+
+output:
+
+Book [id=123, title=Tale of two cities, author=Shiv Khera, price=105.0]
+Book [id=123, title=You can win, author=Shiv Khera, price=105.0]
+
+
+since the scope of the bean is "prototype", each time we get bean, we get a different instance of the bean.
+
+Hope you understand the scope of the bean
+	singleton
+	prototype
+
+
+Now, in bean configuration,
+
+<property> 
+vs
+<constructor-arg>
+
+
+
+
+
+
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<!-- <property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" value="Shiv Khera" />
+		<property name="price" value="105.0" /> -->
+		
+		<constructor-arg name="id" value="123" />
+		<constructor-arg name="title" value="I can win" />
+		<constructor-arg name="author" value="JJag" />
+		<constructor-arg name="price" value="103.0" />
+		
+	</bean>
+
+
+Task:
+
+Observe how setter based, constructor based injections work.
+How to change the scope of the bean singleton to prototype and vice versa.
+

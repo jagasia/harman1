@@ -8,5 +8,18 @@
 		<property name="no1" value="2" />
 		<property name="no2" value="3" />
 	</bean>
+	
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<!-- <property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" value="Shiv Khera" />
+		<property name="price" value="105.0" /> -->
+		
+		<constructor-arg name="id" value="123" />
+		<constructor-arg name="title" value="I can win" />
+		<constructor-arg name="author" value="JJag" />
+		<constructor-arg name="price" value="103.0" />
+		
+	</bean>
 
 </beans>
