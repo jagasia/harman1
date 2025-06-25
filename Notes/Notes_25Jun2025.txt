@@ -612,3 +612,291 @@ both sony and jbl classes have same method
 
 car has a method "playMusic()" that calls the play method of sony
 
+car will have either sony or jbl
+
+-------------------------------------
+Demo:
+
+package com.harman.demo.model;
+
+public class Sony {
+	public void play() {
+		System.out.println("Sony makes good sound");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+public class Jbl {
+	public void play() {
+		System.out.println("Jbl sounds nice");
+	}
+}
+
+
+
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Sony sony;
+	
+	public Car() {}
+
+	public Car(Sony sony) {
+		super();
+		this.sony = sony;
+	}
+
+	public Sony getSony() {
+		return sony;
+	}
+
+	public void setSony(Sony sony) {
+		this.sony = sony;
+	}
+	
+	public void playMusic() {
+		sony.play();
+	}
+}
+
+
+
+
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Car;
+import com.harman.demo.model.Sony;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+    	Sony sony= (Sony) ctx.getBean("sony");
+    	Car car=(Car) ctx.getBean("car");
+    	car.playMusic();
+    }
+}
+
+
+
+
+---------------------
+In the above code, 
+	Car is tightly coupled with Sony.
+
+	to replace sony by jbl, we have to do lot of changes.
+
+
+To make is loosely coupled, we introduce an interface.
+
+
+When A has B
+
+if B is an interface, the B is loosely coupled with A, because, any class that implements B can be injected 
+
+
+
+package com.harman.demo.model;
+
+public interface Audio {
+	void play();
+}
+
+
+
+package com.harman.demo.model;
+
+public class Sony implements Audio {
+	public void play() {
+		System.out.println("Sony makes good sound");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Audio sony;	//loosely coupled. Any implementation of Audio can be injected
+	
+	public Car() {}
+
+	public Car(Audio sony) {
+		super();
+		this.sony = sony;
+	}
+
+	public Audio getSony() {
+		return sony;
+	}
+
+	public void setSony(Audio sony) {
+		this.sony = sony;
+	}
+	
+	public void playMusic() {
+		sony.play();
+	}
+}
+
+
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car">
+		<property name="sony" ref="jbl" />
+	</bean>
+</beans>
+
+
+
+
+
+		<property name="sony" ref="jbl" />
+		<property name="sony" ref="sony" />
+
+
+i am able to ref to sony or jbl easily. Because of loosely coupling.
+
+
+i am further modifying this program:
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Audio audio;	//loosely coupled. Any implementation of Audio can be injected
+	
+	public Car() {}
+
+	public Car(Audio audio) {
+		super();
+		this.audio= audio;
+	}
+
+	public Audio getAudio() {
+		return audio;
+	}
+
+	public void setAudio(Audio audio) {
+		this.audio = audio;
+	}
+	
+	public void playMusic() {
+		audio.play();
+	}
+}
+
+
+
+----------------------------------------------
+Autowiring
+-------------
+What is autowiring?
+	it is the ability of a bean to automatically detech the dependent beans and inject correctly.
+
+
+<bean name="car" class="com.harman.demo.model.Car">
+		<property name="audio" ref="jbl" />
+</bean>
+
+
+
+in the above code, i am doing a small change:-
+
+<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+</bean>
+
+i have removed the <property> and use autowire attribute
+
+
+
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+
+    	Car car=(Car) ctx.getBean("car");
+    	car.playMusic();
+
+
+you get bean called "car"
+and it comes with jbl automatically
+
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<!-- <bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+ -->	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+	</bean>
+</beans>
+
+
+------------------------------
+suppose, both sony and jbl are configured as beans.
+
+then autowire by type, matches audio with both sony and jbl,
+
+you get error.
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+	</bean>
+
+
+Error creating bean with name 'car' defined in class path resource [spring.xml]: Unsatisfied dependency expressed through bean property 'audio': No qualifying bean of type 'com.harman.demo.model.Audio' available: expected single matching bean but found 2: jbl,sony
+
+
+
+now, lets use autowire by name.
+
+---------------------------------
+	<bean name="audio" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byName">
+	</bean>
+
+
+now no error. by name, Jbl is injected.
+
