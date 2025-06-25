@@ -1793,3 +1793,194 @@ for AOP.
 Try it yourself.
 
 
+--------------------------------------------------------
+Spring MVC (has more steps than spring boot MVC)
+
+MVC
+	Model View Controller
+
+Model
+	code that defines data (data definition)
+	code that access data (data access)
+
+The Model represents the data, business logic, and rules of the application.
+
+
+View
+	input
+	output
+	User Interface
+	
+
+Controller
+	if controller is not there, then view and model must be in same machine
+
+The Controller handles user input, processes it, interacts with the Model, and decides which View to render.
+
+in java related frameworks, mvc, etc, 
+a controller is usually a servlet.
+
+controllers provide web access for views to access model.
+
+if you challenge, a controller which is not servlet?
+	struts f/w controller is Action 
+		but Action is a sub class of Servlet
+
+	spring MVC
+		controller is POJO class
+		but there is dispatcher servlet that is behind
+
+Steps for spring MVC:
+1) Create a maven project of "webapp" archetype
+or convert a dynamic web project into maven project by
+	right click project -> configure -> convert to maven project.
+
+2) in pom.xml add the following dependencies:
+
+
+<properties>
+   <spring.version>6.1.6</spring.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.jsp.version>3.0.0</jakarta.jsp.version>
+  </properties>
+
+
+ <!-- Spring Web MVC (Spring 6) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Jakarta Servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta JSP API -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>${jakarta.jsp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta JSTL -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
+3) create a folder for views:
+	src/main/webapp/WEB-INF
+
+in this location, create "views" folder.
+
+here, only we will have all jsp files.
+
+i have added a file "index.jsp" here.
+
+error in first line.
+
+steps:
+	right click project -> properties -> targeted runtimes
+		click add and choose latest apache tomcat server
+
+in my case it is version 11.
+
+browse to apache tomcat folder where bin is present.
+
+4) web.xml
+we are going to configure dispatcher servlet such that, any request coming to any endpoint will be received by one servlet called "DispatcherServlet" 
+
+spring webmvc dependency we added, contains this class.
+
+place the below code inside web-app tag of web.xml:-
+
+  <servlet>
+   	<servlet-name>spring</servlet-name>
+   	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+   	<load-on-startup>1</load-on-startup>
+  </servlet>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+5) create a bean xml file. We were using xml based configuration so far using xml, that file where we configure beans.
+
+name of the file should be <<dispatcher-servlet-name>>-servlet.xml
+
+in our case, DispatcherServlet name is "spring"
+
+so
+
+create spring-servlet.xml
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- Enable annotation-based configuration -->
+    <mvc:annotation-driven />
+
+    <!-- Scan the base package for annotated components like @Controller -->
+    <context:component-scan base-package="com.harman" />
+
+    <!-- View Resolver for resolving JSP files -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+</beans>
+
+
+6) create a controller class, right inside the base package you specified. it can be either in the base package or any of its sub package.
+
+package com.harman.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class MyController {
+	@GetMapping("/home")
+	public String home() {
+		return "index";	//prefixed and suffixed as per configuration
+	}
+}
+
+
+
+
+
