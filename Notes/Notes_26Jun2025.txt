@@ -1460,3 +1460,114 @@ UserDetailsService is an interface that we implement using
 
 refer to my 26-jun-security-1 project inside "security" folder.
 
+
+-------------------
+Demo4:
+----------
+instead of one user hard coded in loaduserby username, we can use jpa repository to find user by username (primary key).
+
+
+1) i have cloned the project as : 26-jun-security-2
+
+and added the following dependencies to pom.xml:
+
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+
+2) create, entity, repository, service (we already have a service class)
+
+entity:
+@Entity
+@Data
+@NoArgsConstructor
+public class MyUser {
+	@Id
+	private String username;
+	private String password;
+	private String role;	//csv roles
+}
+
+
+3) repository:
+
+@Repository
+public interface MyUserRepository extends JpaRepository<MyUser, String>{
+
+}
+
+4) service:
+it is already there "MyUserDetailsService"
+
+we just autowire the repository here.
+
+package com.harman.demo.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.harman.demo.entity.MyUser;
+import com.harman.demo.repository.MyUserRepository;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService{
+	@Autowired
+	private MyUserRepository ur;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//find user by username
+		Optional<MyUser> temp = ur.findById(username);
+		
+		User user=null;
+		if(temp.isPresent()) {
+			//user found. convert MyUser to User type
+			MyUser myUser = temp.get();
+			String[] arr = myUser.getRole().split(",");
+			List<SimpleGrantedAuthority> authorities=new ArrayList<>();
+			for(String role:arr) {
+				authorities.add(new SimpleGrantedAuthority(role));
+			}
+			user=new User(myUser.getUsername(), myUser.getPassword(), authorities);
+		}else
+		{
+			throw new UsernameNotFoundException("Login failed");
+		}
+//		return new User("dinesh", "prasad", new ArrayList<>());
+		return user;
+	}
+
+}
+
+
+demo 4 is completed. now, in our mysql database, we will add few records in myuser table.
+
+Whichever credentials matching with any row, will be allowed to login.
+
+
+time being, add users in mysql directly.
+
+Tomorrow, we can create end points like signup
+
