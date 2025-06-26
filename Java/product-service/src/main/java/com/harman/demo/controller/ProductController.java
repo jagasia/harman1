@@ -3,6 +3,8 @@ package com.harman.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.harman.demo.entity.Product;
@@ -22,13 +25,16 @@ public class ProductController {
 	private ProductService ps;
 	
 	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public Product create(@RequestBody Product product) {
 		return ps.create(product);
 	}
 	
 	@GetMapping
-	public List<Product> read() {
-		return ps.read();
+	public ResponseEntity<List<Product>> read() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ps.read());
 	}
 	
 	@GetMapping("/{id}")
@@ -42,8 +48,11 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public Product delete(@PathVariable Long id) {
-		return ps.delete(id);
+	public ResponseEntity<Product> delete(@PathVariable Long id) {
+		ps.delete(id);
+		return ResponseEntity
+				.status(HttpStatus.NO_CONTENT)
+				.build();
 	}
 	
-}
+}0
