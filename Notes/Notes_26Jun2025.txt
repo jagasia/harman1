@@ -271,3 +271,350 @@ Refer to
 
 and try CRUD mvc for Customer.
 
+--------------------------------------
+Maven vs Gradle
+
+in maven, we use "pom.xml"
+in gradle, we use "build.gradle"
+
+Demo:
+
+Lets create a restful webservice using gradle-groovy
+
+1) generate a spring boot application using spring initializr
+project: gradle groovy
+
+dependencies: spring web
+
+2) create a controller class
+package com.harman.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HomeController {
+
+	@GetMapping
+	public String home() {
+		return "Welcome to home";
+	}
+}
+
+
+run the app
+
+check the output in browser.
+
+
+Introduction to Spring Boot Features					
+Creating a simple Boot application using Spring Initializer website - maven and gradle (Here will discuss more details of gradle)					
+How auto-configuration works					
+Configuration properties					
+Using CommandLineRunner					
+
+
+
+
+
+Every spring boot application has Application class annotated by
+	@SpringBootApplication
+
+@SpringBootApplication
+	includes
+		@SpringBootConfiguration
+			is a kind of @Configuration
+		@EnableAutoConfiguration
+		@ComponentScan
+
+
+
+
+
+If you have this dependency:
+
+xml
+Copy
+Edit
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+Then Spring Boot:
+
+Detects spring-webmvc
+
+Auto-configures:
+
+DispatcherServlet
+
+RequestMappingHandlerMapping
+
+Embedded Tomcat server
+
+You don’t need to define those beans yourself!
+
+
+
+
+Using @Controller, @RestController, handling GET,PUT,POST, DELETE methods ysing annotations					
+Introduction to Web Services					
+REST Vs SOAP					
+
+
+
+@Controller vs @RestController
+
+@Controller
+	is used in MVC applications
+	in a controller class, a method returns
+		view	(or)
+		ModelAndView
+
+	but we can modify that behaviour using @ResponseBody
+
+ex:
+in a controller class, the following method:
+
+	@GetMapping("/hello")
+	@ResponseBody		//note this 
+	public String hello(){
+		return "Hello world";
+	}
+
+
+@ReponseBody annotation over a method, will change what is returned by the method.
+	instead of returning the view name, the method returns the response body that is going to be printed in the browser.
+
+
+In @RestController, the methods return response body only. We do not need to mention @ResponseBody on the methods. 
+
+
+@RestController	=>	@Controller + @ResponseBody
+
+@RestController
+public class HomeController {
+	@Value("${spring.application.name}")
+	private String appName;
+
+	@GetMapping
+	public String home() {
+		return "Welcome to "+appName;	//not view name. it is response body
+	}
+}
+
+
+RESTful webservices methods are stateless. Every request to a rest method is independent and does not preserve any state.
+
+HTTP
+
+
+REST Vs SOAP					
+
+
+I learned SOAP webservices first. 
+Simple Object Access Protocol
+	protocol
+	soap is not based on microservices architecture.
+	one url for entire webservice.
+	soap supports XML only
+
+RESTful webservices
+	architectural style
+	is based on microservices architecture
+	one url per web method
+	rest supports multiple formats including
+		XML
+		HTML
+		JSON
+		
+
+a webservice is inter-operable across platforms and languages
+
+a webservice created in .net can be accessed from any program developed in any language any platform
+
+it is because, the data sent and received by a webservice is in text format instead of binary. SOAP used XML format (which is also text based)
+
+
+Enter your mobile number:
+Enter the text:
+	<<send sms>> button
+
+i submitted the form to a servlet.
+and i found one webservice end point in google
+and i called that webservice, 
+then that webservice sent the sms
+
+how is it possible, 
+	it is possible only if we can call a program through internet
+	that program runs in a server, somewhere in the world.
+	and we are able to call that program through http
+
+that is web service.
+
+REST API
+
+
+SOAP vs REST
+------------------
+REST vs. SOAP
+=============
+
+1. Protocol:
+   - REST: Uses HTTP only
+   - SOAP: Uses HTTP, SMTP, TCP, etc.
+
+2. Data Format:
+   - REST: Supports JSON, XML, plain text, HTML
+   - SOAP: Supports only XML
+
+3. Type:
+   - REST: Architectural style
+   - SOAP: Protocol (strict standard)
+
+4. Speed:
+   - REST: Faster (lightweight)
+   - SOAP: Slower (verbose XML)
+
+5. Flexibility:
+   - REST: Highly flexible
+   - SOAP: Strict and rigid
+
+6. Ease of Use:
+   - REST: Easy to test (Postman, curl)
+   - SOAP: Requires SOAP tools (e.g., SoapUI)
+
+7. Security:
+   - REST: Basic (HTTPS, OAuth)
+   - SOAP: Advanced (WS-Security, encryption, signatures)
+
+8. Standards:
+   - REST: No strict standards
+   - SOAP: WSDL, XSD, WS-Security, etc.
+
+9. Stateless:
+   - REST: Stateless only
+   - SOAP: Can be stateless or stateful
+
+10. Usage:
+    - REST: Web/mobile apps, microservices
+    - SOAP: Enterprise, legacy systems, banking, telecom
+
+Example:
+--------
+
+REST API:
+---------
+GET http://api.example.com/users/101
+
+Response (JSON):
+{
+  "id": 101,
+  "name": "Jagadees",
+  "email": "jag@example.com"
+}
+
+SOAP Request (XML):
+-------------------
+POST http://api.example.com/UserService
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:usr="http://example.com/user">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <usr:getUser>
+      <usr:userId>101</usr:userId>
+    </usr:getUser>
+  </soapenv:Body>
+</soapenv:Envelope>
+
+SOAP Response:
+--------------
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <getUserResponse>
+      <id>101</id>
+      <name>Jagadees</name>
+      <email>jag@example.com</email>
+    </getUserResponse>
+  </soapenv:Body>
+</soapenv:Envelope>
+
+Summary:
+--------
+- REST is lightweight, flexible, and modern (preferred for new applications)
+- SOAP is formal, secure, and used in enterprise systems with complex requirements
+
+
+===========================================
+Implementing REST with Spring MVC, @RequestMapping, @RequestBody and @ResponseBody, @PathVariable, @RequestParams, @RequestHeaders					
+
+
+
+MVC 	=	complete project, it can be monolithic (1 war)
+REST	=	independent services. Each controller methods 			have endpoint
+
+rest with spring mvc means,
+	we can create all the code that needs to access database as restful webservices.
+	and then the frontend in java, web app model is MVC
+
+from MVC, how we can access REST?
+	i) feign client
+		can be used to access rest api from mvc
+		can be used to access rest api from another rest 			api
+	ii) if we are using spring boot, we can use
+		RestTemplate
+			can be used to access any rest api from a 				spring boot code
+
+
+	iii) we can call any rest api from any java code using 
+		HttpClient	(java 11 onwards)
+		HttpUrlConnection (old version)
+
+
+
+Demo:
+lets run a restful web service and then access it from 
+	HttpClient
+
+http://localhost:8085/person
+
+lets call this above endpoint from a core java program
+
+code:
+-------
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+
+public class APICall {
+   public static void main(String[] args) {
+      HttpClient httpClient = HttpClient.newBuilder()
+         .version(HttpClient.Version.HTTP_2)
+         .connectTimeout(Duration.ofSeconds(10))
+         .build(); 
+         try {
+            HttpRequest request = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create("http://localhost:8085/person"))
+            .build();                              
+            HttpResponse<String> response = httpClient.send(request,
+            HttpResponse.BodyHandlers.ofString()); 
+
+         System.out.println("Status code: " + response.statusCode());                            
+         System.out.println("Headers: " + response.headers().allValues("content-type"));
+         System.out.println("Body: " + response.body());
+      } catch (IOException | InterruptedException e) {
+         e.printStackTrace();
+      }
+   }
+}
+
+
+Task:
+------
+Observe the Spring boot RESTful webservices we discussed so far.
