@@ -1311,3 +1311,152 @@ use
 
 in the repository 
 and test them
+
+
+-------------------------------------------------	
+	
+Spring security
+--------------------
+
+demo1:
+---------
+observe the effect of adding "spring-security" dependency in our project.
+
+
+when we run the project, we see in console:
+
+Using generated security password: 
+	3df6eb3e-9d13-4d96-82de-0da96f1955af
+
+
+
+when we access 
+
+http://localhost:8080/
+
+http://localhost:8080/about
+
+http://localhost:8080/contact
+
+any of the urls, it is asking us to login.
+
+username is "user" by default.
+
+Password is provided in the console, that will keep changing as and when we restart the project.
+
+password is: 3df6eb3e-9d13-4d96-82de-0da96f1955af
+
+
+Demo 2:
+---------
+now, lets change the username and password to our choice.
+
+go to application.properties:
+
+spring.security.user.name=jag
+spring.security.user.password=jag@123
+
+
+
+restart the project. now, when you try to access any endpoint, it will ask you to login.
+
+you provide the username and password you configured in the application.properties
+
+
+Demo 3:
+----------
+now that the username and password should not be visible in application.properties file. 
+
+So, lets configure using Java configuration class.
+
+1) create a configuration class.
+we need to define 
+	AuthenticationProvider bean
+		depends on
+			UserDetailsService bean
+			PasswordEncoder bean
+
+
+2) user details service bean:
+
+package com.harman.demo.service;
+
+import java.util.ArrayList;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService{
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return new User("dinesh", "prasad", new ArrayList<>());
+	}
+
+}
+
+
+3) in config class: define, password encoder and authenticationProvider beans.
+
+package com.harman.demo.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+public class MySecurityConfiguration {
+	@Autowired
+	private UserDetailsService uds;
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
+	}
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider ap=new DaoAuthenticationProvider();
+		ap.setUserDetailsService(uds);
+		ap.setPasswordEncoder(passwordEncoder());
+		return ap;
+	}
+}
+
+
+-----------------------------------------------------
+Task:
+----------
+
+Upto demo3, you observe
+
+1) by adding spring security dependency, you understand that every url is allowed after logging in only.
+default username: user
+password: is generated in console.
+
+2) in application.properties
+
+spring.security.user.name=jag
+spring.security.user.password=jag@123
+
+now you observe that you are allowed to login using the credentials provided by you.
+
+3) now, create a configuration class and configure the following beans:
+	authenticationProvider bean
+		depends on
+			passwordEncoder bean
+			userDetailsService bean
+
+UserDetailsService is an interface that we implement using
+	MyUserDetailsService and override the "loadUserByUsername" method.
+
+refer to my 26-jun-security-1 project inside "security" folder.
+
