@@ -2168,3 +2168,9 @@ public class MyController {
 }
 
 
+Task:
+
+Refer to 25-spring-boot-mvc
+
+and create a login form and on submit it should give result as "success" or "failure"
+
