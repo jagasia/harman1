@@ -1040,3 +1040,274 @@ and ResponseEntity
 
 to return the appopriate status code as response.
 
+---------------------------------------------------------------
+Quick introduction to ORM with JPA					
+Benefits of using Spring with JPA					
+JPA configuration in Spring					
+Configuring Spring JPA using Spring Boot					
+Spring Data JPA dynamic repositories					
+Transaction Management in Spring Data JPA					
+A demo application to implement CRUD operations using Spring Data JPA					
+
+
+
+Relationships using annotations, we learned in hibernate, holds the same in jpa also.
+
+JPAQL
+-------
+like HQL, we use JPAQL for writing queries.
+
+
+in jpa, except the usual
+	create, read, update, delete
+
+find by non primary key fields
+	use finder methods
+
+package com.harman.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.harman.demo.entity.Product;
+import java.util.List;
+
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+	List<Product> findByCategory(String category);
+}
+
+
+
+
+
+
+package com.harman.demo.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.exception.ProductNotFoundException;
+import com.harman.demo.repository.ProductRepository;
+
+@Service
+public class ProductService {
+	@Autowired
+	private ProductRepository pr;
+	
+	public Product create(Product product) {
+		return pr.save(product);
+	}
+	
+	public List<Product> read() {
+		return pr.findAll();
+	}
+	
+	public Product read(Long id) {
+		Optional<Product> temp = pr.findById(id);
+		Product product=null;
+		if(temp.isPresent()) {
+			product=temp.get();
+		}else {
+			throw new ProductNotFoundException(id);
+		}
+		return product;
+	}
+	
+	public Product update(Long id, Product product) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.save(product);
+		}
+		return temp;
+	}
+	
+	public Product delete(Long id) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.delete(temp);
+		}
+		return temp;
+	}
+	
+	public List<Product> findByCategory(String category) {
+		return pr.findByCategory(category);
+	}
+	
+}
+
+
+
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Product create(@RequestBody Product product) {
+		return ps.create(product);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> read() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ps.read());
+	}
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id) {
+		return ps.read(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product) {
+		return ps.update(id, product);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> delete(@PathVariable Long id) {
+		ps.delete(id);
+		return ResponseEntity
+				.status(HttpStatus.NO_CONTENT)
+				.build();
+	}
+	
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category) {
+		return ps.findByCategory(category);
+	}
+}
+
+
+
+
+
+
+Demo:
+
+write query in jpa
+
+in repository:-
+
+@Query("from Product p where p.price between :from and :to")
+public List<Product> findProductsInRange(@Param("from") Double 	from,@Param("to") Double to);
+
+
+
+in service:-
+
+	public List<Product> findProductsInRange(Double from, Double to){
+		return pr.findProductsInRange(from, to);
+	}
+
+
+
+in controller:-
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Product create(@RequestBody Product product) {
+		return ps.create(product);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> read() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ps.read());
+	}
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id) {
+		return ps.read(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product) {
+		return ps.update(id, product);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> delete(@PathVariable Long id) {
+		ps.delete(id);
+		return ResponseEntity
+				.status(HttpStatus.NO_CONTENT)
+				.build();
+	}
+	
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category) {
+		return ps.findByCategory(category);
+	}
+	
+	@GetMapping("/range/{from}/{to}")
+	public List<Product> findProductsInRange(@PathVariable("from") Double from,@PathVariable Double to){
+		return ps.findProductsInRange(from, to);
+	}
+}
+
+
+Task:
+use 
+	finder methods
+	queries
+
+in the repository 
+and test them

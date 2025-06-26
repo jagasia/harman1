@@ -3,6 +3,7 @@ package com.harman.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,4 +56,13 @@ public class ProductController {
 				.build();
 	}
 	
-}0
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category) {
+		return ps.findByCategory(category);
+	}
+	
+	@GetMapping("/range/{from}/{to}")
+	public List<Product> findProductsInRange(@PathVariable("from") Double from,@PathVariable Double to){
+		return ps.findProductsInRange(from, to);
+	}
+}

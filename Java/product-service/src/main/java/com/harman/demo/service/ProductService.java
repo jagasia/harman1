@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.harman.demo.entity.Product;
@@ -50,5 +51,12 @@ public class ProductService {
 		return temp;
 	}
 	
+	public List<Product> findByCategory(String category) {
+		return pr.findByCategory(category);
+	}
+	
+	public List<Product> findProductsInRange(Double from, Double to){
+		return pr.findProductsInRange(from, to);
+	}
 	
 }
