@@ -189,3 +189,43 @@ test in postman, by signing up and then logging in.
 
 ensure, no tokens unnecessarily sent.
 
+
+
+--------------------
+we allow users to signup
+	username
+	password
+	roles		as comma separated value
+
+we allow users to login by providing
+	username
+	password
+
+but, our code, will fetch record from database, and convert the comma separated roles into granted authorities collection
+
+Now, introducing method security
+ie., which role holder is allowed to access while method?
+
+we have to use
+	@EnableMethodSecurity 
+in our configuration class
+
+
+
+
+How to use jwt token, while accessing any endpoint that is authenticated?
+
+we should send a header
+	Authorization
+	Bearer <token here>
+
+
+
+Task:
+
+After implementing @EnableMethodSecurity
+
+and use @PreAuthorize in controller methods,
+
+you observe that, based on the role, only they are allowed access.
+
