@@ -406,3 +406,49 @@ ex:
 
 
 --------------------------------------------------------
+Demo for front end.
+
+1) signup
+2) login
+3) product table	(all are allowed to access)
+4) product form
+	add, update, delete are allowed for admin only
+
+5) logout
+	to clear the storage that contains token
+
+
+
+
+CORS
+	Cross Origin Resource Sharing
+
+normally CORS is disabled.
+
+we have to enable CORS in our restful webservice
+
+
+
+
+import axios from "axios";
+
+class ProductService
+{
+    URL='http://localhost:8080/api/v2/product'
+
+    getToken(){
+        var token=localStorage.getItem('token');
+        if(!token){
+            throw new Error("You have not logged in");
+        }else{
+            return JSON.parse(token);
+        }
+    }
+
+    fnAllProducts(){
+        var token=this.getToken();
+        return axios.get(this.URL,{headers:{Authorization:`Bearer ${token}`}});        
+    }
+}
+export default new ProductService();
+
