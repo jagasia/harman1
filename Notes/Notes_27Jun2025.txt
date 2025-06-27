@@ -117,3 +117,75 @@ Task:
 
 Complete upto Login and getting jwt token.
 
+--------------------------------------------
+Lets do the code for signup.
+
+so far, we are using "NoOpPasswordEncoder"
+that means, the password is not encrypted. So it is visible in database.
+
+now, lets use BCrypt password encoder
+
+in our configuration, we update the password encoder bean.
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+//		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
+	}
+
+
+now, in our db, table, there are 3 users already. I am going to update their passwords.
+
+Time being i will use online website to encryt the password and update the table records.
+
+https://bcrypt-generator.com/
+
+i have encrypted each password and updated the db.
+
+now, when i enter password as "jag", it is encrypted as 
+$2a$12$xTSV9TQvCd9dzDSfSN4wbe.F8vTpnDIb33frVx2ZD1F7nxG7NPS9O
+
+and compared it with database. it logs in successfully.
+
+-------------------------------
+during signup, the user will enter the password as plain text,
+our code should encryt the password before persisting it in the db.
+
+
+Steps for signup:
+
+1) in config class, update the password encoder bean:-
+@Bean
+	public PasswordEncoder passwordEncoder() {
+//		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
+	}
+
+
+
+2) in service, add a method for signup:-
+
+	public MyUser signup(MyUser myUser) {
+		myUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
+		return ur.save(myUser);
+	}
+
+
+3) in controller, modify the signup endpoint:- 
+
+
+	@PostMapping("/signup")
+	public String signup(@RequestBody MyUser user) {
+		if(us.signup(user)!=null)
+			return "Signed up successfully";
+		else
+			return "Failed";
+	}
+
+
+4) restart the project.
+
+test in postman, by signing up and then logging in.
+
+ensure, no tokens unnecessarily sent.
+
