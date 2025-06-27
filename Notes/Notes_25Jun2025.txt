@@ -1,0 +1,2176 @@
+Spring framework - Spring core
+
+Today we will be step by step learning the basics of Spring framework.
+
+I will create a maven "quickstart" project
+
+Demo:
+
+in maven project, in pom.xml
+add spring core dependency
+
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>6.2.6</version>
+  </dependency>
+
+
+I am creating a class Calculator
+and configure this as a bean
+	this time, i use xml configuration
+
+then in App main method, i will get bean
+
+
+Calculator.java
+
+package com.harman.demo.model;
+
+public class Calculator {
+	private Integer no1;
+	private Integer no2;
+	
+	public Calculator() {
+		
+	}
+
+	public Calculator(Integer no1, Integer no2) {
+		super();
+		this.no1 = no1;
+		this.no2 = no2;
+	}
+
+	public Integer getNo1() {
+		return no1;
+	}
+
+	public void setNo1(Integer no1) {
+		this.no1 = no1;
+	}
+
+	public Integer getNo2() {
+		return no2;
+	}
+
+	public void setNo2(Integer no2) {
+		this.no2 = no2;
+	}
+	
+	public Integer sum() {
+		return no1+no2;
+	}
+	
+	
+}
+
+
+
+
+create a xml configuration file in src/main/java (not inside any package)
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="c1" class="com.harman.demo.model.Calculator">
+		<property name="no1" value="2" />
+		<property name="no2" value="3" />
+	</bean>
+
+</beans>
+
+
+
+note:
+if you are using 
+	<property> tag, then you are using setter based injection
+	<constructor-arg> tag, then you are using constructor based 			injection
+
+
+
+
+
+Types of Appication contexts:
+
+===============================
+Types of ApplicationContext in Spring
+===============================
+
+1. ClassPathXmlApplicationContext
+-------------------------------
+- Loads Spring XML config from the classpath
+- Commonly used in standalone apps
+
+Example:
+ApplicationContext context = 
+    new ClassPathXmlApplicationContext("spring-config.xml");
+
+
+2. FileSystemXmlApplicationContext
+--------------------------------
+- Loads Spring XML config from a full file system path
+- Used when config is stored outside classpath
+
+Example:
+ApplicationContext context = 
+    new FileSystemXmlApplicationContext("C:/configs/spring-config.xml");
+
+
+3. AnnotationConfigApplicationContext
+-----------------------------------
+- Used with Java-based config using @Configuration and @Bean
+- No XML required
+
+Example:
+AnnotationConfigApplicationContext context = 
+    new AnnotationConfigApplicationContext(AppConfig.class);
+
+// AppConfig.java
+@Configuration
+public class AppConfig {
+    @Bean
+    public Calculator calculator() {
+        return new Calculator();
+    }
+}
+
+
+4. WebApplicationContext
+-----------------------
+- Used in Spring MVC web applications
+- Integrated with ServletContext
+
+Defined in web.xml:
+
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+</context-param>
+
+<listener>
+    <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+</listener>
+
+
+5. GenericApplicationContext
+--------------------------
+- A flexible context that supports both XML and annotation configs
+- Allows programmatic registration of beans
+
+Example:
+GenericApplicationContext context = new GenericApplicationContext();
+XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
+reader.loadBeanDefinitions("classpath:spring-config.xml");
+context.refresh();
+
+===============================
+
+1) create a maven project of quickstart archetype.
+2) in pom.xml add the following dependency:
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>6.2.6</version>
+  </dependency>
+3) create the bean class.
+package com.harman.demo.model;
+
+public class Calculator {
+	private Integer no1;
+	private Integer no2;
+	
+	public Calculator() {
+		
+	}
+
+	public Calculator(Integer no1, Integer no2) {
+		super();
+		this.no1 = no1;
+		this.no2 = no2;
+	}
+
+	public Integer getNo1() {
+		return no1;
+	}
+
+	public void setNo1(Integer no1) {
+		this.no1 = no1;
+	}
+
+	public Integer getNo2() {
+		return no2;
+	}
+
+	public void setNo2(Integer no2) {
+		this.no2 = no2;
+	}
+	
+	public Integer sum() {
+		return no1+no2;
+	}
+	
+	
+}
+
+4) create a xml configuration file directly in src/main/java
+spring.xml
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="c1" class="com.harman.demo.model.Calculator">
+		<property name="no1" value="2" />
+		<property name="no2" value="3" />
+	</bean>
+
+</beans>
+
+
+5) in App.java, main method,
+
+get bean from context:
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Calculator;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+    	Calculator calc = ctx.getBean(Calculator.class);
+    	System.out.println(calc.sum());
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
+When you run the program, you get 5 as output because, the bean already injected 2 and 3 for no1 and no2 properties using setter based injection.
+
+Task:
+
+Create a Book class 
+	id
+	title
+	price
+
+configure this Book as a bean in xml file
+
+and in App,
+
+get Bean and display the details.
+
+
+----------------------------------
+Singleton vs Prototype
+---------------------------
+The bean is "singleton" by default. Unless we change it to prototype.
+
+What is singleton?
+	it means, even if you "getBean" many times, you are going to get the reference to same instance of the bean.
+
+
+
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Book;
+import com.harman.demo.model.Calculator;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+//    	Calculator calc = ctx.getBean(Calculator.class);
+//    	System.out.println(calc.sum());
+//        System.out.println( "Hello World!" );
+    	
+    	Book book1=(Book) ctx.getBean("b1");
+    	book1.setTitle("Tale of two cities");
+    	
+    	Book book2=(Book) ctx.getBean("b1"); 
+    	
+    	System.out.println(book1);
+    	System.out.println(book2);
+    }
+}
+
+
+THe output is same for book1 and book2.
+We have not created 2 objects of Book. But we have obtained the reference of book.
+
+A bean is singleton by default.
+
+How to change the bean scope to "prototype"?
+
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" value="Shiv Khera" />
+		<property name="price" value="105.0" />
+	</bean>
+
+
+output:
+
+Book [id=123, title=Tale of two cities, author=Shiv Khera, price=105.0]
+Book [id=123, title=You can win, author=Shiv Khera, price=105.0]
+
+
+since the scope of the bean is "prototype", each time we get bean, we get a different instance of the bean.
+
+Hope you understand the scope of the bean
+	singleton
+	prototype
+
+
+Now, in bean configuration,
+
+<property> 
+vs
+<constructor-arg>
+
+
+
+
+
+
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<!-- <property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" value="Shiv Khera" />
+		<property name="price" value="105.0" /> -->
+		
+		<constructor-arg name="id" value="123" />
+		<constructor-arg name="title" value="I can win" />
+		<constructor-arg name="author" value="JJag" />
+		<constructor-arg name="price" value="103.0" />
+		
+	</bean>
+
+
+Task:
+
+Observe how setter based, constructor based injections work.
+How to change the scope of the bean singleton to prototype and vice versa.
+
+
+-------------------------------------
+If author is an object of Author class instead of String type.
+
+package com.harman.demo.model;
+
+public class Author {
+	private String id;
+	private String name;
+	
+	public Author() {}
+
+	public Author(String id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Author [id=" + id + ", name=" + name + "]";
+	}
+	
+	
+}
+
+
+Book has Author
+	can you see a "has" relationship or "part of" relationship
+
+Aggregation/ Composition
+
+Aggregation
+	2 entities are associated as "has" relationship, but still both can exist independently.	
+	for ex:	
+		Customer and Product can exist independently
+		and still can aggregate to have a relationship
+
+Composition
+	2 entities share "has" relationship but 1 controls life of another
+	or 1 cannot exist independently.
+
+A has B
+B is a part of A
+
+
+Book has Author
+Author is a part of Book
+
+
+
+Demo:
+--------
+package com.harman.demo.model;
+
+public class Author {
+	private String id;
+	private String name;
+	
+	public Author() {}
+
+	public Author(String id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Author [id=" + id + ", name=" + name + "]";
+	}
+	
+	
+}
+
+
+
+package com.harman.demo.model;
+
+public class Book {
+	private Integer id;
+	private String title;
+	private Author author;
+	private Double price;
+	
+	public Book() {}
+
+	public Book(Integer id, String title, Author author, Double price) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.author = author;
+		this.price = price;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Author getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	@Override
+	public String toString() {
+		return "Book [id=" + id + ", title=" + title + ", author=" + author + ", price=" + price + "]";
+	}
+	
+	
+}
+
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="a1" class="com.harman.demo.model.Author">
+		<property name="id" value="1" />
+		<property name="name" value="Shiv Khera" />
+	</bean>
+	
+	<bean id="b1" class="com.harman.demo.model.Book" scope="prototype">
+		<property name="id" value="123" />
+		<property name="title" value="You can win" />
+		<property name="author" ref="a1" />
+		<property name="price" value="105.0" />		
+	</bean>
+
+</beans>
+
+
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Book;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+    	Book book1= (Book) ctx.getBean("b1");
+    	System.out.println(book1);
+    }
+}
+
+
+
+
+
+Task:
+-------
+Create 3 beans now.
+
+1) Sony
+2) Jbl
+3) Car
+	Sony
+
+both sony and jbl classes have same method
+	play()	that returns
+		"Sony makes good sound"
+		"Jbl sounds nice"
+
+car has a method "playMusic()" that calls the play method of sony
+
+car will have either sony or jbl
+
+-------------------------------------
+Demo:
+
+package com.harman.demo.model;
+
+public class Sony {
+	public void play() {
+		System.out.println("Sony makes good sound");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+public class Jbl {
+	public void play() {
+		System.out.println("Jbl sounds nice");
+	}
+}
+
+
+
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Sony sony;
+	
+	public Car() {}
+
+	public Car(Sony sony) {
+		super();
+		this.sony = sony;
+	}
+
+	public Sony getSony() {
+		return sony;
+	}
+
+	public void setSony(Sony sony) {
+		this.sony = sony;
+	}
+	
+	public void playMusic() {
+		sony.play();
+	}
+}
+
+
+
+
+
+package com.harman.demo;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.harman.demo.model.Car;
+import com.harman.demo.model.Sony;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+    	Sony sony= (Sony) ctx.getBean("sony");
+    	Car car=(Car) ctx.getBean("car");
+    	car.playMusic();
+    }
+}
+
+
+
+
+---------------------
+In the above code, 
+	Car is tightly coupled with Sony.
+
+	to replace sony by jbl, we have to do lot of changes.
+
+
+To make is loosely coupled, we introduce an interface.
+
+
+When A has B
+
+if B is an interface, the B is loosely coupled with A, because, any class that implements B can be injected 
+
+
+
+package com.harman.demo.model;
+
+public interface Audio {
+	void play();
+}
+
+
+
+package com.harman.demo.model;
+
+public class Sony implements Audio {
+	public void play() {
+		System.out.println("Sony makes good sound");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Audio sony;	//loosely coupled. Any implementation of Audio can be injected
+	
+	public Car() {}
+
+	public Car(Audio sony) {
+		super();
+		this.sony = sony;
+	}
+
+	public Audio getSony() {
+		return sony;
+	}
+
+	public void setSony(Audio sony) {
+		this.sony = sony;
+	}
+	
+	public void playMusic() {
+		sony.play();
+	}
+}
+
+
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car">
+		<property name="sony" ref="jbl" />
+	</bean>
+</beans>
+
+
+
+
+
+		<property name="sony" ref="jbl" />
+		<property name="sony" ref="sony" />
+
+
+i am able to ref to sony or jbl easily. Because of loosely coupling.
+
+
+i am further modifying this program:
+
+
+package com.harman.demo.model;
+
+public class Car {
+	private Audio audio;	//loosely coupled. Any implementation of Audio can be injected
+	
+	public Car() {}
+
+	public Car(Audio audio) {
+		super();
+		this.audio= audio;
+	}
+
+	public Audio getAudio() {
+		return audio;
+	}
+
+	public void setAudio(Audio audio) {
+		this.audio = audio;
+	}
+	
+	public void playMusic() {
+		audio.play();
+	}
+}
+
+
+
+----------------------------------------------
+Autowiring
+-------------
+What is autowiring?
+	it is the ability of a bean to automatically detech the dependent beans and inject correctly.
+
+
+<bean name="car" class="com.harman.demo.model.Car">
+		<property name="audio" ref="jbl" />
+</bean>
+
+
+
+in the above code, i am doing a small change:-
+
+<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+</bean>
+
+i have removed the <property> and use autowire attribute
+
+
+
+    	ApplicationContext ctx=new ClassPathXmlApplicationContext("spring.xml");
+
+    	Car car=(Car) ctx.getBean("car");
+    	car.playMusic();
+
+
+you get bean called "car"
+and it comes with jbl automatically
+
+
+
+<!-- spring-config.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<!-- <bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+ -->	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+	</bean>
+</beans>
+
+
+------------------------------
+suppose, both sony and jbl are configured as beans.
+
+then autowire by type, matches audio with both sony and jbl,
+
+you get error.
+
+	<bean name="jbl" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byType">
+	</bean>
+
+
+Error creating bean with name 'car' defined in class path resource [spring.xml]: Unsatisfied dependency expressed through bean property 'audio': No qualifying bean of type 'com.harman.demo.model.Audio' available: expected single matching bean but found 2: jbl,sony
+
+
+
+now, lets use autowire by name.
+
+---------------------------------
+	<bean name="audio" class="com.harman.demo.model.Jbl">
+	</bean>
+	
+	<bean name="sony" class="com.harman.demo.model.Sony">
+	</bean>
+	
+	<bean name="car" class="com.harman.demo.model.Car" autowire="byName">
+	</bean>
+
+
+now no error. by name, Jbl is injected.
+
+
+Task:
+-------
+using xml configuration, observe the difference between
+	tightly couple and loosely coupled
+	autowire by type and autowire by name
+
+
+---------
+<bean name="" class="">
+	<property name="">
+		<value></value>
+	</property>
+</bean>
+
+---------------------
+<bean name="" class="">
+	<property name="" value="" />
+</bean>
+-----------------------
+
+<bean name="" class="" p:name="value" />
+
+-----------------------------
+
+
+<bean name="" class="">
+	<property name="">
+		<list>
+			<value></value>
+			<value></value>
+		</list>
+	</property>
+</bean>
+--------------------------------------------
+
+difference between list and set?
+		<bean name="school" class="model.School">
+			<property name="name" value="Velammal School" />
+			<property name="board" value="ICSE" />
+			<property name="studentList">
+				<list>
+					<ref bean="student" />
+					<ref bean="s2" />
+					<ref bean="s3" />
+					<ref bean="s2" />					
+				</list>
+			</property>
+		</bean>
+
+		<bean name="school" class="model.School">
+			<property name="name" value="Velammal School" />
+			<property name="board" value="ICSE" />
+			<property name="studentList">
+				<set>
+					<ref bean="student" />
+					<ref bean="s2" />
+					<ref bean="s3" />
+					<ref bean="s2" />					
+				</set>
+			</property>
+		</bean>
+
+<bean name="" class="">
+	<property name="">
+		<map>
+			<entry key="" value="" />
+			<entry key="">
+				<value></value>
+			</entry>
+		</map>
+	</property>
+</bean>
+
+
+
+
+---------------------------------------------------
+---------------------------------------------------
+Annotations
+--------------
+instead of usign xml configuration file, lets use annotations.
+	i) without configuration class
+	ii) with configuration class
+
+
+
+A class can become "bean" by using
+	@Component
+	@Bean 
+
+
+@Component
+	is used on the class
+
+@Bean
+	is used on a method that returns an instance of a class
+
+
+
+
+
+package com.harman.demo.model;
+
+public interface Audio {
+	void play();
+}
+
+
+package com.harman.demo.model;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Sony implements Audio{
+	public void play() {
+		System.out.println("Sony music is good");
+	}
+}
+
+
+
+package com.harman.demo.model;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+	@Autowired
+	private Audio audio;
+	
+	public Car() {}
+
+	public Car(Audio audio) {
+		super();
+		this.audio = audio;
+	}
+
+	public Audio getAudio() {
+		return audio;
+	}
+
+	public void setAudio(Audio audio) {
+		this.audio = audio;
+	}
+	
+	public void playMusic() {
+		audio.play();
+	}
+}
+
+
+
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext();
+        ctx.scan("com");
+        ctx.refresh();
+        
+        Car car=ctx.getBean(Car.class);
+        
+        car.playMusic();
+    
+
+
+Task:
+------
+25-jun-annotations
+check this project to understand how we can configure beans using annotations
+
+
+---------------------------
+Now, lets use a configuration class
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = {"com"})
+public class MyConfiguration {
+
+	
+}
+
+
+
+        AnnotationConfigApplicationContext ctx=new AnnotationConfigApplicationContext(MyConfiguration.class);
+//        ctx.scan("com");
+//        ctx.refresh();
+        
+        Car car=ctx.getBean(Car.class);
+        
+        car.playMusic();
+    
+
+
+-----------------------
+lets see how we can configure beans using @Bean instead of @Component
+
+	@Component is used over class
+	@Bean is used over method that returns object of bean class
+
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.harman.demo.model.Jbl;
+
+@Configuration
+@ComponentScan(basePackages = {"com"})
+public class MyConfiguration {
+
+	@Bean
+	public Jbl jbl() {
+		return new Jbl();
+	}
+}
+
+
+
+Now, there are 2 beans, that implements Audio, 
+so when you autowire, error:
+
+Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type 'com.harman.demo.model.Audio' available: expected single matching bean but found 2: sony,jbl
+
+
+Lets give clarify on choosing the bean in autowire
+
+
+
+Task:
+
+refer to project 
+	25-jun-annotations-config
+
+and understand configuring beans using	
+	@Component		over the class
+	@Bean			in configuration class
+
+use @Qualifer to specify the bean name for autowiring
+
+in annotations, 
+	autowiring is by Type by default, 
+	only when you use @Qualifier annotation, it is autowire by name
+
+
+
+
+==============================
+Spring Core Annotations
+==============================
+
+1. @Component
+   - Marks a class as a Spring-managed bean (generic stereotype).
+
+2. @Service
+   - Specialized @Component for service-layer beans.
+
+3. @Repository
+   - Specialized @Component for DAO classes.
+   - Adds exception translation for database errors.
+
+4. @Controller
+   - Specialized @Component for Spring MVC controllers.
+
+5. @Configuration
+   - Marks a class as a configuration class (replaces XML).
+
+6. @Bean
+   - Declares a bean inside a @Configuration class.
+
+7. @Autowired
+   - Automatically injects dependent beans by type.
+
+8. @Qualifier("beanName")
+   - Helps resolve ambiguity when multiple beans of same type exist.
+
+9. @Value("${property}")
+   - Injects values from properties file or hardcoded string.
+
+10. @Scope("singleton"/"prototype")
+    - Defines bean scope.
+
+11. @Primary
+    - Marks a bean as the default when multiple candidates are available.
+
+12. @Lazy
+    - Delays bean initialization until first use.
+
+13. @PostConstruct
+    - Method to run **after** bean initialization.
+
+14. @PreDestroy
+    - Method to run **before** bean destruction.
+
+15. @DependsOn("beanName")
+    - Specifies bean initialization order.
+
+==============================
+Spring MVC / REST Annotations
+==============================
+
+1. @RestController
+   - Combines @Controller + @ResponseBody
+
+2. @RequestMapping("/path")
+   - Maps HTTP requests to methods or classes.
+
+3. @GetMapping, @PostMapping, @PutMapping, @DeleteMapping
+   - Shortcut annotations for specific HTTP methods.
+
+4. @PathVariable
+   - Binds a URI template variable to method argument.
+
+5. @RequestParam
+   - Binds a query parameter to method argument.
+
+6. @RequestBody
+   - Maps HTTP request body to a Java object.
+
+7. @ResponseBody
+   - Returns data (usually JSON) directly in HTTP response.
+
+==============================
+Spring Boot Specific
+==============================
+
+1. @SpringBootApplication
+   - Combines @Configuration, @EnableAutoConfiguration, and @ComponentScan
+
+2. @EnableAutoConfiguration
+   - Enables Spring Boot’s auto-configuration mechanism.
+
+3. @ComponentScan
+   - Scans packages for @Component and other stereotype annotations.
+
+4. @EnableScheduling
+   - Enables Spring’s scheduled task execution (@Scheduled).
+
+5. @Scheduled(fixedRate = 5000)
+   - Runs method on a schedule (e.g., every 5 sec).
+
+6. @EnableAsync
+   - Enables asynchronous method execution (@Async).
+
+7. @Async
+   - Runs method in a background thread.
+
+==============================
+Task:
+
+Above are the list of annotations used in spring framework.
+
+-------------------------------------------------------------
+External properties & Property sources					
+
+create "application.properties" file in src/main/java
+Note: it can be any name, because, we will mention the file name
+
+in bean, use 
+@PropertySource("classpath:application.properties")
+
+
+
+package com.harman.demo.model;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
+@Component
+@PropertySource("classpath:application.properties")
+public class Product {
+	@Value("${id}")
+	private Long id;
+	@Value("${name}")
+	private String name;
+	@Value("${price}")
+	private Double price;
+	@Value("${category}")
+	private String category;
+	
+	public Product() {}
+
+	public Product(Long id, String name, Double price, String category) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.category = category;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", price=" + price + ", category=" + category + "]";
+	}
+	
+}
+
+
+* Where and how to use `application.properties`
+* How to use `@PropertySource`
+* How to use `@Profile`
+* What happens inside the Spring container
+
+---
+
+```
+====================================================
+1. External Properties & PropertySource in Spring
+====================================================
+
+Goal:
+- Externalize configuration like DB credentials, URLs, etc.
+- Useful for environment-specific config (dev, test, prod)
+
+-------------------------------
+Where to place application.properties
+-------------------------------
+
+For Spring Boot:
+✅ Place it in:
+   - src/main/resources/application.properties
+
+For plain Spring (non-Boot):
+✅ You can use any name, like: config.properties
+   - Place it in: src/main/resources
+
+-------------------------------
+Spring Boot (auto-loads file)
+-------------------------------
+File: src/main/resources/application.properties
+
+Example:
+server.port=8081
+db.url=jdbc:mysql://localhost:3306/test
+db.username=root
+db.password=1234
+
+Spring Boot automatically loads it.
+
+-------------------------------
+Non-Boot Spring with @PropertySource
+-------------------------------
+@Configuration
+@PropertySource("classpath:config.properties")
+public class AppConfig {
+
+    @Value("${db.url}")
+    private String url;
+
+    @Value("${db.username}")
+    private String username;
+
+    @Value("${db.password}")
+    private String password;
+}
+
+-------------------------------
+Accessing values via Environment
+-------------------------------
+@Autowired
+Environment env;
+
+String url = env.getProperty("db.url");
+
+-------------------------------
+Bean using property
+-------------------------------
+@Bean
+public DataSource dataSource() {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setUrl(url); // injected from @Value
+    ds.setUsername(username);
+    ds.setPassword(password);
+    return ds;
+}
+
+====================================================
+2. Using Bean Profiles (@Profile)
+====================================================
+
+Goal:
+- Use different beans for different environments (dev, test, prod)
+
+-------------------------------
+Define profile-specific beans
+-------------------------------
+@Configuration
+@Profile("dev")
+public class DevConfig {
+    @Bean
+    public DataSource dataSource() {
+        // return dev DB source
+    }
+}
+
+@Configuration
+@Profile("prod")
+public class ProdConfig {
+    @Bean
+    public DataSource dataSource() {
+        // return prod DB source
+    }
+}
+
+-------------------------------
+Activate profile
+-------------------------------
+
+Option 1: In application.properties
+spring.profiles.active=dev
+
+Option 2: In Java Code
+ConfigurableEnvironment env = context.getEnvironment();
+env.setActiveProfiles("dev");
+
+Option 3: VM argument
+-Dspring.profiles.active=dev
+
+-------------------------------
+Use @Profile in @Component class
+-------------------------------
+@Component
+@Profile("test")
+public class TestMailService implements MailService {
+    // only loaded in test profile
+}
+
+====================================================
+3. Inside the Spring Container (IoC Container)
+====================================================
+
+Spring Container = Dependency Injection engine
+Main interfaces: BeanFactory, ApplicationContext
+
+Steps inside Spring Container:
+
+1. Load configuration (XML, annotations, or properties)
+2. Scan components (if @ComponentScan is enabled)
+3. Instantiate beans
+4. Inject dependencies (Constructor, Setter, or Field)
+5. Handle lifecycle:
+   - @PostConstruct, InitializingBean
+   - @PreDestroy, DisposableBean
+6. Apply AOP proxies (e.g., for @Transactional)
+7. Manage scopes:
+   - Singleton (default), Prototype, Request, Session, etc.
+8. Manage bean profiles:
+   - Load beans only if their profile is active
+
+==================
+Bean Lifecycle
+==================
+- Constructor
+- Dependency injection
+- @PostConstruct / afterPropertiesSet()
+- Business logic
+- @PreDestroy / destroy()
+
+==================
+Bean Scopes
+==================
+- singleton (default) → one instance per Spring container
+- prototype → new bean every time
+- request (web only) → one per HTTP request
+- session (web only) → one per HTTP session
+
+====================================================
+
+
+
+Using bean profiles					
+Inside the Spring Container					
+	
+1. Load configuration (XML, annotations, or properties)
+2. Scan components (if @ComponentScan is enabled)
+3. Instantiate beans
+4. Inject dependencies (Constructor, Setter, or Field)
+5. Handle lifecycle:
+   - @PostConstruct, InitializingBean
+   - @PreDestroy, DisposableBean
+6. Apply AOP proxies (e.g., for @Transactional)
+7. Manage scopes:
+   - Singleton (default), Prototype, Request, Session, etc.
+8. Manage bean profiles:
+   - Load beans only if their profile is active
+
+
+
+-------------------------------------------------------
+Spring Expression Language (SpEL)					
+
+--------------------------------------
+
+Aspect Oriented Programming					
+------------------------------------
+What is the purpose of AOP?
+
+
+Suppose, if you withdraw money from SBI atm 
+using ICICI card, still you will be able to get money.
+
+that means, SBI atm software is accessing some methods of ICIC to achieve this.
+
+we are creating some methods, that are accessed by third party.
+Now, in order withdraw money, there are some set of functions to be called.
+
+the order of calling the methods to be followed.
+
+We call it as advice.
+
+if you expect third party to follow our advice, then it is doubtful.
+
+So, we allow 3rd party to call our "withdraw" method only. But
+before and after and during the method call, there are somethings to be done. We call them as "Advice". that advice will be taken care automatically by a layer called AOP
+
+Which Aspect is to be adviced by which methods.
+
+In an expression, we will specify, those methods matching this expression are all advised by these aspects.
+	that expression is called as "Point cut expressions"
+
+Aspect
+	contains advices
+		before advice or after advice, or around
+
+
+
+
+
+=======================================
+Spring AOP – 3 Main Types of Advice
+=======================================
+
+1. @Before Advice
+-------------------------
+- Runs BEFORE the target method.
+- Used for:
+    - Logging
+    - Security checks
+    - Input validation
+
+Syntax:
+--------
+@Before("execution(* package.Class.method(..))")
+public void beforeAdvice(JoinPoint jp) {
+    System.out.println("Before method: " + jp.getSignature());
+}
+
+
+2. @AfterReturning Advice
+-------------------------
+- Runs AFTER method returns successfully.
+- Used for:
+    - Logging result
+    - Post-processing output
+
+Syntax:
+--------
+@AfterReturning(
+    pointcut = "execution(* package.Class.method(..))",
+    returning = "result"
+)
+public void afterReturningAdvice(JoinPoint jp, Object result) {
+    System.out.println("Returned value: " + result);
+}
+
+
+3. @Around Advice
+-------------------------
+- Runs BEFORE and AFTER method.
+- You control when the method executes.
+- Used for:
+    - Performance monitoring
+    - Modifying input/output
+    - Security
+
+Syntax:
+--------
+@Around("execution(* package.Class.method(..))")
+public Object aroundAdvice(ProceedingJoinPoint pjp) throws Throwable {
+    System.out.println("Before method");
+    Object result = pjp.proceed(); // calls target method
+    System.out.println("After method");
+    return result;
+}
+
+=======================================
+Other (Bonus) Advice Types
+=======================================
+
+4. @After
+- Runs after method (success or failure)
+- Like finally block
+
+5. @AfterThrowing
+- Runs only if an exception is thrown
+- Used for error logging
+
+=======================================
+Example Pointcut Expression
+=======================================
+execution(* com.example.service.*.*(..))
+- *         => any return type
+- com.example.service => package
+- *         => any class
+- *(..)     => any method with any params
+
+=======================================
+
+Demo:
+-------
+i create a Bank class that contains "withdraw" method and "deposit" method.
+
+I will create an Aspect containing advices
+	before withdrawal
+	after withdrawal
+	before deposit
+	after deposit
+
+
+i will write point cut expression such that
+
+	each of these methods are correctly mapped 
+
+Steps:
+
+1) create a maven project of quickstart archetype
+
+in pom.xml, add the following dependencies:
+
+ <!-- Spring Core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.33</version>
+        </dependency>
+
+        <!-- Spring AOP -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>5.3.33</version>
+        </dependency>
+
+        <!-- AspectJ -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.21</version>
+        </dependency>
+
+2) Bank.java
+
+
+package com.example.bank;
+
+public class Bank {
+    public void withdraw() {
+        System.out.println("Executing withdraw method");
+    }
+
+    public void deposit() {
+        System.out.println("Executing deposit method");
+    }
+}
+
+3) BankAspect.java
+
+package com.example.bank;
+
+public class BankAspect {
+    public void beforeWithdraw() {
+        System.out.println("Before Withdraw Advice");
+    }
+
+    public void afterWithdraw() {
+        System.out.println("After Withdraw Advice");
+    }
+
+    public void beforeDeposit() {
+        System.out.println("Before Deposit Advice");
+    }
+
+    public void afterDeposit() {
+        System.out.println("After Deposit Advice");
+    }
+}
+	
+4) spring.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop 
+           http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- Bank bean -->
+    <bean id="bank" class="com.example.bank.Bank" />
+
+    <!-- Aspect bean -->
+    <bean id="bankAspect" class="com.example.bank.BankAspect" />
+
+    <!-- AOP Configuration -->
+    <aop:config>
+        <aop:aspect id="aspect" ref="bankAspect">
+
+            <!-- Withdraw pointcut -->
+            <aop:pointcut id="withdrawPointcut" expression="execution(* com.example.bank.Bank.withdraw(..))" />
+            <aop:before method="beforeWithdraw" pointcut-ref="withdrawPointcut"/>
+            <aop:after method="afterWithdraw" pointcut-ref="withdrawPointcut"/>
+
+            <!-- Deposit pointcut -->
+            <aop:pointcut id="depositPointcut" expression="execution(* com.example.bank.Bank.deposit(..))" />
+            <aop:before method="beforeDeposit" pointcut-ref="depositPointcut"/>
+            <aop:after method="afterDeposit" pointcut-ref="depositPointcut"/>
+
+        </aop:aspect>
+    </aop:config>
+</beans>
+
+5) App.java
+
+package com.example.bank;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        Bank bank = context.getBean("bank", Bank.class);
+
+        bank.withdraw();
+        System.out.println("----");
+        bank.deposit();
+    }
+}
+
+
+
+
+===============================
+
+Refer to 
+25-jun-aop
+
+for AOP.
+
+Try it yourself.
+
+
+--------------------------------------------------------
+Spring MVC (has more steps than spring boot MVC)
+
+MVC
+	Model View Controller
+
+Model
+	code that defines data (data definition)
+	code that access data (data access)
+
+The Model represents the data, business logic, and rules of the application.
+
+
+View
+	input
+	output
+	User Interface
+	
+
+Controller
+	if controller is not there, then view and model must be in same machine
+
+The Controller handles user input, processes it, interacts with the Model, and decides which View to render.
+
+in java related frameworks, mvc, etc, 
+a controller is usually a servlet.
+
+controllers provide web access for views to access model.
+
+if you challenge, a controller which is not servlet?
+	struts f/w controller is Action 
+		but Action is a sub class of Servlet
+
+	spring MVC
+		controller is POJO class
+		but there is dispatcher servlet that is behind
+
+Steps for spring MVC:
+1) Create a maven project of "webapp" archetype
+or convert a dynamic web project into maven project by
+	right click project -> configure -> convert to maven project.
+
+2) in pom.xml add the following dependencies:
+
+
+<properties>
+   <spring.version>6.1.6</spring.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.jsp.version>3.0.0</jakarta.jsp.version>
+  </properties>
+
+
+ <!-- Spring Web MVC (Spring 6) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Jakarta Servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta JSP API -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>${jakarta.jsp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta JSTL -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
+3) create a folder for views:
+	src/main/webapp/WEB-INF
+
+in this location, create "views" folder.
+
+here, only we will have all jsp files.
+
+i have added a file "index.jsp" here.
+
+error in first line.
+
+steps:
+	right click project -> properties -> targeted runtimes
+		click add and choose latest apache tomcat server
+
+in my case it is version 11.
+
+browse to apache tomcat folder where bin is present.
+
+4) web.xml
+we are going to configure dispatcher servlet such that, any request coming to any endpoint will be received by one servlet called "DispatcherServlet" 
+
+spring webmvc dependency we added, contains this class.
+
+place the below code inside web-app tag of web.xml:-
+
+  <servlet>
+   	<servlet-name>spring</servlet-name>
+   	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+   	<load-on-startup>1</load-on-startup>
+  </servlet>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+5) create a bean xml file. We were using xml based configuration so far using xml, that file where we configure beans.
+
+name of the file should be <<dispatcher-servlet-name>>-servlet.xml
+
+in our case, DispatcherServlet name is "spring"
+
+so
+
+create spring-servlet.xml
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- Enable annotation-based configuration -->
+    <mvc:annotation-driven />
+
+    <!-- Scan the base package for annotated components like @Controller -->
+    <context:component-scan base-package="com.harman" />
+
+    <!-- View Resolver for resolving JSP files -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+</beans>
+
+
+6) create a controller class, right inside the base package you specified. it can be either in the base package or any of its sub package.
+
+package com.harman.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class MyController {
+	@GetMapping("/home")
+	public String home() {
+		return "index";	//prefixed and suffixed as per configuration
+	}
+}
+
+
+
+
+
+----------------------------
+Spring Boot
+-------------
+	convention over configuration
+		if you follow convention (guidelines) then you do 			not need to configure
+	0 xml
+		you can configure anything without xml.
+
+	internal app servers like apache tomcat server.
+		we do not need to download any server.
+		just add dependency
+
+	starter project
+		allows you to bootstrap a starter project from 	
+			start.spring.io
+
+	starter dependencies
+		related dependencies (jars) are combined together 		as starter dependencies that make is easy to 		manage.
+
+	annotations also simplified by combining many
+
+	Auto configuration
+
+
+
+how do you run a dynamic web project??????
+	there is no main method in dynamic web project
+		we right click project run as "Run on server"
+
+	how do you run web app in cmd prompt?
+
+
+Spring boot provides, java app feel, by providing main method to start the project. And while running, it will launch tomcat and deploy web components
+
+
+	
+
+
+
+
+Before break, we created a spring mvc project.
+
+Now, the same, we will create using spring boot.
+
+Steps for Spring boot MVC:
+--------------------------------
+1) create a spring boot project using spring initializr
+
+project: maven
+language: java
+group id: com.harman.demo
+artifact id: 25-jun-spring-boot-mvc
+package: same as group id
+java version: 21
+type: war
+dependencies:
+	spring web
+
+2) in pom.xml add tomcat
+
+<dependency>				<groupId>org.apache.tomcat.embed</groupId>
+	<artifactId>tomcat-embed-jasper</artifactId>
+	<version>10.1.36</version>
+</dependency>
+
+3) in application.properties (src/main/resources)
+
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+server.port=8085
+
+
+4) now, create "WEB-INF/views" folder inside src/main/webapp folder
+
+5) inside the views folder, create index.jsp
+
+6) create the controller class.
+	either in base package or its sub package.
+base package:
+	where main method is present.
+main method is present inside "Application.java"
+the package that contains this Application.java is the base package.
+
+package com.harman.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class MyController {
+
+	@GetMapping
+	public String home() {
+		return "index";
+	}
+}
+
+7) run the Application.java which has main method
+as Run as "Java Application"
+
+8) go to browser
+http://localhost:8085
+
+
+
+Task:
+
+Follow the above 8 steps to create a spring boot mvc project
+
+------------------------------
+Lets see a simple calculator program in mvc.
+
+in index.jsp:
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<div class="container-fluid p-5 bg-primary text-white text-center">
+  <h1>My First Bootstrap Page</h1>
+  <p>Resize this responsive page to see the effect!</p> 
+</div>
+  
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3>Column 1</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>Calculator</h3>
+      <form action="/add">
+      	Number 1: <input type="number" name="no1" class="form-control" />
+      	Number 2: <input type="number" name="no2" class="form-control" /><br/>
+      	<input type="submit" class="btn btn-info" />
+      </form>
+      ${sum }
+    </div>
+    <div class="col-sm-4">
+      <h3>Column 3</h3>        
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+in controller:
+package com.harman.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class MyController {
+
+	@GetMapping
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("/add")
+	public String add(@RequestParam("no1") Integer no1,@RequestParam("no2") Integer no2, ModelMap model) {
+		Integer sum=no1+no2;
+		model.addAttribute("sum", sum);
+		return "index";
+	}
+}
+
+
+Task:
+
+Refer to 25-spring-boot-mvc
+
+and create a login form and on submit it should give result as "success" or "failure"
+

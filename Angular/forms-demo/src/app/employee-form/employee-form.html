@@ -1,0 +1,13 @@
+Id: <input type="number" name="id" class="form-control" [(ngModel)]="employee.id">
+Name: <input type="text" name="name" class="form-control" [(ngModel)]="employee.name" />
+Department: <select name="department" class="form-select" [(ngModel)]="employee.department">
+    <option>IT</option>
+    <option>CSE</option>
+    <option>ECE</option>
+    <option>EEE</option>
+</select>
+Salary: <input type="number" name="salary" class="form-control" [(ngModel)]="employee.salary">
+<br/>
+<input type="button" value="Add" class="btn btn-info" />
+<br/>
+{{employee | json}}

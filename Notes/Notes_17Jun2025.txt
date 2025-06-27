@@ -1,0 +1,666 @@
+Template, Styles, View Encapsulation, adding bootstrap to angular app	
+Built-in Directives, Creating Attribute Directive				
+Using Renderer to build attribute directive				
+
+Template:
+	html code
+	in a component (in @Component) 
+	we can either define 
+	"template" or 	internal or inline
+	"templateUrl"	for external html file
+	
+
+Style:
+	3 options in a component decorator
+	styles:[`p{color:red}, div{color:blue}`]
+	styleUrl:'./app.css'
+	styleUrls:['./app.css','./red.css']
+
+View encapsulation:
+
+	a component, uses "styleUrl" this file is used only in this component
+	we can modify the encapsulation level using "encapsulation" attribute and set it as global
+
+1) shadowDOM
+2) none		global
+3) emulated	default		scoped to current component
+
+
+  encapsulation: ViewEncapsulation.Emulated
+
+
+
+@Component({
+  selector: 'app-hello',
+  templateUrl: './hello.component.html',
+  styleUrls: ['./hello.component.css'],
+  encapsulation: ViewEncapsulation.Emulated
+})
+
+
+
+
+adding bootstrap to angular app	
+------------------------------------
+yesterday we used bootstrap in our project by 
+	using CDN	(not recommended for production)
+
+another approach, good approach is to
+	install bootstrap and import it in angular.json style section
+
+1) install boostrap
+	npm i bootstrap@5
+2) import bootstrap globally
+	in angular.json
+
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+
+3) restart the server.
+
+
+------------------------------------------
+Built-in Directives, Creating Attribute Directive				
+
+what are the directives, we have used so far:
+Attribute directives:
+	ngClass
+	ngStyle
+	ngModel
+
+Structural directives:	
+	ngIf
+	ngFor
+	ngSwitch
+
+
+normally, a html element has many attributes.
+ex:
+	<a href=""></a>
+
+href is an attribute
+
+angular directives are custom html attributes
+
+
+
+ngStyle:
+
+<p style="">		not allowing any variables
+<p [ngStyle]="">		variables can be used
+
+we have used around 6 built-in directives.
+
+can we create our own custom directive?
+
+ex:
+
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]'
+})
+export class Highlight {
+@Input() highlight:string='yellow';
+
+  constructor(private el:ElementRef) { }
+
+ 
+  @HostListener('mouseenter') onEnter() {
+    this.el.nativeElement.style.backgroundColor = this.highlight;
+  }
+
+  @HostListener('mouseleave') onLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+
+}
+
+
+
+
+
+
+to use this in other components, import this directive
+
+
+import { Component } from '@angular/core';
+import { Highlight } from './highlight';
+
+@Component({
+  selector: 'app-root',
+  imports: [Highlight],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  protected title = 'forms-demo';
+}
+
+
+
+
+and then use in html
+
+<h1 [highlight]="'blue'">This is heading 1</h1>
+<p highlight="green">This is a paragraph</p>
+
+
+Task:
+------
+create a custom directive that can be used on any html element 
+
+ng g d <<directive name>>
+
+import the directive in a component, where we use it
+
+-----------------------------------------------------
+Using Renderer to build attribute directive				
+
+
+using DOM manipulation:
+  @HostListener('mouseenter') onEnter() {
+    this.el.nativeElement.style.backgroundColor = this.highlight;
+  }
+
+  @HostListener('mouseleave') onLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+
+-----------------------------------------------------
+
+using Renderer:
+ @HostListener('mouseenter') onMouseEnter() {
+    this.renderer.setStyle(this.el.nativeElement, 'color', this.textEffect);
+    this.renderer.setStyle(this.el.nativeElement, 'fontWeight', 'bold');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.renderer.removeStyle(this.el.nativeElement, 'color');
+    this.renderer.removeStyle(this.el.nativeElement, 'fontWeight');
+  }
+
+
+
+
+
+
+
+after using renderer2,:
+
+import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
+
+@Directive({
+  selector: '[highlight]'
+})
+export class Highlight {
+@Input() highlight:string='yellow';
+
+  constructor(private el:ElementRef, private renderer:Renderer2) { }
+
+ 
+  // @HostListener('mouseenter') onEnter() {
+  //   this.el.nativeElement.style.backgroundColor = this.highlight;
+  // }
+
+  // @HostListener('mouseleave') onLeave() {
+  //   this.el.nativeElement.style.backgroundColor = '';
+  // }
+
+   @HostListener('mouseenter') onMouseEnter() {
+    this.renderer.setStyle(this.el.nativeElement, 'backgroundColor', this.highlight);
+    this.renderer.setStyle(this.el.nativeElement, 'fontWeight', 'bold');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.renderer.removeStyle(this.el.nativeElement, 'backgroundColor');
+    this.renderer.removeStyle(this.el.nativeElement, 'fontWeight');
+  }
+
+
+}
+
+
+
+============================================
+Day 7: Angular 
+
+Angular Template Driven 
+Reactive Forms, 
+Components Deep Diving
+
+
+What is the difference between Template driven forms and Reactive Forms?
+
+in template driven forms,
+	HTML comes first
+	i will code HTML first, then bind the properties to variables in typescript
+	binding, 2 way binding etc to handle the form
+
+if a form has 5 input elements,
+	we can bind each input to a variable
+	or
+	we can have one object in typescript and bind that object properties to each input
+
+
+----------------------------------
+Lets take "product" as example and do form handling and form validation first in the template driven model.
+
+Product
+	id
+	name
+	category
+	price
+
+
+lets create the template for the above entity.
+
+
+
+  // product:Product={id:0, name:'',category:'',price:0};
+  product:Product=new Product(0,'','',0);
+
+
+
+
+
+Error: NG0400: A platform with a different configuration has been created. Please destroy it first.
+
+i use JsonPipe. 
+my ts code:
+imports: [FormsModule, JsonPipe],
+my html code:
+Id: <input type="number" class="form-control" name="id" [(ngModel)]="product.id" />
+Name: <input type="text" class="form-control" name="name" [(ngModel)]="product.name" />
+Category: <select class="form-select" name="category" [(ngModel)]="product.category">
+    <option>Stationery</option>
+    <option>Sports</option>
+    <option>Music</option>
+    <option>Electronics</option>
+</select>
+Price: <input type="number" class="form-control" name="price" [(ngModel)]="product.price" /><br/>
+<input type="button" value="Add" class="btn btn-info" />
+<br/>
+{{product | json}}
+
+
+----------------------------
+
+Task:
+
+Create an employee-form component
+Define an Employee class
+	id, name, department, salary
+
+now, bind the template elements to members of an object of employee
+
+display the object as json using json pipe for confirming that any change in the template form, reflects in the employee object.
+
+
+-------------------------------
+How to validate a template driven form?
+
+lets create functions in .ts file.
+bind them to the events 
+
+
+Id: <input type="number" min="1" class="form-control" name="id" [(ngModel)]="product.id" (ngModelChange)="fnValidateId()" />
+
+
+
+errors:any={};
+
+  fnValidateId(){
+    console.log('validating id');
+    
+    //must be 3 digit positive number
+    if(this.product.id<100){
+      this.errors.id='Product Id must be 3 digit number';
+    }else{
+      this.errors.id='';
+    }
+  }
+
+
+Task:
+
+in employee form component,
+implement the following validations.
+
+id must be atleast 2 digits positive number
+name must be atleast 6 characters, starting with alphabet only
+department should be selected
+salary must be 6 digit number
+
+display the error object using json pipe
+
+
+We have implemented the form validation in a template driven form.
+I have done for product-form.
+After you complete this for employee-form, we will move to ReactiveFormsModule.
+
+------------------------------------------
+
+We will move to ReactiveForms module after that, we will only prefer that approach.
+
+So, template driven forms we will conclude once you complete Employee form
+
+Task:
+refer to the product form and complete the employee form.
+
+---------------------------------------------------------------------
+Before we move to reactive forms module,
+one topic pending is Pipes
+-------------------------------
+
+Pipes
+------
+what is the need for pipe?
+	in html code, we use interpolation to print the
+		value of a variable or object
+		output of an expression
+		etc
+
+in interpolation, we print the value of an expression or variable.
+
+But that can be transformed to a specific format using pipes.
+
+ex:
+	we can use "uppercase" pipe to convert the text to upper case.
+
+morning/ yesterday, we used date pipe to transform date into
+	dd-MMM-yyyy
+
+What is a pipe?
+	is used to transform a data into another format
+
+it is called as pipe, because, the result of a pipe can be sent to another pipe, like cascading pipes.
+
+there are lot of built-in pipes.
+we can also create pipes called custom pipes.
+
+Lets explore what are the categories of pipes:
+
+	string
+	date
+	currency
+	number
+	
+
+        {{dt | date:'dd-MMM-yy'}}<br/>
+        {{dt | date:'longDate'}}<br/>
+        {{'this is a sentence' |titlecase}}<br/>
+        {{1234 | currency:'INR'}}
+
+
+Task:
+Understand what is pipe?
+and list of pipes
+and use the pipes 
+	by declaring pipe in ts file
+	and using the pipe in html file
+
+we can just import "CommonModule" to use all the pipes.
+
+--------------------------
+custom pipes
+
+custom pipe is user defined pipe
+that we create for transforming any data into a specific format (when built-in pipes do not serve the purpose).
+
+For example, we can create "length" pipe, that will transfrom a string into a number (its length).
+
+Steps for custom pipe:
+1) manually
+	we can create a class that is decorated by @Pipe() decorator
+	and that class implements PipeTransform interface
+	and override the transform method
+2) using cli
+	ng g pipe <<pipe name>>
+
+this command will create the class and decorate, implement etc automatically.
+
+
+
+{{'this is a long string' |length}}
+
+
+imports: [Highlight, ProductForm, EmployeeForm,CommonModule, LengthPipe],
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'length'
+})
+export class LengthPipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    var str:string=<string>value;
+    return str.length;
+  }
+
+}
+
+
+
+Task:
+create a custom pipe and use it in the component.
+
+
+
+i created as custom pipe called "message" that will transform the product object into a sentence.
+
+export class Product {
+    id:number=0;
+    name:string='';
+    category:string='';
+    price:number=0;
+   
+    constructor(id:number, name:string, category:string, price:number){
+        this.id=id;
+        this.name=name;
+        this.category=category;
+        this.price=price;
+    }
+
+   
+
+}
+
+
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+import { Product } from './model/product';
+
+@Pipe({
+  name: 'message'
+})
+export class MessagePipe implements PipeTransform {
+
+  transform(value: unknown, ...args: unknown[]): unknown {
+    var prd:Product=<Product>value;
+    // var str:string=prd.name+' costs '+prd.price;
+    var str=`${prd.name} costs ${prd.price}`;
+    return str;
+  }
+
+}
+
+
+
+
+
+in product component:
+
+{{product | message}}
+
+The product object undergo changes, but the output is not updated by message pipe. But only when i save file it get updated
+
+
+Solution:		make the pipe impure
+
+@Pipe({
+  name: 'message',
+  pure:false
+})
+
+--------------------------------------------------
+I have pushed the code to git. You can complete this now.
+
+After break, we will learn Reactive Forms module.
+
+---------------------------------------------------------------
+Reactive Forms module
+----------------------------
+in reactjs, we used formik and yup for form handling and validation.
+
+Here, in angular, we use "Reactive Forms module" for form handling and validation.
+
+1) import ReactiveFormsModule	instead of FormsModule
+2) we are not template driven any more. So,
+	we will start from .ts file and create an object representation of the form.
+3) we can define validation rules for each member of the form object
+we can also define custom validation, where a function can do the validation.
+
+Demo:
+--------
+register component
+	username
+	password
+	confirm password
+	email
+	phone
+
+
+
+I have created an user object initialized by a form builder
+the html form is bound to this object using formGroup
+
+<form [formGroup]="user">
+
+each input element is bound to property of group object using "formControlName" attribute
+
+
+user.value		gives the object rep of the form
+
+Task:
+------
+You can try with different entity like Student or Department etc.
+
+------------------------------------------------
+Validation in reactive forms.
+-----------------------------------
+  constructor(private fb:FormBuilder){
+    this.user=fb.group({
+      username:[''],
+      password:[''],
+      cpassword:[''],
+      email:[''],
+      phone:['']
+    });
+  }
+
+there is a provision for validation.
+
+
+
+
+
+<div class="text-danger" *ngIf="f.email.errors.required">Email is mandatory</div>
+email:['',[Validators.required, Validators.email]],
+
+how to display error message for pat
+
+
+
+
+-------------------------------------
+Demo:
+create ts and html code for reactive form containing Employee (id, name, department, salary) with validations all having required validation and name length atleast 6 characters and salary must be above 1 lakh
+
+
+
+
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-employee-form',
+  templateUrl: './employee-form.component.html'
+})
+export class EmployeeFormComponent {
+  employeeForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.employeeForm = this.fb.group({
+      id: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(6)]],
+      department: ['', Validators.required],
+      salary: ['', [Validators.required, Validators.min(100000)]]
+    });
+  }
+
+  onSubmit() {
+    if (this.employeeForm.valid) {
+      console.log('Employee data:', this.employeeForm.value);
+    } else {
+      this.employeeForm.markAllAsTouched(); // To show validation errors
+    }
+  }
+
+  get f() {
+    return this.employeeForm.controls;
+  }
+}
+
+
+
+
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="id">Employee ID</label>
+    <input id="id" type="text" formControlName="id" />
+    <div *ngIf="f.id.touched && f.id.invalid" style="color: red;">
+      ID is required.
+    </div>
+  </div>
+
+  <div>
+    <label for="name">Name</label>
+    <input id="name" type="text" formControlName="name" />
+    <div *ngIf="f.name.touched && f.name.invalid" style="color: red;">
+      <div *ngIf="f.name.errors?.['required']">Name is required.</div>
+      <div *ngIf="f.name.errors?.['minlength']">
+        Name must be at least 6 characters long.
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <label for="department">Department</label>
+    <input id="department" type="text" formControlName="department" />
+    <div *ngIf="f.department.touched && f.department.invalid" style="color: red;">
+      Department is required.
+    </div>
+  </div>
+
+  <div>
+    <label for="salary">Salary</label>
+    <input id="salary" type="number" formControlName="salary" />
+    <div *ngIf="f.salary.touched && f.salary.invalid" style="color: red;">
+      <div *ngIf="f.salary.errors?.['required']">Salary is required.</div>
+      <div *ngIf="f.salary.errors?.['min']">Salary must be above ₹1,00,000.</div>
+    </div>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+
+
+

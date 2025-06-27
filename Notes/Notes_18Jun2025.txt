@@ -1,0 +1,741 @@
+Host Listener to listen to Host Events				
+Using Host Binding to bind to Host Properties				
+Services & Dependency Injections				
+Creating Data Service				
+Understanding Hierarchical Injector				
+Built-in Validators & Using HTML5 Validation				
+Grouping Form Controls				
+FormGroup, FormControl, FormBuilder				
+Forms with Reactive Approach				
+Predefined Validators & Custom Validators				
+Showing validation errors				
+Component Life Cycle Hooks				
+
+
+
+custom directives can be used over various html elements.
+unlike, input decorate variable, where we know, on which component element, we are going to use,
+
+the custom directives are not specific to a particular element.
+
+so, it is complex to access the attributes of an element, where our custom directives are used.
+
+ex:
+
+<h2 redcolor>this is the content</h2>
+
+our redcolor directive should be able to read the contents between h2 and /h2
+
+h2 here is the native element, whose attributes and content needs to be extracted by our directive.
+
+solution:
+	we can use
+		@HostListener
+			over methods/functions
+		@HostBinding	
+			over properties
+
+in a customer directive
+
+
+@HostListener('mouseenter')
+  onMouseEnter() {
+    this.bgColor = 'lightblue';
+  }
+
+this above function uses @HostListener to bind a native event to this function as an event handler
+
+
+@HostBinding('style.backgroundColor') bgColor!: string;
+
+the property bgColor wants to extract the value from the native (host) element. so we use @HostBinding
+
+
+-------------------------------------------------
+Services & Dependency Injections				
+Creating Data Service				
+Understanding Hierarchical Injector				
+
+What is a service?
+	is a re-usable, injectable class that can be created using
+		ng generate service <<servicename>>
+
+	this is a class
+		that can contain variables and functions
+	this can be injected into a component using constructor.
+
+ex:
+
+ng g s my-service
+
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MyService {
+
+  constructor() { }
+
+  fnAdd(){
+    return "Adding..."
+  }
+
+  fnUpdate(){
+    return "Updating..";
+  }
+}
+
+
+
+to inject the my-service into hello component, use constructor.
+
+import { Component } from '@angular/core';
+import { MyService } from '../my-service';
+
+@Component({
+  selector: 'app-hello',
+  imports: [],
+  templateUrl: './hello.html',
+  styleUrl: './hello.css'
+})
+export class Hello {
+
+  constructor(private ms:MyService){
+
+  }
+
+  fnAdd(){
+    alert(this.ms.fnAdd());
+  }
+
+  fnUpdate(){
+    alert(this.ms.fnUpdate());
+  }
+}
+
+
+
+-------------------------------------
+Custom validation
+----------------------
+when the built-in validators do not serve the purpose, we can create our own validators called as "custom validators".
+
+for example, we can create a function that can be used to validate Password vs Confirm password
+whether they match or not.
+
+such function, should follow the signature and return type so that they can be used as custom validator.
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-register',
+  standalone:true,
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  templateUrl: './register.html',
+  styleUrl: './register.css'
+})
+export class Register {
+  user:any;
+
+  constructor(private fb:FormBuilder){
+    this.user=fb.group({
+      username:['', Validators.required],
+      password:['', [Validators.required]],
+      cpassword:[''],
+      email:['',[Validators.required, Validators.email]],
+      phone:['', [Validators.required, Validators.pattern('[0-9]{5}')]],
+      },{
+        validators: this.confirmPasswordMatch
+      });
+  }
+  get f(){
+    return this.user.controls;
+  }
+
+  confirmPasswordMatch(control:AbstractControl):ValidationErrors|null
+  {
+    var pwd=control.get('password')?.value;    
+    var cpwd=control.get('cpassword')?.value;
+    if(pwd!==cpwd){
+      return {'passwordMismatch':true};
+    }
+    return null;
+  }
+}
+
+
+
+
+
+
+
+{{user.value | json}}
+<br/>
+<form [formGroup]="user">
+Username: <input type="text" formControlName="username" [ngClass]="{'form-control':true, 'is-invalid':f.username.errors}" >
+<div class="text-danger" *ngIf="f.username.errors">Username is invalid</div>
+Password: <input type="password" formControlName="password" class="form-control" >
+Confirm Password: <input type="password" formControlName="cpassword" class="form-control" >
+ <div class="text-danger" *ngIf="user.hasError('passwordMismatch') && f.cpassword.touched">
+    Passwords do not match
+  </div>
+Email: <input type="email" formControlName="email" class="form-control" >
+<div class="text-danger" *ngIf="f.email.errors?.['required']">Email is mandatory</div>
+<div class="text-danger" *ngIf="f.email.errors?.['email']">Email is invalid</div>
+Phone: <input type="number" formControlName="phone" class="form-control" >
+<div class="text-danger" *ngIf="f.phone.errors?.['required']">Phone is mandatory</div>
+<div class="text-danger" *ngIf="f.phone.errors?.['pattern']">Phone is invalid</div>
+<br/>
+</form>
+<br/>
+{{user.controls['phone'].errors.pattern | json}}
+
+
+
+
+
+
+
+in reactive form validations,
+	touched		entering the field and bluring/leaving
+	dirty		field value changed
+
+
+	
+
+Angular Form Control State Properties
+1. touched
+Description: Becomes true when the user has visited the field and then left (blurred).
+
+Use Case: Useful to show error messages only after the user interacts with the field.
+
+2. untouched
+Description: The opposite of touched. It's true when the field has not been visited.
+
+Use Case: Useful for detecting if the field was never interacted with.
+
+3. dirty
+Description: Becomes true when the field’s value has changed from its original value.
+
+Use Case: Used to check whether the user has modified the input.
+
+4. pristine
+Description: The opposite of dirty. It's true if the user hasn’t changed the value.
+
+Use Case: Good for detecting whether the form is untouched or still in its original state.
+
+5. valid
+Description: Becomes true if all validators pass for the control.
+
+Use Case: Used to check whether the field is ready for submission.
+
+6. invalid
+Description: Becomes true if at least one validator fails.
+
+Use Case: Trigger display of validation error messages.
+
+7. pending
+Description: Becomes true if any async validator is still running.
+
+Use Case: Show a loading spinner or prevent form submission until async validation is complete.
+
+8. disabled
+Description: Becomes true if the form control is disabled.
+
+Use Case: Used to make the control uneditable or skip validation.
+
+9. enabled
+Description: Opposite of disabled. It’s true if the control is active and can be edited.
+
+
+
+
+<Register color="blue" />
+
+@Input() color:string='';
+
+-------------------------------------------
+Component Life Cycle Hooks				
+
+
+export class LifeCycle implements OnChanges
+ {
+  ngOnChanges(changes: SimpleChanges): void {
+    throw new Error('Method not implemented.');
+  }
+
+
+}
+
+Refer the file: 
+https://github.com/jagasia/harman1/blob/jag/Angular/angular_lifecycle_2025.txt
+
+
+Task:
+-------
+Observe upto what we have discussed.
+Then we will move to today's topics.
+
+------------------------
+ng-content
+
+	input from parent to child
+
+already we use @Input() to send input from parent to child
+
+ex:
+App (parent)
+
+	<app-register color="blue"></app-register>
+
+Register (child)
+
+	@Input() color:string='';
+
+
+now,
+
+
+<app-register></app-register>
+
+<app-register />		this is enough, right?, why we need start and end tag?
+
+if there are start and end tag, then there must be a purpose for the place between start and end tag.
+
+
+
+<app-register>
+	Hello, this is the content parent has provided...
+</app-register>
+
+
+the content, we provide between the start and end tags, 
+	is the "ng-content"
+
+
+
+
+in hello component:
+----------------------------
+
+<ng-content select="[d1]"></ng-content>
+<br>
+<input type="button" value="Add" class="btn btn-info" (click)="fnAdd()">&nbsp;
+<input type="button" value="Update" class="btn btn-warning" (click)="fnUpdate()">
+
+<br/>
+<ng-content select="[p1]"></ng-content>
+
+
+
+
+in parent, app component:
+--------------------------------
+<app-hello>
+      <p p1>Hi, app component has provided this content in between start and end tags....</p>
+      <div d1>THis is inside div</div>
+    </app-hello>
+
+
+
+Task:
+-------
+create multiple ng-contents in your child component, each having different select.
+
+from parent, supply multiple contents mentioning the select.
+
+Refer to notes above.
+
+
+After morning break, we start Routing chapter.
+-----------------------------------------------------
+Routing
+-----------
+we are not creating web pages, we are creating components.
+So, it is not the hyperlink to webpages we do in angular.
+
+1) routing module included in our project or not.
+if we create the project
+	ng new <<projectname>> --routing
+
+then routing module is added to our project.
+
+otherwise, we can do manually
+
+1) create routes.ts
+	define the routes.
+
+// src/app/routes.ts
+import { Routes } from '@angular/router';
+import { RegisterComponent } from './register/register.component';
+
+export const routes: Routes = [
+  { path: 'register', component: RegisterComponent },
+  { path: '', redirectTo: 'register', pathMatch: 'full' } // optional default route
+];
+
+
+2) in app.config.ts
+
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(routes), provideClientHydration(withEventReplay())
+  ]
+};
+
+
+inside the providers:
+
+provideRouter(routes)
+
+
+
+
+
+Demo:
+--------
+lets create the following components:
+
+Home
+About
+Contact
+Login
+Logout
+Register
+
+
+
+
+1) we have defined the routes in our app.routes.ts
+
+import { Routes } from '@angular/router';
+import { About } from './about/about';
+import { Contact } from './contact/contact';
+import { Home } from './home/home';
+import { Login } from './login/login';
+import { Logout } from './logout/logout';
+import { Register } from './register/register';
+
+export const routes: Routes = [    
+    {path:'', component:Home},
+    {path:'about', component:About},
+    {path:'contact', component:Contact},
+    {path:'login', component:Login},
+    {path:'logout', component:Logout},
+    {path:'register', component:Register}
+];
+
+
+2) ensure these components are available before you define the routes.
+
+3) check by entering path in the url
+by appending the path in the url
+
+localhost:4200/about
+
+Task:
+
+create few components and define routes for them
+and use <router-outlet></router-outlet>
+
+where, the component will render when we change the url.
+
+
+We cannot ask the users to enter the url in browser's address bar.
+
+So, we provide links.
+
+
+
+Task:
+------
+I have defined the routes
+i have placed a nav component in app
+the nav provides links for each option
+
+Try this by yourself.
+
+Now, you need to ensure that, there is only one option
+	either "Login" or "Logout"
+
+if you login, then nav should show logout
+and vice versa.
+
+what are all the other things we can do in routing:
+	define routes
+	render the component in router-outlet
+	having multiple router-outlets with identifiers
+	having path variable/ params etc defined in the path
+	
+	routing/navigating from code.
+	accepting the params from the source
+
+
+
+
+for named router outlets:
+
+1) in app.routes.ts
+
+{path:'register', component:Register, outlet:'admin'}
+
+2) in nav.ts
+imports: [RouterLink]
+
+3) in nav.html
+
+<a class="nav-link" [routerLink]="[{ outlets: { admin: ['register'] } }]">Sign Up</a>
+
+4) in app.html
+
+<router-outlet name="admin"></router-outlet>
+
+Task:
+Refer above code.
+
+Kindly use named router outlets in app component. In that way, you use more than one router outlet.
+
+--------------------------------------------------------------
+Before lunch, we learned basic routing.
+
+Now, advanced routing.
+
+1) one link, to render multiple components in different router-outlet
+
+<!-- Activate both -->
+<a [routerLink]="[{ outlets: { primary: ['dashboard'], side: ['sidebar'] } }]">Open Both</a>
+
+
+in Angular Routing, "primary" is a special keyword used to refer to the default unnamed outlet.
+
+
+2) Lazy loading Standalone components:
+
+export const routes: Routes = [
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.component').then(m => m.RegisterComponent)
+  }
+];
+
+
+here, the path 'register' is mapped to a stand-alone component.
+instead of creating a component separately, it is created here itself.
+
+
+Route Guards:
+------------------
+1) define the guard logic using a service class.
+
+// auth.guard.ts
+import { DOCUMENT } from '@angular/common';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const AuthGuard: CanActivateFn = () => {
+  const doc = inject(DOCUMENT);
+  const router = inject(Router);
+
+  const win = doc.defaultView as Window | null;
+
+  if (win && win.localStorage) {
+    const isLoggedIn = !!win.localStorage.getItem('token');
+    if (!isLoggedIn) {
+      router.navigate(['/login']);
+    }
+    return isLoggedIn;
+  }
+
+  // fallback if not running in browser
+  return false;
+};
+
+
+2) in routes, use canActivate
+
+{path:'about', component:About, canActivate:[AuthGuard]}
+
+3) use routerLink and not href in links
+
+<a class="nav-link" routerLink="/about">About Us</a>
+
+observation:
+
+if i login and then access about us link, then i am allowed.
+
+if i have logged out and then access about us, i am redirected to login component.
+
+-----------------------------------------------------
+Task:
+
+use canActivate route
+
+so that, only logged in users are allowed to access a particular route.
+
+
+
+
+
+Sure! Here's the **summary in a plain, notepad-friendly format** with clear line-by-line explanation:
+
+```
+Angular Route Guards Summary
+----------------------------
+
+1. canActivate
+   - Purpose : Prevent access to a route
+   - Trigger : Before the route is activated
+   - Use Case: Check if user is logged in before accessing a page
+
+2. canDeactivate
+   - Purpose : Prevent leaving a route/component
+   - Trigger : When navigating away from a route
+   - Use Case: Warn user if form has unsaved changes
+
+3. canLoad
+   - Purpose : Prevent loading of lazy-loaded modules
+   - Trigger : Before module code is loaded
+   - Use Case: Block loading of admin module if user is not an admin
+
+4. resolve
+   - Purpose : Pre-fetch data before loading the component
+   - Trigger : Before the component is initialized
+   - Use Case: Load user profile data before showing profile page
+
+5. canActivateChild
+   - Purpose : Apply guard to all child routes
+   - Trigger : Before any child route is activated
+   - Use Case: Protect all settings sub-pages from unauthorized access
+```
+
+
+
+
+
+Task:
+
+use 
+	Router
+	ActivatedRoute
+
+define, params in the route,
+
+and in a component, redirect to another component on button click
+and send params and receive them and display there.
+
+
+
+ref my code in
+	country component		navigates to contact
+	contact component		receives the params
+
+------------------------------------------
+Passing Query Parameters and Fragments				
+Setting up Child (Nested) Routes				
+Outsourcing Route Configuration (create custom module)				
+
+
+pathvariable		/pathvariable
+requestparam		?key=value
+
+http://localhost:4200/?id=1&name=Pencil&price=20
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-home',
+  imports: [],
+  templateUrl: './home.html',
+  styleUrl: './home.css'
+})
+export class Home implements OnInit {
+  
+  constructor(private route:ActivatedRoute){
+
+  }
+
+    ngOnInit() {
+        const id = this.route.snapshot.paramMap.get('id');
+      console.log(id);
+      
+  }
+
+}
+
+console.log(this.route.snapshot.queryParamMap.keys);
+
+
+
+---------------------------------------------------------
+API calls.
+-----------
+We are actually creating the front end of the application.
+
+The frontend must be able to access the backend (api).
+
+How can we call an api?
+	from angular, we can use HttpClientModule to access apis
+
+
+in module projects, we need to import HttpClientModule in app.module.ts
+
+in standalone projects, we can import them in each component or app.config.ts
+
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideHttpClient()
+  ]
+};
+
+
+
+
+
+good practise is to use a service class where all api calls are coded.
+the service class can be injected into the components.
+
+
+Task:
+
+https://fakestoreapi.com/products
+access this api using http client module
+1) app.config.ts
+add provideHttpClient() to providers.2) create a service class where you code the api calls.ng g s product-service
+3) in service, constructor, inject HttpClient
+4) use the httpClient to make api calls get/post/etc
+	create separate functions for them
+5) inject the service in a component's constructor
+call the service function in ngOnInit
+override this method after implementing OnInit interface.
+6) by calling the service method, you get Observable.
+Remind me about Observable tomorrow.
+you can subscribe an observable and provide callback functions viz., 
+	next, error, complete
+we can bind the result to an array and display result in html.
+
+-------------------------------------------------------------------

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy package &apos;com.harman.demo.controller&apos; to &apos;service-2/src/main/java/com.harman.demo&apos;&#x0D;&#x0A;- Original project: &apos;service-1&apos;&#x0D;&#x0A;- Destination element: &apos;service-2/src/main/java/com.harman.demo&apos;&#x0D;&#x0A;- Original element: &apos;service-1/src/main/java/com.harman.demo.controller&apos;" description="Copy package" destination="=service-2/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.harman.demo" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.harman.demo.controller" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyPackages" stamp="1751021906780" version="1.0"/>
+</session>

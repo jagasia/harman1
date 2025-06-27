@@ -1,0 +1,952 @@
+Week 2: Day 6:
+new module: Angular (4 days)
+--------------------------------------
+Angular  - Introduction to Framework ,Essentials of Angular, Templates,Styles and Directives, Pipes, Services and Dependency Injection
+
+AngularJs was the 1st version introduced.
+After that, version 2 onwards are called as "Angular" 
+
+I learned Javascript very earlier
+I learned JQuery
+	how i used jquery?
+		i used CDN to refer to jquery library
+		
+same way, AngularJs was also used by CDN
+i quickly adapted to angular js
+
+but angular (version 2 onwards) was not following CDN approach.
+They introduced bootstrapping a project from CLI
+
+Web application development. esp, front end
+javascript based frameworks.
+
+angular definitely uses "Typescript" and
+you know, typescript allows javascript code also.
+
+Typescript code is translated into javascript code.
+
+
+How to start with Angular:
+-------------------------------
+lab setup
+
+1) nodejs is installed
+	node --version
+2) npm also will be there then
+	is used to install 
+		typescript
+		angular
+
+command to install typescript
+	npm i -g typescript
+
+i think we have already done this
+
+command to install angular
+	npm i -g @angular/cli
+
+this is used to either install angular or update angular to new version.
+
+---------------------------------------
+to create our first angular app:
+
+go to cmd prompt in a location where you want your app to be created.
+
+ng new first-app
+we can also
+	ng new first-app --style=css --routing --standalone
+
+in this way, we are answering lot of questions in same line
+
+
+
+cd first-app
+
+code .
+
+ng serve -o
+
+
+
+o for open			-open
+
+http://localhost:4200
+
+Task:
+-------
+Create an angular project and 
+open it in vs code
+and run it
+
+	ng new first-app --style=css --standalone --routing
+
+	cd first-app
+
+	code .
+
+	ng serve -o
+
+http://localhost:4200
+
+-------------------------------------
+
+Lets understand the project folder structure:
+
+package.json
+angular.json
+node_modules folder
+public folder
+	all images, icons to be stored here, directly or sub folders
+src
+	source code
+	app 	(folder)
+		this is the root component folder
+
+
+
+app
+	like reactjs, there will be a sample component created automatically when we create an app
+	app is that root sample component, already being plugged in our home page
+
+	
+index.html
+	is our home page.
+
+remember, we are not using JSX in angular. Hence, we use HTML in each components.
+
+App component also has
+	app.html		(template)
+	app.ts			(code)
+	app.css			(style)
+	app.spec.ts		(testing code)
+
+
+i have deleted all the lines of code from app.html
+
+lets use bootstrap
+	i) using CDN
+	ii) by installing bootstrap and importing
+
+in index.html
+inside <head>
+
+paste the following cdn:
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+Introduction to Angular Framework, History & Overview				
+Environment Setup, Angular CLI, Installing Angular CLI				
+NPM commands & package.json				
+Bootstrapping Angular App, Components, AppModule				
+Project Setup, Editor Environments				
+First Angular App & Directory Structure				
+Angular Fundamentals, Building Blocks				
+
+
+
+What is a component?
+-------------------------
+a component is a re-usable code that can be plugged or moved or removed or customized easily in an application.
+
+a component can have any of or all of the following:
+	html
+	css
+	ts		(mandatory)
+	spec.ts
+
+a component must have a .ts file.
+
+how can we create a component in angular?
+	ng g c <<component name>>
+	ng generate component <<component name>>
+
+ex:
+	ng g c counter
+
+in angular,
+a component is a class that is decorated by @Component decorator.
+
+in java, do you know annotations?
+in angular, they are called as decorators.
+ex:
+	@Component
+
+import { Component } from '@angular/core';
+
+
+
+
+
+
+lets decode this app component:
+
+import { Component } from "@angular/core";
+
+@Component({
+  selector: 'app-root',
+  imports: [],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  protected title = 'first-app';
+}
+
+
+
+templateUrl
+or
+template
+
+
+styleUrl
+or
+styleUrls
+
+
+
+selector:		specify the tagname, that is used to plug this component
+
+
+
+  selector: 'app-root',
+
+if selector is app-root, then plug this component, wherever you want using:
+
+	<app-root></app-root>
+
+
+
+Demo:
+lets create a component and plug it in middle column of app:
+
+in cmd:
+	ng g c counter
+
+	ng generate component counter
+
+this command will tell you what are all the files created.
+
+
+
+Task:
+create a component and plug it in app component.
+-----------------------------------------
+
+Basics of a component.
+
+what to do where?
+
+in a component, all html codes can be done in 
+	counter.html
+
+
+What is interpolation?
+	string interpolation
+
+{{	}}
+
+read-only
+
+display
+
+
+interpolation is used to display the output of
+	a variable
+	an expression
+	use pipes to transform the format of output
+
+Binding
+---------
+what is binding?
+	associating a variable or expression to a property or many things
+there are various types of binding:
+
+property binding
+event binding
+two way data binding
+style or class binding
+attributes binding
+
+
+
+Property binding
+--------------------
+A property in html code will be bound to a variable in ts code
+
+1 way, not vice versa.
+
+whatever the value of the variable changes, they are reflected in the html element's attribute
+
+
+
+<input type="text" name="" id="" value="Hello">
+
+there is no binding in above text box.
+
+but, if i use following code:
+
+<input type="text" name="" id="" [value]="title">
+
+by using [], we mean, that we are passing value to this property, but
+we are passing variable to this property. So "title" is not value, it is variable
+
+Task:
+------
+create couple of variables of different typescript types and bind them to properties in html page.
+You can try differently, not only value property
+
+
+
+
+
+
+<form>
+    Username: <input type="text" name="" id="" class="form-control">
+    Password: <input type="password" name="" id="" class="form-control">
+    <br/>
+    <label for="chkShowPassword">Show password:</label> <input id="chkShowPassword" type="checkbox" name=""><br/><br/>
+    <input type="button" value="Login" class="btn btn-info">
+</form>
+
+
+
+
+
+
+Password: <input [type]="type" name="" id="" class="form-control">
+
+type:string='password';
+
+
+based on the value of this string variable "type", the input becomes, a textbox or password field
+
+
+
+<label for="chkShowPassword">Show password:</label> <input id="chkShowPassword" type="checkbox" name="" [checked]="showPassword"><br/><br/>
+
+showPassword:boolean=true;
+
+
+Thus, property binding is one-way.
+
+now, how to make 2 - way data binding?
+
+a change in the variable, should reflect in the property and
+a change in the property, should reflect in the variable.
+
+FormsModule
+	we need to import FormsModule 
+	
+	html element must not have a blank name property
+		name="" is not allowed. name must not be blank
+
+
+
+
+
+
+Username: <input type="text" name="username" class="form-control" [(ngModel)]="username">
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  imports: [FormsModule],
+  templateUrl: './login.html',
+  styleUrl: './login.css'
+})
+export class Login {
+showPassword:boolean=true;
+type:string='password';
+username:string="raja";
+}
+
+
+
+
+
+
+now that you observe that, a change in the input text, reflects in the variable. We prove that using interpolation.
+
+now, can we bind the checked property to a boolean variable?
+
+Task:
+-------
+create a color component, that has 3 ranges, viz., red, green and blue, each can be of range 0 to 255.
+
+on changing any range, should update corresponding variables in ts,
+and overall, the background color of the component changes accordingly.
+
+
+
+<input type="password" />
+
+type is an attribute.
+so, 
+
+given, "type" is a variable in .ts file, what is the difference between:
+<input [type]="type" />
+<input [attr.type]="type" />
+
+
+
+
+Class Binding:
+----------------
+very useful for applying mutliple class for a html element
+esp when we do form validations
+
+[ngClass]="{'form-control':true, 'is-invalid':false}"
+
+
+<input type="text" [ngClass]="{'form-control':true, 'is-invalid':false}" />
+
+
+wherever true, that class is applied
+false, then not applied
+
+like ngClass, there is ngStyle also.
+
+
+TasK
+------
+Use ngClass, (ref to my code)
+
+and identify how to use ngStyle
+
+----------------------------------------------------------------------------------
+class binding
+style binding
+
+these are done by using
+	ngClass directive
+	ngStyle directive
+
+
+
+
+<p [ngStyle]="{'color':color}">This is a paragraph</p>
+<input type="text" [ngClass]="{'form-control':true, 'is-invalid':false}" />
+
+
+Task:
+for ngStyle
+
+create a component, that accepts the color in a textbox as input.
+Apply the entered color as background color of the component.
+
+This happens whenever the input changes. (no event handling yet)
+
+
+
+
+solution:
+
+<input type="text" name="color" [(ngModel)]="color" >
+<div [ngStyle]="{'backgroundColor':color}">
+    <br/><br/><br/><br/><br/><br/><br/>
+</div>
+
+import { NgStyle } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-palette',
+  imports: [NgStyle, FormsModule],
+  templateUrl: './palette.html',
+  styleUrl: './palette.css'
+})
+export class Palette {
+  color:string='white';
+}
+
+
+
+
+Task:
+in the Palette component, use 2 textboxes
+
+Color:...............
+BgColor:...............
+
+if you are able to change color and background color using ngStyle
+
+
+
+<input type="text" name="color" [(ngModel)]="color" >
+<br/>
+<input type="text" name="bgColor" [(ngModel)]="bgColor">
+<div [ngStyle]="{'color':color,'backgroundColor':bgColor}">
+    <br/><br/><br/><br/><br/><br/><br/>This
+    is the content displayed inside
+</div>
+
+-----------------------------------------------------
+Introduction to Angular Framework, History & Overview				
+Environment Setup, Angular CLI, Installing Angular CLI				
+NPM commands & package.json				
+Bootstrapping Angular App, Components, AppModule				
+Project Setup, Editor Environments				
+First Angular App & Directory Structure				
+Angular Fundamentals, Building Blocks				
+Component Basics				
+Setting up the templates				
+Creating Components using CLI				
+Nesting Components				
+Data Binding - Property & Event Binding, String Interpolation, Style binding				
+Two-way data binding				
+Input Properties, Output Properties, Passing Event Data				
+Component Communication - Parent to Child and Child to Parent				
+Template, Styles, View Encapsulation, adding bootstrap to angular app				
+Built-in Directives, Creating Attribute Directive				
+Using Renderer to build attribute directive				
+
+
+
+-------------------------------------------
+Event binding
+----------------
+we use normal brackets 	(	)
+used to refer to a function that is defined in the .ts file
+
+
+in html:
+
+<input type="button" onClick="fn1()" />
+
+in angular
+
+<input type="button" (click)="fn1()" />
+	this fn1 must be defined in the .ts file
+
+Lets learn this using a new component.
+
+Maths component, that is used to add 2 numbers
+
+
+
+Example:
+
+<input type="number" name="no1" [(ngModel)]="no1" class="form-control" />
+<input type="number" name="no2" [(ngModel)]="no2" class="form-control" />
+<br/>
+<input type="button" value="Add" class="btn btn-primary" (click)="fnAdd()">
+<br/>
+{{result}}
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-maths',
+  imports: [FormsModule],
+  templateUrl: './maths.html',
+  styleUrl: './maths.css'
+})
+export class Maths {
+  no1:number=0;
+  no2:number=0;
+  result:number=0;
+
+  fnAdd(){
+    this.result=this.no1+this.no2;
+  }
+}
+
+
+
+
+Task:
+
+create a login component to check if username and password are same, then login is successful and else failure.
+
+print the result below.
+
+2 way data binding and
+event binding
+
+
+Username: <input type="text" name="username" [(ngModel)]="username" class="form-control">
+Password: <input type="password" name="password" [(ngModel)]="password" class="form-control">
+<br/>
+<input type="button" value="Login" class="btn btn-info" (click)="fnLogin()">
+<br/>
+<p [class]="resultStyle">{{result}}</p>
+<br/>
+<!-- {{username}}<br/>{{password}} -->
+
+
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-signin',
+  imports: [FormsModule],
+  templateUrl: './signin.html',
+  styleUrl: './signin.css'
+})
+export class Signin {
+  username:string='';
+  password:string='';
+  result:string='';
+  resultStyle:string='';
+
+  fnLogin(){
+    if(this.username==this.password){
+      this.result="Success";
+      this.resultStyle="alert alert-success";
+    }else{
+      this.result="Failure";
+      this.resultStyle="alert alert-danger";
+    }
+  }
+}
+
+------------------------------------------------------------
+
+in event binding some times, we may need to pass arguments
+
+------------------
+Task:
+------
+Create a country component, that accepts country name in the text box
+and an "Add" button.
+Whatever we add, is added to an array.
+Display the array values
+
+hint: we will use 
+	ngIf
+	ngSwitch
+	ngFor
+
+these directives also.
+
+i will give demo for these directives after this task.
+
+Till that, you complete the user interfaces and bindings
+
+
+
+Solution:
+------------
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-country',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './country.html',
+  styleUrl: './country.css'
+})
+export class Country {
+  countries:string[]=[];
+  country:string='';
+
+  fnAddCountry(){
+    if(this.country)
+      this.countries.push(this.country);
+    console.log(this.countries);
+    
+  }
+}
+
+
+<input type="text" name="country" [(ngModel)]="country" class="form-control">
+<input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
+<br/>
+<li *ngFor="let c of countries">{{c}}</li>
+
+-----------------------------
+-----------------------
+
+ngIf directive
+---------------
+conditionally render a html element.
+
+example:
+
+<p *ngIf="true">This is a paragraph</p>
+
+
+
+true means, render the element
+false means, hide
+
+
+complete example:
+
+<label for="show">Show:&nbsp;&nbsp;</label> <input type="checkbox" name="show" id="show" [(ngModel)]="show">
+<p *ngIf="show">This is a paragraph</p>
+<br/>
+<input type="text" name="country" [(ngModel)]="country" class="form-control">
+<input type="button" value="Add" class="btn btn-success" (click)="fnAddCountry()">
+<br/>
+<li *ngFor="let c of countries">{{c}}</li>
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-country',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './country.html',
+  styleUrl: './country.css'
+})
+export class Country {
+  show=true;
+  countries:string[]=[];
+  country:string='';
+
+  fnAddCountry(){
+    if(this.country)
+      this.countries.push(this.country);
+    console.log(this.countries);
+    
+  }
+}
+
+
+
+try this *ngIf now.
+
+
+ngSwitchCase
+-----------
+we need this directive because, ngIf does not have else part.
+
+ngSwitch offers multiple possible matches for an expression.
+
+
+
+
+
+<select name="grade" [(ngModel)]="grade" class="form-select">
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+    <option>D</option>
+</select>
+<br/>
+
+<div [ngSwitch]="grade">
+    <p *ngSwitchCase="'A'">Excellent</p>
+    <p *ngSwitchCase="'B'">Good</p>
+    <p *ngSwitchCase="'C'">Fair</p>
+    <p *ngSwitchCase="'D'">Satisfactory</p>
+</div>
+
+
+
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-switch-demo',
+  imports: [FormsModule,CommonModule],
+  templateUrl: './switch-demo.html',
+  styleUrl: './switch-demo.css'
+})
+export class SwitchDemo {
+  grade:string='A';
+}
+
+
+Task:
+Practise the switch case now using
+	ngSwitchCase directive
+
+this is used inside ngSwitch
+
+
+From Angular 17, and esp we are using 20,
+
+
+<select name="grade" [(ngModel)]="grade" class="form-select">
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+    <option>D</option>
+</select>
+<br/>
+
+<!-- <div [ngSwitch]="grade">
+    <p *ngSwitchCase="'A'">Excellent</p>
+    <p *ngSwitchCase="'B'">Good</p>
+    <p *ngSwitchCase="'C'">Fair</p>
+    <p *ngSwitchCase="'D'">Satisfactory</p>
+</div> -->
+
+@switch (grade) {
+    @case ('A') {
+        <p>Excellent</p>
+    }
+    @case ('B') {
+        <p>Good</p>
+    }
+    @case ('C') {
+        <p>Fair</p>
+    }
+    @case ('D') {
+        <p>Satisfactory</p>
+    }
+}
+----------------------------------------------
+
+Input Properties, Output Properties, Passing Event Data				
+What is input?
+	from parent component to child component
+		(in reactjs, this is "props")
+	in angular,
+		@Input() decorator is used
+
+
+In our project, App component is the parent for other components.
+
+
+
+
+
+
+
+
+in parent component:
+<app-login title="Login Form"></app-login>
+
+in child component:
+@Input() title!:string;
+
+next about ngContent
+
+
+Task:
+Observe the use of @Input() decorator, to send input from parent component
+and display it in child component
+
+-------------------------------------
+@Output() decorator
+
+like input= parent to child
+then output= child to parent
+
+For example, Login form should not have the login functionality in itself.
+Because, to be re-usable, the parent, who plug the child component, must be provided the option to write the logic for login.
+
+
+
+in child component (Signin)
+
+  @Output() loginEvent:EventEmitter<string>=new EventEmitter()
+
+on login button click event handler function, we will emit the event:
+
+
+
+
+Do you know how to create a class?
+	ng g class user
+
+user.ts:
+--------
+export class User {
+    username:string='';
+    password:string='';
+    constructor(username:string, password:string){
+        this.username=username;
+        this.password=password;        
+    }
+
+}
+
+
+
+
+in child:
+
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { User } from '../user';
+
+@Component({
+  selector: 'app-signin',
+  imports: [FormsModule],
+  templateUrl: './signin.html',
+  styleUrl: './signin.css'
+})
+export class Signin {
+  username:string='';
+  password:string='';
+  result:string='';
+  resultStyle:string='';
+  @Output() loginEvent:EventEmitter<User>=new EventEmitter<User>()
+
+  fnLogin(){
+    
+    // if(this.username==this.password){
+    //   this.result="Success";
+    //   this.resultStyle="alert alert-success";
+    // }else{
+    //   this.result="Failure";
+    //   this.resultStyle="alert alert-danger";
+    // }
+    //we have commented the above code
+    //because, this is done by parent
+    
+    var user:User=new User(this.username, this.password);
+    // user.username=this.username;
+    // user.password=this.password;
+    this.loginEvent.emit(user);
+  }
+}
+
+
+
+
+
+
+parent:
+
+import { Component } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { Signin } from "./signin/signin";
+import { User } from "./user";
+
+
+@Component({
+  selector: 'app-root',
+  imports: [FormsModule, Signin],
+  templateUrl: './app.html',
+  // template:`Hi this is template`,
+  styleUrl: './app.css'
+  // styleUrls:[]
+  
+})
+export class App {
+  protected title = 'first-app';
+
+  fnLogin(e:User){
+    alert(JSON.stringify(e))
+  }
+}
+
+Task:
+
+use @Output() decorator along with EvenEmitter
+to not only send output to the parent,
+but also to allow parent component to handle user defined event.
+
+Example code is given above.

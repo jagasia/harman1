@@ -1,0 +1,1573 @@
+Spring boot MVC CRUD with mysql using JPA
+----------------------------------------------------
+we will use JSP front end, with JSTL
+
+Entity:
+--------
+Product
+	id
+	name
+	category
+	price
+
+
+Steps:
+1) create a spring boot application using spring initializr
+type:maven
+lang: java
+build: war
+group: com.harman.demo
+artifact: 26-mvc-crud
+package: same as group
+version: 21
+spring boot version: 3.x stable latest
+dependencies:
+	spring web
+	spring data jpa
+	mysql driver
+	lombok
+
+because of auto configuration, spring boot will expect details for mysql connection. If it is h2, it will completed auto configure, then we can also update the configuration.
+
+2) in application.properties:
+
+spring.application.name=26-mvc-crud
+
+# ===============================
+# = DataSource Configuration
+# ===============================
+spring.datasource.url=jdbc:mysql://localhost:3306/harman2
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# ===============================
+# = Hibernate / JPA Configuration
+# ===============================
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# Optional: Formatting SQL logs
+spring.jpa.properties.hibernate.format_sql=false
+
+# Optional: Enable SQL logging (for debugging)
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+
+3) create entity class: Product
+
+NOTE: always create inside base package or its sub package. 
+never edit the base package
+
+if you follow this convention, then you NEED NOT require to configure @ComponentScan(basePackages={})
+
+package com.harman.demo.entity;
+
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+public class Product {
+	private Long id;
+	private String name;
+	private String category;
+	private Double price;
+	
+}
+
+
+4) create the repository interface:
+
+package com.harman.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.harman.demo.entity.Product;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+}
+
+
+5) i always recommend using "service" layer for DAO code
+
+package com.harman.demo.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.exception.ProductNotFoundException;
+import com.harman.demo.repository.ProductRepository;
+
+@Service
+public class ProductService {
+	@Autowired
+	private ProductRepository pr;
+	
+	public Product create(Product product) {
+		return pr.save(product);
+	}
+	
+	public List<Product> read() {
+		return pr.findAll();
+	}
+	
+	public Product read(Long id) {
+		Optional<Product> temp = pr.findById(id);
+		Product product=null;
+		if(temp.isPresent()) {
+			product=temp.get();
+		}else {
+			throw new ProductNotFoundException(id);
+		}
+		return product;
+	}
+	
+	public Product update(Long id, Product product) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.save(product);
+		}
+		return temp;
+	}
+	
+	public Product delete(Long id) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.delete(temp);
+		}
+		return temp;
+	}
+	
+	
+}
+
+
+6) create the controller:
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@Controller
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@RequestMapping(value = "/dml", method = RequestMethod.POST, params = "add")
+	public ModelAndView addProduct(Product product) {
+		ps.create(product);
+		return showProductPage();
+	}
+	
+	
+	@GetMapping
+	public ModelAndView showProductPage() {
+		List<Product> products = ps.read();
+		ModelAndView mv=new ModelAndView();
+		mv.setViewName("product");
+		mv.addObject("products",products);
+		return mv;
+	}
+	
+	@GetMapping("/select/{id}")
+	public ModelAndView findProductById(@PathVariable("id")Long id) {
+		Product product = ps.read(id);
+		List<Product> products = ps.read();
+		ModelAndView mv=new ModelAndView();
+		mv.setViewName("product");
+		mv.addObject("products",products);
+		mv.addObject("product",product);
+		return mv;
+	}
+	
+	@RequestMapping(value = "/dml", method = RequestMethod.POST, params = "update")
+	public ModelAndView updateProduct(Product product) {
+		ps.update(product.getId(), product);
+		return showProductPage();
+	}
+	
+	@RequestMapping(value = "/dml", method = RequestMethod.POST, params = "delete")
+	public ModelAndView deleteProduct(Product product) {
+		ps.delete(product.getId());
+		return showProductPage();
+	}
+	
+	
+}
+
+
+
+7) mvc steps:
+	i) in application.properties
+
+
+
+
+
+error:
+
+"Path with "WEB-INF" or "META-INF": [WEB-INF/views/index.jsp]"
+
+
+in pom.xml add tomcat dependency.
+
+it will solve the problem
+
+
+we use JSTL for dynamic content in jsp
+
+JSP Standard Tag Library
+	jstl core
+	jstl html
+	jstl sql
+
+
+we will use jstl core now
+
+in pom.xml:
+<dependency>
+    <groupId>jakarta.servlet.jsp.jstl</groupId>
+    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+    <version>3.0.0</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.web</groupId>
+    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+    <version>3.0.0</version>
+</dependency>
+
+
+
+
+Task:
+------
+Refer to
+26-mvc-crud
+
+and try CRUD mvc for Customer.
+
+--------------------------------------
+Maven vs Gradle
+
+in maven, we use "pom.xml"
+in gradle, we use "build.gradle"
+
+Demo:
+
+Lets create a restful webservice using gradle-groovy
+
+1) generate a spring boot application using spring initializr
+project: gradle groovy
+
+dependencies: spring web
+
+2) create a controller class
+package com.harman.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HomeController {
+
+	@GetMapping
+	public String home() {
+		return "Welcome to home";
+	}
+}
+
+
+run the app
+
+check the output in browser.
+
+
+Introduction to Spring Boot Features					
+Creating a simple Boot application using Spring Initializer website - maven and gradle (Here will discuss more details of gradle)					
+How auto-configuration works					
+Configuration properties					
+Using CommandLineRunner					
+
+
+
+
+
+Every spring boot application has Application class annotated by
+	@SpringBootApplication
+
+@SpringBootApplication
+	includes
+		@SpringBootConfiguration
+			is a kind of @Configuration
+		@EnableAutoConfiguration
+		@ComponentScan
+
+
+
+
+
+If you have this dependency:
+
+xml
+Copy
+Edit
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+Then Spring Boot:
+
+Detects spring-webmvc
+
+Auto-configures:
+
+DispatcherServlet
+
+RequestMappingHandlerMapping
+
+Embedded Tomcat server
+
+You don’t need to define those beans yourself!
+
+
+
+
+Using @Controller, @RestController, handling GET,PUT,POST, DELETE methods ysing annotations					
+Introduction to Web Services					
+REST Vs SOAP					
+
+
+
+@Controller vs @RestController
+
+@Controller
+	is used in MVC applications
+	in a controller class, a method returns
+		view	(or)
+		ModelAndView
+
+	but we can modify that behaviour using @ResponseBody
+
+ex:
+in a controller class, the following method:
+
+	@GetMapping("/hello")
+	@ResponseBody		//note this 
+	public String hello(){
+		return "Hello world";
+	}
+
+
+@ReponseBody annotation over a method, will change what is returned by the method.
+	instead of returning the view name, the method returns the response body that is going to be printed in the browser.
+
+
+In @RestController, the methods return response body only. We do not need to mention @ResponseBody on the methods. 
+
+
+@RestController	=>	@Controller + @ResponseBody
+
+@RestController
+public class HomeController {
+	@Value("${spring.application.name}")
+	private String appName;
+
+	@GetMapping
+	public String home() {
+		return "Welcome to "+appName;	//not view name. it is response body
+	}
+}
+
+
+RESTful webservices methods are stateless. Every request to a rest method is independent and does not preserve any state.
+
+HTTP
+
+
+REST Vs SOAP					
+
+
+I learned SOAP webservices first. 
+Simple Object Access Protocol
+	protocol
+	soap is not based on microservices architecture.
+	one url for entire webservice.
+	soap supports XML only
+
+RESTful webservices
+	architectural style
+	is based on microservices architecture
+	one url per web method
+	rest supports multiple formats including
+		XML
+		HTML
+		JSON
+		
+
+a webservice is inter-operable across platforms and languages
+
+a webservice created in .net can be accessed from any program developed in any language any platform
+
+it is because, the data sent and received by a webservice is in text format instead of binary. SOAP used XML format (which is also text based)
+
+
+Enter your mobile number:
+Enter the text:
+	<<send sms>> button
+
+i submitted the form to a servlet.
+and i found one webservice end point in google
+and i called that webservice, 
+then that webservice sent the sms
+
+how is it possible, 
+	it is possible only if we can call a program through internet
+	that program runs in a server, somewhere in the world.
+	and we are able to call that program through http
+
+that is web service.
+
+REST API
+
+
+SOAP vs REST
+------------------
+REST vs. SOAP
+=============
+
+1. Protocol:
+   - REST: Uses HTTP only
+   - SOAP: Uses HTTP, SMTP, TCP, etc.
+
+2. Data Format:
+   - REST: Supports JSON, XML, plain text, HTML
+   - SOAP: Supports only XML
+
+3. Type:
+   - REST: Architectural style
+   - SOAP: Protocol (strict standard)
+
+4. Speed:
+   - REST: Faster (lightweight)
+   - SOAP: Slower (verbose XML)
+
+5. Flexibility:
+   - REST: Highly flexible
+   - SOAP: Strict and rigid
+
+6. Ease of Use:
+   - REST: Easy to test (Postman, curl)
+   - SOAP: Requires SOAP tools (e.g., SoapUI)
+
+7. Security:
+   - REST: Basic (HTTPS, OAuth)
+   - SOAP: Advanced (WS-Security, encryption, signatures)
+
+8. Standards:
+   - REST: No strict standards
+   - SOAP: WSDL, XSD, WS-Security, etc.
+
+9. Stateless:
+   - REST: Stateless only
+   - SOAP: Can be stateless or stateful
+
+10. Usage:
+    - REST: Web/mobile apps, microservices
+    - SOAP: Enterprise, legacy systems, banking, telecom
+
+Example:
+--------
+
+REST API:
+---------
+GET http://api.example.com/users/101
+
+Response (JSON):
+{
+  "id": 101,
+  "name": "Jagadees",
+  "email": "jag@example.com"
+}
+
+SOAP Request (XML):
+-------------------
+POST http://api.example.com/UserService
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:usr="http://example.com/user">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <usr:getUser>
+      <usr:userId>101</usr:userId>
+    </usr:getUser>
+  </soapenv:Body>
+</soapenv:Envelope>
+
+SOAP Response:
+--------------
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <getUserResponse>
+      <id>101</id>
+      <name>Jagadees</name>
+      <email>jag@example.com</email>
+    </getUserResponse>
+  </soapenv:Body>
+</soapenv:Envelope>
+
+Summary:
+--------
+- REST is lightweight, flexible, and modern (preferred for new applications)
+- SOAP is formal, secure, and used in enterprise systems with complex requirements
+
+
+===========================================
+Implementing REST with Spring MVC, @RequestMapping, @RequestBody and @ResponseBody, @PathVariable, @RequestParams, @RequestHeaders					
+
+
+
+MVC 	=	complete project, it can be monolithic (1 war)
+REST	=	independent services. Each controller methods 			have endpoint
+
+rest with spring mvc means,
+	we can create all the code that needs to access database as restful webservices.
+	and then the frontend in java, web app model is MVC
+
+from MVC, how we can access REST?
+	i) feign client
+		can be used to access rest api from mvc
+		can be used to access rest api from another rest 			api
+	ii) if we are using spring boot, we can use
+		RestTemplate
+			can be used to access any rest api from a 				spring boot code
+
+
+	iii) we can call any rest api from any java code using 
+		HttpClient	(java 11 onwards)
+		HttpUrlConnection (old version)
+
+
+
+Demo:
+lets run a restful web service and then access it from 
+	HttpClient
+
+http://localhost:8085/person
+
+lets call this above endpoint from a core java program
+
+code:
+-------
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+
+public class APICall {
+   public static void main(String[] args) {
+      HttpClient httpClient = HttpClient.newBuilder()
+         .version(HttpClient.Version.HTTP_2)
+         .connectTimeout(Duration.ofSeconds(10))
+         .build(); 
+         try {
+            HttpRequest request = HttpRequest.newBuilder()
+            .GET()
+            .uri(URI.create("http://localhost:8085/person"))
+            .build();                              
+            HttpResponse<String> response = httpClient.send(request,
+            HttpResponse.BodyHandlers.ofString()); 
+
+         System.out.println("Status code: " + response.statusCode());                            
+         System.out.println("Headers: " + response.headers().allValues("content-type"));
+         System.out.println("Body: " + response.body());
+      } catch (IOException | InterruptedException e) {
+         e.printStackTrace();
+      }
+   }
+}
+
+
+Task:
+------
+Observe the Spring boot RESTful webservices we discussed so far.
+
+
+
+
+
+Implementing REST with Spring MVC, @RequestMapping, @RequestBody and @ResponseBody, @PathVariable, @RequestParams, @RequestHeaders					
+
+
+@RequestMapping(value = "/dml", method = RequestMethod.POST)
+	is equivalent to
+@PostMapping("/dml")
+
+
+@RequestMapping can be used for
+	POST
+	GET
+	PUT
+	DELETE
+	PATCH
+
+
+
+in restful webservices,
+	POST		adding
+	GET		retrieving
+	PUT		updating
+	DELETE		deleting
+	PATCH		partial update (means, one or more 				properties)
+
+these are all http methods
+
+
+@PathVariable vs @RequestParam
+
+
+http://localhost:8080/product?id=12&name=Pencil&category=stationery&price=10.0
+	the above URL is sending request params
+@GetMapping("/product")
+	public ModelAndView findProductById(@RequestParam("id")Long id, @RequestParam("name") String name, @RequestParam("category") String category, @RequestParam("price") Double price) {
+	}
+
+PathVariable ex:-
+--------------------
+	http://localhost:8080/select/20
+
+	@GetMapping("/select/{id}")
+	public ModelAndView findProductById(@PathVariable("id")Long id) 
+	{
+	
+	}
+
+
+
+
+
+
+
+
+
+
+@RequestBody vs @ResponseBody
+
+@RequestBody
+	when we send data to a restful webservice via body, and not in URL
+
+	if you are sending via URL, then it can be
+		path variable (or)
+		request param
+
+
+the webservice is sending response, ie., Response body
+
+A method in rest controller returns @ResponseBody by default. So we do not mention it.
+
+
+A method in a MVC project returns view or model and view. If we want to modify that into response body, then we use @ResponseBody annotation.
+
+
+
+@RequestHeaders	
+	a request can send additional information via headers
+	request headers can send mime type, authorization tokens, etc
+
+
+
+------------------------------------
+Spring MVC REST Annotations
+===========================
+
+1. @RequestMapping
+-------------------
+- Maps HTTP requests to handler methods.
+
+Example:
+@RequestMapping(value = "/hello", method = RequestMethod.GET)
+public String sayHello() {
+    return "Hello World!";
+}
+
+Tip: @GetMapping, @PostMapping, @PutMapping, etc., are shortcuts for @RequestMapping.
+
+---
+
+2. @RequestBody
+----------------
+- Binds the request body (usually JSON) to a Java object.
+
+Example:
+@PostMapping("/user")
+public String saveUser(@RequestBody User user) {
+    return "User saved: " + user.getName();
+}
+
+Request:
+POST /user
+Content-Type: application/json
+{
+  "name": "Jag",
+  "email": "jag@example.com"
+}
+
+---
+
+3. @ResponseBody
+-----------------
+- Sends the return value directly as the HTTP response (usually JSON).
+- Implicit when using @RestController.
+
+Example:
+@ResponseBody
+@GetMapping("/ping")
+public String ping() {
+    return "pong";
+}
+
+OR
+
+@RestController
+public class MyController {
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+}
+
+---
+
+4. @PathVariable
+-----------------
+- Binds a variable from the URL path.
+
+Example:
+@GetMapping("/greet/{name}")
+public String greet(@PathVariable String name) {
+    return "Hello, " + name;
+}
+
+Request: GET /greet/Jag
+Response: Hello, Jag
+
+---
+
+5. @RequestParam
+-----------------
+- Binds query parameter value to a method parameter.
+
+Example:
+@GetMapping("/search")
+public String search(@RequestParam String keyword) {
+    return "Searching for: " + keyword;
+}
+
+Request: GET /search?keyword=spring
+Response: Searching for: spring
+
+---
+
+6. @RequestHeader
+------------------
+- Binds an HTTP header value to a method parameter.
+
+Example:
+@GetMapping("/agent")
+public String getAgent(@RequestHeader("User-Agent") String agent) {
+    return "Agent: " + agent;
+}
+
+Request: GET /agent
+Header: User-Agent: PostmanRuntime/7.36.1
+Response: Agent: PostmanRuntime/7.36.1
+
+---
+
+Summary
+-------
+Annotation        Purpose
+----------        ---------------------------------------
+@RequestMapping    Maps URL + method to controller method
+@RequestBody       Converts request JSON to Java object
+@ResponseBody      Converts Java object to JSON response
+@PathVariable      Extracts value from URL path
+@RequestParam      Extracts value from query parameter
+@RequestHeader     Extracts value from HTTP headers
+
+
+Task:
+------
+Complete the observation for the above.
+
+Post lunch we will have 1 restful web service covering CRUD, and above options.
+
+Controlling HTTP response codes with @ResponseStatus					
+Implementing Spring REST Exception Handling - @RestControllerAdvice, @ExceptionHandler 					
+REST Good Programming practices					
+
+
+Demo:
+--------
+1) create a spring boot restful webservice with jpa mysql for Product
+
+	spring web
+	spring data jpa
+	mysql driver
+	lombok
+
+2) in application.properties
+
+server.port=5000
+
+# ===============================
+# = DataSource Configuration
+# ===============================
+spring.datasource.url=jdbc:mysql://localhost:3306/harman2
+spring.datasource.username=root
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# ===============================
+# = Hibernate / JPA Configuration
+# ===============================
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+# Optional: Formatting SQL logs
+spring.jpa.properties.hibernate.format_sql=false
+
+# Optional: Enable SQL logging (for debugging)
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+
+3) create entity, repository, service, exception
+
+all same as mvc
+
+4) rest controller:
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@PostMapping
+	public Product create(@RequestBody Product product) {
+		return ps.create(product);
+	}
+	
+	@GetMapping
+	public List<Product> read() {
+		return ps.read();
+	}
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id) {
+		return ps.read(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product) {
+		return ps.update(id, product);
+	}
+	
+	@DeleteMapping("/{id}")
+	public Product delete(@PathVariable Long id) {
+		return ps.delete(id);
+	}
+	
+}
+
+
+
+
+
+http://localhost:5000/product
+
+[{"id":1,"name":"Pencil","category":"Stationery","price":10.0},{"id":2,"name":"Samosa","category":"Snacks","price":15.0}]
+
+
+
+GET mapping end points can be checked in browser's address bar.
+
+But for other http methods?
+
+we can use 
+	Postman
+	Swagger	
+		we should include swagger dependency in pom.xml
+
+
+
+using postman, you can test all endpoints of different HTTP methods.
+
+Task:
+----------
+Create a RESTful webservices CRUD for customer
+and test them in postman.
+
+After this task, i will give demo for swagger.
+
+
+-------------------------------------------------------
+just add the following dependency to pom.xml
+
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version>
+</dependency>
+
+
+restart the project and go to
+
+http://localhost:5000/swagger-ui/index.html
+
+
+
+
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    // CREATE
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        Product savedProduct = productRepository.save(product);
+        return ResponseEntity
+                .status(HttpStatus.CREATED) // 201 Created
+                .body(savedProduct);
+    }
+
+    // READ all
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return ResponseEntity.ok(products); // 200 OK
+    }
+
+    // READ one
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok) // 200 OK
+                .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+        return productRepository.findById(id)
+                .map(existingProduct -> {
+                    existingProduct.setName(productDetails.getName());
+                    existingProduct.setPrice(productDetails.getPrice());
+                    Product updated = productRepository.save(existingProduct);
+                    return ResponseEntity.ok(updated); // 200 OK
+                })
+                .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return ResponseEntity.noContent().build(); // 204 No Content
+                })
+                .orElse(ResponseEntity.notFound().build()); // 404 Not Found
+    }
+}
+
+
+
+Task:
+
+use @ResponseStatus
+and ResponseEntity
+
+to return the appopriate status code as response.
+
+---------------------------------------------------------------
+Quick introduction to ORM with JPA					
+Benefits of using Spring with JPA					
+JPA configuration in Spring					
+Configuring Spring JPA using Spring Boot					
+Spring Data JPA dynamic repositories					
+Transaction Management in Spring Data JPA					
+A demo application to implement CRUD operations using Spring Data JPA					
+
+
+
+Relationships using annotations, we learned in hibernate, holds the same in jpa also.
+
+JPAQL
+-------
+like HQL, we use JPAQL for writing queries.
+
+
+in jpa, except the usual
+	create, read, update, delete
+
+find by non primary key fields
+	use finder methods
+
+package com.harman.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.harman.demo.entity.Product;
+import java.util.List;
+
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+	List<Product> findByCategory(String category);
+}
+
+
+
+
+
+
+package com.harman.demo.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.exception.ProductNotFoundException;
+import com.harman.demo.repository.ProductRepository;
+
+@Service
+public class ProductService {
+	@Autowired
+	private ProductRepository pr;
+	
+	public Product create(Product product) {
+		return pr.save(product);
+	}
+	
+	public List<Product> read() {
+		return pr.findAll();
+	}
+	
+	public Product read(Long id) {
+		Optional<Product> temp = pr.findById(id);
+		Product product=null;
+		if(temp.isPresent()) {
+			product=temp.get();
+		}else {
+			throw new ProductNotFoundException(id);
+		}
+		return product;
+	}
+	
+	public Product update(Long id, Product product) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.save(product);
+		}
+		return temp;
+	}
+	
+	public Product delete(Long id) {
+		Product temp=read(id);
+		if(temp!=null) {
+			pr.delete(temp);
+		}
+		return temp;
+	}
+	
+	public List<Product> findByCategory(String category) {
+		return pr.findByCategory(category);
+	}
+	
+}
+
+
+
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Product create(@RequestBody Product product) {
+		return ps.create(product);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> read() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ps.read());
+	}
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id) {
+		return ps.read(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product) {
+		return ps.update(id, product);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> delete(@PathVariable Long id) {
+		ps.delete(id);
+		return ResponseEntity
+				.status(HttpStatus.NO_CONTENT)
+				.build();
+	}
+	
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category) {
+		return ps.findByCategory(category);
+	}
+}
+
+
+
+
+
+
+Demo:
+
+write query in jpa
+
+in repository:-
+
+@Query("from Product p where p.price between :from and :to")
+public List<Product> findProductsInRange(@Param("from") Double 	from,@Param("to") Double to);
+
+
+
+in service:-
+
+	public List<Product> findProductsInRange(Double from, Double to){
+		return pr.findProductsInRange(from, to);
+	}
+
+
+
+in controller:-
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.entity.Product;
+import com.harman.demo.service.ProductService;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+	@Autowired
+	private ProductService ps;
+	
+	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Product create(@RequestBody Product product) {
+		return ps.create(product);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> read() {
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(ps.read());
+	}
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id) {
+		return ps.read(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product) {
+		return ps.update(id, product);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> delete(@PathVariable Long id) {
+		ps.delete(id);
+		return ResponseEntity
+				.status(HttpStatus.NO_CONTENT)
+				.build();
+	}
+	
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category) {
+		return ps.findByCategory(category);
+	}
+	
+	@GetMapping("/range/{from}/{to}")
+	public List<Product> findProductsInRange(@PathVariable("from") Double from,@PathVariable Double to){
+		return ps.findProductsInRange(from, to);
+	}
+}
+
+
+Task:
+use 
+	finder methods
+	queries
+
+in the repository 
+and test them
+
+
+-------------------------------------------------	
+	
+Spring security
+--------------------
+
+demo1:
+---------
+observe the effect of adding "spring-security" dependency in our project.
+
+
+when we run the project, we see in console:
+
+Using generated security password: 
+	3df6eb3e-9d13-4d96-82de-0da96f1955af
+
+
+
+when we access 
+
+http://localhost:8080/
+
+http://localhost:8080/about
+
+http://localhost:8080/contact
+
+any of the urls, it is asking us to login.
+
+username is "user" by default.
+
+Password is provided in the console, that will keep changing as and when we restart the project.
+
+password is: 3df6eb3e-9d13-4d96-82de-0da96f1955af
+
+
+Demo 2:
+---------
+now, lets change the username and password to our choice.
+
+go to application.properties:
+
+spring.security.user.name=jag
+spring.security.user.password=jag@123
+
+
+
+restart the project. now, when you try to access any endpoint, it will ask you to login.
+
+you provide the username and password you configured in the application.properties
+
+
+Demo 3:
+----------
+now that the username and password should not be visible in application.properties file. 
+
+So, lets configure using Java configuration class.
+
+1) create a configuration class.
+we need to define 
+	AuthenticationProvider bean
+		depends on
+			UserDetailsService bean
+			PasswordEncoder bean
+
+
+2) user details service bean:
+
+package com.harman.demo.service;
+
+import java.util.ArrayList;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService{
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return new User("dinesh", "prasad", new ArrayList<>());
+	}
+
+}
+
+
+3) in config class: define, password encoder and authenticationProvider beans.
+
+package com.harman.demo.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+public class MySecurityConfiguration {
+	@Autowired
+	private UserDetailsService uds;
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return NoOpPasswordEncoder.getInstance();
+	}
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider ap=new DaoAuthenticationProvider();
+		ap.setUserDetailsService(uds);
+		ap.setPasswordEncoder(passwordEncoder());
+		return ap;
+	}
+}
+
+
+-----------------------------------------------------
+Task:
+----------
+
+Upto demo3, you observe
+
+1) by adding spring security dependency, you understand that every url is allowed after logging in only.
+default username: user
+password: is generated in console.
+
+2) in application.properties
+
+spring.security.user.name=jag
+spring.security.user.password=jag@123
+
+now you observe that you are allowed to login using the credentials provided by you.
+
+3) now, create a configuration class and configure the following beans:
+	authenticationProvider bean
+		depends on
+			passwordEncoder bean
+			userDetailsService bean
+
+UserDetailsService is an interface that we implement using
+	MyUserDetailsService and override the "loadUserByUsername" method.
+
+refer to my 26-jun-security-1 project inside "security" folder.
+
+
+-------------------
+Demo4:
+----------
+instead of one user hard coded in loaduserby username, we can use jpa repository to find user by username (primary key).
+
+
+1) i have cloned the project as : 26-jun-security-2
+
+and added the following dependencies to pom.xml:
+
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+
+2) create, entity, repository, service (we already have a service class)
+
+entity:
+@Entity
+@Data
+@NoArgsConstructor
+public class MyUser {
+	@Id
+	private String username;
+	private String password;
+	private String role;	//csv roles
+}
+
+
+3) repository:
+
+@Repository
+public interface MyUserRepository extends JpaRepository<MyUser, String>{
+
+}
+
+4) service:
+it is already there "MyUserDetailsService"
+
+we just autowire the repository here.
+
+package com.harman.demo.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.harman.demo.entity.MyUser;
+import com.harman.demo.repository.MyUserRepository;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService{
+	@Autowired
+	private MyUserRepository ur;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		//find user by username
+		Optional<MyUser> temp = ur.findById(username);
+		
+		User user=null;
+		if(temp.isPresent()) {
+			//user found. convert MyUser to User type
+			MyUser myUser = temp.get();
+			String[] arr = myUser.getRole().split(",");
+			List<SimpleGrantedAuthority> authorities=new ArrayList<>();
+			for(String role:arr) {
+				authorities.add(new SimpleGrantedAuthority(role));
+			}
+			user=new User(myUser.getUsername(), myUser.getPassword(), authorities);
+		}else
+		{
+			throw new UsernameNotFoundException("Login failed");
+		}
+//		return new User("dinesh", "prasad", new ArrayList<>());
+		return user;
+	}
+
+}
+
+
+demo 4 is completed. now, in our mysql database, we will add few records in myuser table.
+
+Whichever credentials matching with any row, will be allowed to login.
+
+
+time being, add users in mysql directly.
+
+Tomorrow, we can create end points like signup
+

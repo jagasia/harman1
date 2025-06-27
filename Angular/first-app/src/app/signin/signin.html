@@ -1,0 +1,8 @@
+Username: <input type="text" name="username" [(ngModel)]="username" class="form-control">
+Password: <input type="password" name="password" [(ngModel)]="password" class="form-control">
+<br/>
+<input type="button" value="Login" class="btn btn-info" (click)="fnLogin()">
+<br/>
+<p [class]="resultStyle">{{result}}</p>
+<br/>
+<!-- {{username}}<br/>{{password}} -->

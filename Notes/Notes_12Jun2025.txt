@@ -1,0 +1,510 @@
+ReactJs Routing
+------------------
+We need routing to redirect across components,
+render component by
+	re-writing url
+	clicking a link
+	clicking a button
+	conditionally (if condition true, redirect to admin, else to user)
+
+It is different from hyperlink. Hyperlinks redirect to a web page.
+But, here, we redirect to a component.
+	
+
+1) How can we implement routing in reactjs?
+	we need to install react-router-dom
+		npm i react-router-dom
+
+2) we need to cover the componet(s) where we want to define routes.
+	i usually cover the <App> in index.js
+		so that, all its children at any level are covered
+
+	<BrowserRouter>
+		<App />
+	</BrowserRouter>
+
+3) we define the routes....
+	<Routes> is a placeholder, where the component will render.
+
+	<Routes> component allows us to define each route and map it to the corresponding element
+
+	<Routes>
+		<Route path="" element="" />
+	</Routes>
+
+4) we can render a particular component by
+	re-writing url
+	clicking a link
+	clicking a button
+	conditionally (if condition true, redirect to admin, else to user)
+
+
+Now, observe that, so far, if we want to render a component,
+we plugged it in parent component.
+
+For example, in App component, we plugged, Login component
+But to dynamically render different components, based on condition etc, we need routing
+
+useState vs useReducer
+-------------------------------
+
+Demo for routing:
+-------------------
+lets create the following components:
+	Home
+	About
+	Contact
+	Login
+	Signup
+
+1) we may use <BrowserRouter> in App component
+or we may surround <App> by <BrowserRouter> in main.jsx
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App.jsx'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
+
+
+
+<Routes>
+            <Route path='/home' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+
+          </Routes>
+
+
+Task:
+------
+Complete upto
+	install react-router-dom
+	surround the App with BrowserRouter
+	define the Routes
+	check by changing the url
+
+
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/*' element={<NotFound />} />
+          </Routes>
+
+
+
+Now, we are going to provide a nav bar.
+so that, users need not re-write the url.
+
+Task:
+-------
+create a nav component and plug it in App
+
+nav component to have links to each component
+
+ensure that on clicking the links, corresponding component is rendered.
+
+
+
+Next
+
+through coding, we need to redirect.
+
+using useNavigate() hook
+and useLocation() hook
+
+import { useNavigate } from "react-router-dom";
+
+
+    const navigate=useNavigate();
+
+
+    function fnLogin(){
+        if(username==password){
+            //redirect to admin home
+            navigate('/adminhome');
+        }else{
+            //redirect to home
+            navigate('/');
+        }
+    }
+
+
+Task:
+-------
+use useNavigate() to navigate to components in coding.
+
+----------------------
+We need to have another component "Logout"
+and we toggle between login and logout in nav bar based on
+status
+
+
+an user is considered as logged in, if there is a localStorage called user
+
+in login:
+	if login is successful, we create a localStorage "user" and then
+		redirect
+
+in logout:
+	remove the localStorage		clear
+
+we need to write logic in Nav so that, it will display "Login" or "Logout" either according to the status.
+
+----------------------------------------------------------
+
+----------------------------------------------------import { createContext, useContext, useState } from 'react';
+
+const UserContext = createContext();
+
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(localStorage.getItem("user"));
+
+  const login = (username) => {
+    localStorage.setItem("user", username);
+    setUser(username);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
+  return (
+    <UserContext.Provider value={{ user, login, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUser = () => useContext(UserContext);
+
+
+
+
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
+
+export const Nav = () => {
+  const { user, logout } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/logout');
+  };
+
+  return (
+    <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+      <div className="container-fluid">
+        <a className="navbar-brand" href="/">Logo</a>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="collapsibleNavbar">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link" href="/">Home</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/about">About Us</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/contact">Contact Us</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/signup">Sign up</a>
+            </li>
+            <li className="nav-item">
+              {user ? (
+                <button className="nav-link btn btn-link text-white" onClick={handleLogout}>Logout</button>
+              ) : (
+                <a className="nav-link" href="/login">Login</a>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+
+
+
+
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
+
+export const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { login } = useUser();
+
+  function fnLogin() {
+    if (username === password) {
+      login(username); // context-based login
+      navigate('/adminhome');
+    } else {
+      login(username);
+      navigate('/');
+    }
+  }
+
+  return <>
+    Username: <input type="text" className="form-control" onChange={(e) => setUsername(e.target.value)} />
+    Password: <input type="password" className="form-control" onChange={(e) => setPassword(e.target.value)} />
+    <br />
+    <input type="button" value="Login" className="btn btn-info" onClick={fnLogin} />
+  </>
+}
+
+
+
+
+
+
+import { useEffect } from "react";
+import { useUser } from "./UserContext";
+
+export const Logout = () => {
+  const { logout } = useUser();
+
+  useEffect(() => {
+    setTimeout(()=>{
+logout(); // this clears localStorage AND updates context
+alert('logged out')
+    },5000);
+    
+  }, []);
+
+  return <>
+    You are logged out...Click <a href="/login">here</a> to login
+  </>
+}
+
+
+
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App.jsx'
+import { UserProvider } from './components/UserContext.jsx'
+import './index.css'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+    <UserProvider>
+      <App />
+      </UserProvider>
+    </BrowserRouter>
+  </StrictMode>,
+)
+
+
+
+
+----------------------------------------------
+First, you will complete the code for login and logout.
+
+
+Next, we should be able to pass information while redirecting.
+from one component, we use code to redirect.
+we should also pass info like query string 
+
+
+source:
+	navigate("/",{state:{username:'Raja'}});
+target:
+	to capture the object sent by source
+
+	useLocation hook
+
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+export const Home=()=>{
+    const location=useLocation();
+    const [name, setName]=useState('UnKnown');
+
+    useEffect(()=>{
+        setName(location.state.name);
+    },[]);
+
+    return <>
+        Welcome to Home. Welcome <span style={{'text-transform':'capitalize'}}>{name}</span>
+    </>
+}
+
+
+
+Task:
+
+when you redirect, send name 
+and when you receive, display the name.
+
+After this task, we will also see how we can define query strings in routes itself. That is when we use links or hyperlinks or url re-writing
+
+-----------------------------------------------------------------------
+to provide route params in our path
+
+<Route path='/about/:color?/:title?' element={<About />} />
+
+in url, the user provides the values for params
+
+how these values are captured by the component?
+
+by using useParams hook.
+
+const {color, title}=useParams();
+	//in this approach, we are using object destructuring
+
+or
+	const params=useParams();
+
+	then use params.color and params.title
+
+You are going to try this now.
+
+--------------------------------------------
+--------------------------------------------
+API calls
+
+Reactjs apps are front end applications.
+
+what are all examples for backends, that can be accessed from reactjs frontend
+	REST apis/	Restful webservices
+	JSON server	
+		to quickly run a server api that can be accessed
+			from post man, Browser url (GET)
+			from any front end
+
+	
+lets take a fake rest api
+
+https://dummyjson.com/products/1
+
+what are all the ways, we can call an api from javascript?
+	fetch 
+	ajax
+	axios	(reactjs library, we will install in our project)
+
+
+
+
+Steps for using axios:
+--------------------------
+
+install axios
+	npm i axios
+
+create a service class, where all api calls are created using separate functions
+
+import axios from "axios";
+
+class ProductService{
+    URL="https://dummyjson.com/products";
+
+    fnRetrieveAllProducts(){
+        return axios.get(this.URL);
+    }
+}
+export default new ProductService();
+
+
+
+call this service from the component.
+
+
+import { useEffect, useState } from "react";
+import ProductService from "./services/ProductService";
+
+export const ProductGrid=()=>{
+    const [products, setProducts]=useState([]);
+
+    useEffect(()=>{
+        //call the api using service
+        ProductService.fnRetrieveAllProducts()
+        .then(response=>{
+            console.log("Response received from api:");            
+            console.log(JSON.stringify(response.data.products));            
+            setProducts(response.data.products);
+        })
+        .catch(error=>{
+            console.log("Error while accessing api...."+error);            
+        })
+    },[]);
+    return <div>
+        Product here...
+        {
+            products.map((p)=><li>{p.id}</li>)
+        }
+    </div>
+}
+
+Task:
+display the products as a table.
+
+-------------------------
+JSON server.
+
+steps for json server.
+
+create a file "products.json"
+create an object that contains array of products
+
+{
+"products":[
+{"id":"1","name":"Pencil","price":"10"}
+]
+}
+
+
+run the server to watch this file.
+
+npx json-server --watch products.json
+
+
+
+We have completed, 
+ADD
+UPDATE
+DELETE
+READ ALL
+
+in our project.
+
+Try to do it now and then we will 
+move to find by id (select) and populate the form.
+
+
+how we implemented this:
+
+App is the parent
+	ProductGrid
+	ProductForm
+
+
+ProductGrid Select button handled by App (Parent)
+Parent sends id to ProductForm (Child)
+

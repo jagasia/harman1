@@ -1,0 +1,551 @@
+import { useEffect, useState } from "react";
+
+export const Register = () => {
+    const [user, setUser] = useState({ username: '', password: '', cpassword: '', email: '', dateOfBirth: '', phone: '' });
+    const [errors, setErrors] = useState({ username: '', password: '', cpassword: '', email: '', dateOfBirth: '', phone: '' });
+    const [touched, setTouched] = useState({ username:false, password:false, cpassword:false, email:false, dateOfBirth:false, phone:false});
+
+    function fnValidateUsername(username) {
+        if (username.length < 6) {
+            setErrors(prev => ({ ...prev, username: 'Username must be at least 6 characters' }));
+        } else {
+            setErrors(prev => ({ ...prev, username: '' }));
+        }
+    }
+
+    function fnValidatePassword(password) {
+        if (
+            password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/)
+        ) {
+            setErrors(prev => ({ ...prev, password: '' }));
+        } else {
+            setErrors(prev => ({ ...prev, password: 'Password is invalid' }));
+        }
+    }
+
+    function fnConfirmPassword(password, cpassword) {
+        if (password === cpassword) {
+            setErrors(prev => ({ ...prev, cpassword: '' }));
+        } else {
+            setErrors(prev => ({ ...prev, cpassword: 'Passwords do not match' }));
+        }
+    }
+
+    // 👇 Watch for password or cpassword changes
+    useEffect(() => {
+        fnValidatePassword(user.password);
+        fnConfirmPassword(user.password, user.cpassword);
+    }, [user.password, user.cpassword]);
+
+    return (
+        <div>
+            <form className="container">
+                <br />
+                Username: <input type="text" className={`form-control ${errors.username && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, username: e.target.value });
+                    fnValidateUsername(e.target.value);
+                    setTouched({...touched, username:true})
+                }} />
+                <div className="text-danger">{errors.username}</div>
+
+                Password: <input type="password" className={`form-control ${errors.password && touched.password && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, password: e.target.value });
+                    setTouched({...touched, password:true})
+                }} />
+                {  touched.password && <div className="text-danger">{errors.password}</div> }
+
+                Confirm Password: <input type="password" className={`form-control ${errors.cpassword && touched.cpassword && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, cpassword: e.target.value });
+                    setTouched({...touched, cpassword:true})
+                }} />
+                {   touched.cpassword && <div className="text-danger">{errors.cpassword}</div>}
+
+                Email: <input type="email" className="form-control" onChange={(e) => setUser({ ...user, email: e.target.value })} />
+                Date of Birth: <input type="date" className="form-control" onChange={(e) => setUser({ ...user, dateOfBirth: e.target.value })} />
+                Phone number: <input type="number" className="form-control" onChange={(e) => setUser({ ...user, phone: e.target.value })} />
+                <br />
+                {JSON.stringify(errors)}
+            </form>
+        </div>
+    );
+};
+
+
+
+-------------------------
+I have done validation upto 
+	username
+	password
+	cpassword
+
+
+how will you validate
+	email
+	date of birth
+	phone
+
+for email, we can use regex
+
+can you complete the email validation and update me?
+
+
+
+^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+
+
+
+--------------------------
+can you tell me how to disable the future dates from input:date?
+
+Date of Birth: <input type="date" max={new Date().toISOString().split("T")[0]}  className="form-control" onChange={(e) => setUser({ ...user, dateOfBirth: e.target.value })} />
+
+
+
+
+Phone number must be exactly 10 digits
+
+The following code works fine except the errors.valid property becomes true or false with a delay because set state works asynchronously.
+When all errors object members are empty, and touched members are all true, errors.valid should be true. 
+
+code:
+
+import { useEffect, useState } from "react";
+
+export const Register = () => {
+    const [user, setUser] = useState({ username: '', password: '', cpassword: '', email: '', dateOfBirth: '', phone: '' });
+    const [errors, setErrors] = useState({ username: '', password: '', cpassword: '', email: '', dateOfBirth: '', phone: '', valid:false });
+    const [touched, setTouched] = useState({ username:false, password:false, cpassword:false, email:false, dateOfBirth:false, phone:false});
+
+
+    function fnValidateForm(){
+
+        if(!touched.username ||!touched.password || !touched.cpassword || !touched.phone || !touched.email || !touched.dateOfBirth || errors.username || errors.password || errors.cpassword || errors.email || errors.phone || errors.dateOfBirth){
+            setErrors(prev=>({...prev, valid:false}));
+        }else{
+            setErrors(prev=>({...prev, valid:true}));
+        }
+    }
+
+    function fnValidateUsername(username) {
+        if (touched.username && username.length < 6) {
+            setErrors(prev => ({ ...prev, username: 'Username must be at least 6 characters' }));
+        } else {
+            setErrors(prev => ({ ...prev, username: '' }));
+        }
+    }
+
+    function fnValidatePassword(password) {
+        if (
+            password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/)
+        ) {
+            setErrors(prev => ({ ...prev, password: '' }));
+        } else {
+            setErrors(prev => ({ ...prev, password: 'Password is invalid' }));
+        }
+    }
+
+    function fnConfirmPassword(password, cpassword) {
+        if (password === cpassword) {
+            setErrors(prev => ({ ...prev, cpassword: '' }));
+        } else {
+            setErrors(prev => ({ ...prev, cpassword: 'Passwords do not match' }));
+        }
+    }
+
+    function fnValidateEmail(email){
+        if(email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)){
+            setErrors(prev=>({...prev, email:''}));
+        }else{
+            setErrors(prev=>({...prev, email:'Invalid Email address'}));
+        }
+    }
+
+    function fnValidatePhone(phone){
+        if(phone.match(/^[0-9]{10}$/)){
+            setErrors(prev=>({...prev, phone:''}));
+        }else{
+            setErrors(prev=>({...prev, phone:'Phone number must be exactly 10 digits'}));
+        }
+    }
+
+    // 👇 Watch for password or cpassword changes
+    useEffect(() => {
+        fnValidatePassword(user.password);
+        fnConfirmPassword(user.password, user.cpassword);
+        fnValidateForm();
+    }, [user.password, user.cpassword]);
+
+    useEffect(()=>{
+        fnValidateEmail(user.email);
+        fnValidateForm();
+    },[user.email]);
+
+    useEffect(()=>{
+        fnValidatePhone(user.phone);
+        fnValidateForm();
+    },[user.phone]);
+
+    useEffect(()=>{
+        fnValidateUsername(user.username);
+        fnValidateForm();
+    },[user.username]);
+
+    useEffect(()=>{
+        fnValidateForm();
+    },[user]);
+
+    return (
+        <div>
+            <form className="container">
+                <br />
+                Username: <input type="text" className={`form-control ${errors.username && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, username: e.target.value });
+                    fnValidateUsername(e.target.value);
+                    setTouched({...touched, username:true})
+                }} />
+                <div className="text-danger">{errors.username}</div>
+
+                Password: <input type="password" className={`form-control ${errors.password && touched.password && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, password: e.target.value });
+                    setTouched({...touched, password:true})
+                }} />
+                {  touched.password && <div className="text-danger">{errors.password}</div> }
+
+                Confirm Password: <input type="password" className={`form-control ${errors.cpassword && touched.cpassword && 'is-invalid'}`} onChange={(e) => {
+                    setUser({ ...user, cpassword: e.target.value });
+                    setTouched({...touched, cpassword:true})
+                }} />
+                {   touched.cpassword && <div className="text-danger">{errors.cpassword}</div>}
+
+                Email: <input type="email" className={`form-control ${errors.email && touched.email && 'is-invalid'}`} onChange={(e) => {setUser({ ...user, email: e.target.value }); setTouched({...touched, email:true})}} />
+                {   touched.email && <div className="text-danger">{errors.email}</div>}
+                Date of Birth: <input type="date" max={new Date().toISOString().split("T")[0]}  className="form-control" onChange={(e) => {setUser({ ...user, dateOfBirth: e.target.value }); setTouched({...touched, dateOfBirth:true})}} />
+                Phone number: <input type="number" className={`form-control ${errors.phone && touched.phone && 'is-invalid'}`} onChange={(e) => {setUser({ ...user, phone: e.target.value }); setTouched({...touched, phone:true})}} />
+                {   touched.phone && <div className="text-danger">{errors.phone}</div>}
+                <br />
+                <input type="button" value="Register" className="btn btn-info" disabled={!errors.valid} />
+            </form>
+            <br/>
+            {JSON.stringify(errors)}
+            <br/>
+            {JSON.stringify(touched)}
+        </div>
+    );
+};
+
+
+
+
+-----------------------------------
+from parent component, we can use "props" to send input to child component.
+
+how can child component send output to parent components?
+
+we created a login component
+	parent sent the "title" to child.
+
+	now child should allow parent component to write the logic
+		for login.
+
+so the login component should allow App (parent) component to handle the login event.
+
+in reactjs also, we can do that.
+
+in App component:
+
+function fnLogin(){
+	
+}
+
+<Login title="Login page" onLogin={fnLogin} />
+
+
+
+
+
+in Login Component:
+	we need to have fnLogin like props
+
+
+export const Login=(({onLogin})=>{
+
+
+	return <div>
+	Username:
+	Password:
+	<input type="button" value="Login" onclick={onLogin} />
+
+</div>
+
+}
+
+
+-------------------------------------------------
+Try to emit onLogin event.
+
+i am going to create a login component and plug it in App component
+and login component to emit the event
+App component to handle the event.
+
+import './App.css';
+import { Login } from './components/Login';
+
+function App() {
+
+  function fnLogin(user){
+    alert(JSON.stringify(user))
+  }
+
+  return (
+    <div className="App">
+      <div className='p-5 bg-info text-white '>
+        <h1>Welcome to React Js</h1>
+      </div>
+      <div className='row'>
+        <div className='col-sm-4'></div>
+        <div className='col-sm-4'>
+          <Login onLogin={fnLogin} />
+        </div>
+        <div className='col-sm-4'></div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+
+
+import { useState } from "react";
+
+export const Login=({onLogin})=>{
+    const [user, setUser]=useState({username:'', password:''});
+    return <div>
+        Username: <input type="text" className="form-control" onChange={(e)=>setUser({...user, username:e.target.value})} />
+        Password: <input type="password" className="form-control" onChange={(e)=>setUser({...user, password:e.target.value})} />
+        <br/>
+        <input type="button" value="Login" className="btn btn-info" onClick={(e)=>{
+            onLogin(user)
+        }} />
+    </div>
+}
+
+------------------------------------------
+------------------------------------------
+Formik and Yup
+-----------------
+so far, we have done form validations manually, that involves,
+	updating the state
+	handling change of state		onchange
+	entire form validity		no errors = form is valid
+
+formik and yup libraries are created for this purpose.
+
+steps:
+
+1) install the libraries
+	npm i formik yup
+
+2) lets create signup component and use these libraries:
+
+--------------------------
+Task:
+i will push the changes to git.
+
+I have validated username.
+
+You validate remaining elements.
+
+1) password, cpassword, email, phone
+	the validation error messages to be displayed
+
+2) a button to be enabled or disabled based on validation errors.
+
+----------------------------------------------------
+Lists
+------
+how we can work with list of values/ objects.
+
+ordered/ unordered lists
+table can be used to render lot of data 
+
+
+
+
+export const List=()=>{
+    const countries=["India","Australia","Srilanka","Japan"];
+    return <div>
+        {
+            countries.map((country)=><li>{country}</li>)
+        }
+    </div>
+}
+
+
+Challenge:
+------------
+Create a component that accepts 2 inputs from the user
+	From:.......
+	To:...........
+
+then on clicking a button, it should render all prime numbers between "From" and "To"
+
+Display them as unordered list.
+
+
+import { useState } from "react";
+
+export const Prime = () => {
+    const [from, setFrom] = useState(0);
+    const [to, setTo] = useState(0);
+    const [result, setResult]=useState([]);
+
+    function isPrime(num) {
+        if (num <= 1) return false;
+        if (num <= 3) return true;
+        if (num % 2 === 0 || num % 3 === 0) return false;
+
+        for (let i = 5; i * i <= num; i += 6) {
+            if (num % i === 0 || num % (i + 2) === 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+
+    function generatePrimes() {
+        var arr=[];
+        for (var i = from; i <= to; i++) {
+
+            
+            if(isPrime(i)){
+                console.log(i);
+                arr.push(i);
+            }
+        }
+        setResult(arr);
+    }
+    return <div>
+        From: <input type="number" className="form-control" onChange={(e) => setFrom(e.target.value)} />
+        To: <input type="number" className="form-control" onChange={(e) => setTo(e.target.value)} /><br />
+        <input type="button" value="Generate" onClick={generatePrimes} />
+        <br/>
+        {
+            result.map((x, index)=><li key={index}>{x}</li>)
+        }
+    </div>
+}
+
+---------------------------------------
+Task:
+
+export const List=()=>{
+    // const countries=["India","Australia","Srilanka","Japan"];
+    const products=[{id:1, name:'Pencil', price:10},{id:2, name:'sharpner', price:15}];
+    return <div>
+        {/* {
+            countries.map((country)=><li>{country}</li>)
+        } */}
+        <table className="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>Id</td><td>Name</td><td>Price</td><td></td>
+                </tr>
+            </thead>
+            <tbody>
+        {
+            products.map((p)=><tr>
+                <td>{p.id}</td>
+                <td>{p.name}</td>
+                <td>{p.price}</td>
+                <td>Select</td>
+            </tr>)
+        }
+        </tbody>
+        </table>
+    </div>
+}
+
+-----------------------------------------
+import { useState } from "react";
+
+export const List=()=>{
+    // const countries=["India","Australia","Srilanka","Japan"];
+        const [products, setProducts]=useState([{id:1, name:'Pencil', price:10},{id:2, name:'sharpner', price:15}]);
+        const [product, setProduct]=useState({id:0,name:'',price:0})
+
+        function fnAddProduct(){
+            setProducts([...products,product]);
+            alert(JSON.stringify(products))
+        }
+
+    return <div>
+        {/* {
+            countries.map((country)=><li>{country}</li>)
+        } */}
+        <form onSubmit={fnAddProduct}>
+            Id: <input type="number" className="form-control" onChange={(e)=>setProduct({...product, id:e.target.value})} />
+            Name: <input type="text" className="form-control" onChange={(e)=>setProduct({...product, name:e.target.value})} />
+            Price: <input type="number" className="form-control" onChange={(e)=>setProduct({...product, price:e.target.value})} />
+            <br/>
+            <input type="submit" className="btn btn-primary" />
+        </form>
+        <br/>
+        <table className="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>Id</td><td>Name</td><td>Price</td><td></td>
+                </tr>
+            </thead>
+            <tbody>
+        {
+            products.map((p, i)=><tr key={i}>
+                <td>{p.id}</td>
+                <td>{p.name}</td>
+                <td>{p.price}</td>
+                <td>Select</td>
+            </tr>)
+        }
+        </tbody>
+        </table>
+    </div>
+}
+
+
+Now, allow the users to add products by providing a form with add button.
+
+Hints:
+whenever we want user inputs to be taken,
+we suggest using state.
+
+otherwise, we may use DOM (not recommended)
+	ref 
+
+
+Webstorages
+	localStorage
+	sessionStorage
+
+
+localStorage is permanent.
+even if we close all browsers,
+even if we restart the computer,
+the localStorage is available
+
+sessionStorage is available till session is available.
+If we close all browsers, it may expire.
+But, it is sufficient for one session.
+
+
+methods of webstorage:
+	setItem(key, value)
+	getItem(key) returns the value if key is found
+	removeItem(key) removes the item if found
+	clear removes all the localStorage items. Ideal for logout
+
+
+Will you be able to use these inputs to accomplish this task?

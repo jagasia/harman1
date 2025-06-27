@@ -1,0 +1,970 @@
+Jagadeeswaran
+
+https://cloud.cdp.rpsconsulting.in/console
+
+password is 
+	rps@12345
+
+
+
+
+c:\training folder
+if not found, pls create now
+
+
+Var, Let and Const keyword				
+Arrow functions, default arguments				
+Template Strings, String methods				
+Object de-structuring, Spread and Rest operator				
+Typescript Fundamentals				
+Types & type assertions, Creating custom object types, function types				
+Typescript OOPS - Classes, Interfaces, Constructor, etc				
+
+
+
+---------------------------
+What is the latest version of javascript?
+
+ES6
+	ECMA Script
+
+	European Computer Manufacturers Association
+
+
+update the browser versions
+	Internet Explorer
+
+
+Javascript runs either 
+	in browser
+	nodejs shell
+
+when a new version of js is introduced, we should ask everyone to update their browser
+
+Typescript
+	a language that provides type safe, convenient way of writing javascript code
+	typescript code is compiled (translated) into javascript.
+
+typescript is for the developers.
+new versions of ts is for the developers
+
+browsers doesn't execute typescript code.
+
+-----------------------------
+Lab setup for typescript.
+	we need to install typescript compiler (tsc)
+	for that we need npm	Node Package Manager
+	once we install nodejs in any computer, we have npm also
+
+npm i -g typescript
+
+	this command will install typescript compiler. 
+
+tsc --version
+
+this tsc is used to compile our typescript program into javascript code
+
+then we can run that js code in command prompt using "node"
+
+Hello world program in typescript.
+
+demo:
+-------
+we use  Visual Studio Code IDE
+
+i have created a folder "typescript" inside c:\training in cloud lab.
+
+open that folder in vs code.
+	right click folder -> open with code
+	or
+	go to cmd prompt in c:\training\typescript
+		code .
+	or
+		open vs code and open folder
+
+we have opened our "typescript" folder in vs code
+
+create a file for ex: "one.ts"
+and write some javascript code
+
+var x=20;
+var y=30;
+var z=x+y;
+console.log(z);
+
+
+save the file "one.ts"
+
+to compile this typescript code to javascript code:
+	tsc one.ts
+
+this will create one.js
+
+to run one.js
+	node one.js
+
+Benefits of typescript 
+------------------------
+	Compiled
+	Type safety, assertions
+	Blocked scoped variable
+	Language services
+
+
+
+javascript and typescript 
+	does not required ; at the end. If you use new line character
+	single quotes preferred. double quotes also allowed for string
+
+comments
+	//		single line comments
+	/*	*/	multi line comments
+
+
+Variables naming conventions:
+1) cannot start with a digit
+2) can contain characters, numbers.
+3) symbols are not allowed
+	except		_ 	and 	$
+4) identifiers cannot be keyword
+5) must be unique	(within the scope)
+6) case sensitive
+7) cannot have space in between
+
+
+var vs let vs const
+
+var fn1=()=>{
+}
+
+this allows me 
+	fn1=()=>{	//something else	}
+
+const fn1=()=>{}
+
+
+const x=20;		//assign a value or reference
+----------------------------------------
+var str="hello";
+console.log(str.length);	//based on the type of variable, it is allowed
+
+in javascript, every variable infers the type based on the assignment
+
+
+Data types
+-------------
+Kindly list out the data types in javascript (first)
+	number
+	bigint
+	string
+	undefined
+	boolean
+	null
+	symbol
+	
+
+what is a block?
+	{	} this is a block
+
+ideally, whatever we declared inside a block, should be scoped inside the block only. Not visible outside the block.
+
+lets observe this in js and then ts:
+
+in js:
+
+{
+    var x=20;
+}
+
+console.log(x);
+
+
+output:	20
+
+observation:
+	a variable declared and assigned inside a block is
+	visible outside the block
+
+so js does not provide scoped variables
+
+----------------------
+in ts:
+
+{
+    let x=20;
+}
+console.log(x);		//error		x is not visible outside
+
+
+ error TS2304: Cannot find name 'x'.
+
+
+
+
+let _name: string='Suresh';
+let str=`Hello ${_name}`;
+console.log(str);
+
+
+
+the above is called as template literal that uses ` instead of '
+
+` will be very useful for multi line string
+
+
+Array destructuring:
+------------------------
+let arr=[8,2,5,3,7];
+let [a,b]=arr;	//arr[0] and arr[1] are assigned to a and b
+
+console.log(a);
+
+
+Object destructuring:
+-------------------------
+// let arr=[8,2,5,3,7];
+// let [a,b]=arr;
+
+// console.log(a);
+
+
+let employee={name:'Raja', department:'ECE'};
+let {name, department}=employee;
+
+console.log(department);
+
+
+
+
+let arr=[21,14,33,54,6];
+let arr1=[11];
+let [x,y]=arr1;
+console.log(x);     //11
+console.log(y);     //undefined
+
+
+
+Rest parameters:
+	similar to param array
+	normally, an array, passed as an argument, is passed by reference.
+	but a param array, can pass array as argument but as values
+	so, the function that affects the parameter array, does not
+	affect the actual parameter array
+
+function fn1(arr)
+	if arr is modified inside the fn1 function, 
+	what happens to the actual parameter
+
+fn1(arr1)
+
+if paramter is a rest parameter, then a copy of the array is passed as argument.
+
+function fn1(...arr){
+    //affect the values of arr
+    arr[0]=100;
+}
+var arr=[1,2,3,4];
+fn1(arr);
+
+console.log(arr[0]);		//still it is 0
+
+
+Rest parameters can also be passed values instead of array
+
+fn1(2,1,7,4);		//values instead of array
+
+
+-------------------------------
+Type assertions in typescript.
+
+we can do casting.
+
+in c, c++, java, how we do casting?
+
+	int x=20;
+	float y=(float)x;	//explicit casting
+
+in typescript:
+
+
+
+
+
+
+
+Javascript ES6 features:
+====================
+
+JavaScript ES6 (ECMAScript 2015) introduced many new features that modernized the language and made it more powerful and expressive. Here’s a breakdown of the most important ES6 features:
+
+---
+
+### 🔹 1. **Let and Const**
+
+* `let`: Block-scoped variable.
+* `const`: Block-scoped constant (cannot be reassigned).
+
+```js
+let x = 10;
+const y = 20;
+```
+
+---
+
+### 🔹 2. **Arrow Functions**
+
+Shorter syntax for functions and lexically binds `this`.
+
+```js
+const add = (a, b) => a + b;
+```
+
+---
+
+### 🔹 3. **Template Literals**
+
+Multi-line strings and embedded expressions using backticks (`` ` ``).
+
+```js
+const name = "Alice";
+const greeting = `Hello, ${name}!`;
+```
+
+---
+
+### 🔹 4. **Destructuring Assignment**
+
+Extract values from arrays or objects into variables.
+
+```js
+const [a, b] = [1, 2];
+const {name, age} = {name: "Bob", age: 30};
+```
+
+---
+
+### 🔹 5. **Default Parameters**
+
+Set default values for function parameters.
+
+```js
+function greet(name = "Guest") {
+  return `Hello, ${name}`;
+}
+```
+
+---
+
+### 🔹 6. **Rest and Spread Operators**
+
+* `...rest`: Combines remaining elements into an array.
+* `...spread`: Spreads elements from an array or object.
+
+```js
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+
+const arr = [1, 2, 3];
+const newArr = [...arr, 4];
+```
+
+---
+
+### 🔹 7. **Enhanced Object Literals**
+
+Shorthand property names and methods.
+
+```js
+const x = 10;
+const obj = {
+  x,
+  greet() {
+    return "Hello";
+  }
+};
+```
+
+---
+
+### 🔹 8. **Classes**
+
+Syntactic sugar over prototype-based inheritance.
+
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  }
+}
+```
+
+---
+
+### 🔹 9. **Modules**
+
+Import and export functions, objects, or primitives.
+
+```js
+// module.js
+export const PI = 3.14;
+
+// main.js
+import { PI } from './module.js';
+```
+
+---
+
+### 🔹 10. **Promises**
+
+A native way to handle asynchronous operations.
+
+```js
+const fetchData = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve("Data received"), 1000);
+  });
+};
+```
+
+---
+
+### 🔹 11. **Map and Set**
+
+New data structures for unique values and key-value pairs.
+
+```js
+const set = new Set([1, 2, 3]);
+const map = new Map([['a', 1], ['b', 2]]);
+```
+
+---
+
+Want deeper examples or ES6+ (ES7–ES14) updates too?
+
+
+
+TasK
+------
+create a promise that accepts a number as argument,
+and returns the sum of 1 to that number,
+after 5 seconds
+
+we can subscribe using then function and catch the exception
+
+
+timeout
+	is used to give a delay
+	like Thread.sleep() in java
+
+i want to execute few lines of code after a pause of few milliseconds
+
+
+
+setTimeout(ref, delay);
+
+ex:
+
+setTimeout(()=>{
+	///all these code are executed after the delay of 2000 millis
+},2000);
+
+
+Promise
+	provides us options to
+		either respond
+		or reject
+based on conditions
+
+	promise responds, asynchronously
+
+
+we can create promise
+and then subscribe or handle exceptions to/of the promise
+
+
+
+
+var username='raja'
+var password='raja2'
+
+function promiseHandler(res, rej){
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+}
+const myPromise=new Promise(promiseHandler);
+
+myPromise
+.then((res)=>{
+    console.log(('Response from promise is '+res));
+    
+})
+.catch((rej)=>{
+    console.log('Error from promise is '+rej);
+    
+});
+
+console.log("Last line.");
+
+
+------------------now lets change it to arrow function
+var username='raja'
+var password='raja2'
+
+function promiseHandler(res, rej){
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+}
+const myPromise=new Promise((res, rej)=>{
+    setTimeout(()=>{
+        if(username==password)
+            return res("Login successful")
+        else    
+            return rej("Login failed")
+    },5000);
+});
+
+myPromise
+.then((res)=>{
+    console.log(('Response from promise is '+res));
+    
+})
+.catch((rej)=>{
+    console.log('Error from promise is '+rej);
+    
+});
+
+console.log("Last line.");
+
+
+
+Task:
+-------
+Create a promise that will print hello world after 5 seconds.
+use then to subscribe and catch to handle exception
+
+for delay, use setTimeout function
+
+this is an observation for 
+	arrow functions
+	setTimeout
+	Promise
+
+
+Question:
+
+if a function has arguments with default values
+
+function fn1(x,y,z=0){
+    return x+y+z;
+}
+
+console.log(fn1(2,3));
+
+Can the first argument have default value?	NO
+the last argument only can have default value. But
+last 2 arguments can have default.
+
+in that way, all default value arguments are pushed to end only
+after an (optional/ default value) argument, there cannot be a regular argument (mandatory)
+
+what about rest paramters?
+	rest parameters must always be at the end of the arg list
+	only 1 rest parameter is allowed in the list
+	
+Try this.
+
+
+fn(2)		2 is for 1st parameter
+fn(2,3)		2 is for 1st, 3 is for 2nd	
+fn(2,3,10)	2, 3, 10 are for 1st, 2nd and 3rd respectively
+
+
+...	used for rest parameters	(like a param array)
+...	spread operator
+
+var arr=[1,2,3];	
+var arr2=[...arr,4];		//1,2,3,4
+
+rest
+spread
+
+
+----------------------------------------------------------------------
+
+Objects in javascript.
+
+In javascript, we can create objects without a class.
+
+var obj={};
+obj.id=123;
+obj.name='Raja';
+obj.department='IT',
+obj.salary=1234567;
+
+
+
+
+Array
+-------
+array is a datastructure that keeps elements in memory in contiguous memory locations
+They are all same data type or type.
+
+in js, we can create an array without specifying the length of the array.
+
+()=>{
+
+}
+
+
+
+-----------------------
+Map
+	key - value pair
+	if key is duplicate, then value is updated/replaced
+	values can be duplicate or null
+
+
+Set
+	rejects duplicates
+
+
+
+
+var str='education';
+for(var c of str){
+    console.log(c);
+    
+}
+
+
+
+
+if
+if else
+if else if -else
+switch case
+for loop	(definitive loop)
+for(;;)		(infinite loop)
+while(true)	(infinite loop)
+while		(indefinite loop)
+do while	(indefinite loop)
+break
+continue
+
+
+
+Task:
+Each player will be allowed to throw a dice 2 times. The points for each player will be calculated as follows :
+The points scored is the absolute difference between 8 and the sum of the 2 values, provided the sum of the 2 values is less than 8.
+In all other cases, the point  scored is double the absolute difference between 8 and the sum of the 2 values.
+
+Write a program to calculate the points scored by a player.
+
+test case 1:
+var input1=5;
+var input2=6;
+
+the output should be :		6
+explanation:
+	the sum of 2 values:	11	(5+6)
+	abs diff between 8 and sum:	11 and 8	=	3
+	since the sum (11) is not less than 8, the points is double the abs diff	=	2 * 3	=6
+
+test case 2:
+var input1=3;
+var input2=2;
+
+the output should be :		3
+
+
+
+
+
+
+var input1=5;
+var input2=6;
+
+//write your code here
+
+--------------------------------------------------
+Task:
+Run Length IV
+ 
+Write a program to find the length of the longest running sequence of even numbers in the given array. Also find the starting index of the longest running sequence of even numbers.
+ 
+Example :
+ 
+Consider the array ... [ 2, 16, 15, 2, 6, 8, 10, 7, 22, 4 , 6]
+ 
+The 3 even number sequences in this array are {2, 16}, {2, 6, 8, 10} and {22, 4, 6}.
+The longest running even number sequence is {2, 6, 8, 10}
+The length of the longest running even number sequence is 4 and the starting index is 3.
+ 
+Note:
+The array indexing starts from 0.
+If there are multiple choices, select the choice where the starting index is minimum.
+ 
+declaration:
+
+var arr=[ 2, 16, 15, 2, 6, 8, 10, 7, 22, 4 , 6];
+
+OUTPUT:
+4
+3
+------------------------------------------------
+check points
+
+NodeJs is installed in cloud lab.
+	node -v
+
+Introduction to ReactJs
+--------------------------
+javascript library
+for developing robust web applications
+high performance
+	virtual DOM
+
+what is DOM?
+	Document Object Model
+		represents the html document (web page) as an object in memory
+
+	using that object, we can manipulate the document
+		add element
+		update element
+		remove element
+		append child
+		list all elements matching 
+
+	working with web page using javascript
+
+		document.getElementById
+		getElementsByName
+
+	innerHTML	html
+	value		val()
+	innerText		text
+	attr		
+
+What is Virtual DOM?
+	Light weight DOM
+	Is like a copy of the entire document
+	ReactJs uses Virtual DOM to do the changes and
+		detect the changes and reflect only those changes
+		rather than reloading the entire document in 			browser
+
+
+------------------------------------------------
+How to create a reactJs application (nodejs is installed already)
+
+there are 2 ways we can create a reactjs application.
+	npm
+	npx
+
+npm
+	install create-react-app using npm
+		npm i create-react-app
+
+	then create an application
+		create-react-app <<appname>>
+
+npx
+	we use the following commands to create app
+
+	npx create-react-app <<appname>>
+
+
+
+
+
+
+
+
+we have created an app "first-project"
+
+package.json
+	configuration file for our project
+	like pom.xml in maven?
+	dependencies:
+		the list of libraries included in this project
+
+
+when i push reactjs app to git
+	as mentioned in .gitignore file
+	node_modules folder will be ignored.
+
+but my project still contains package.json file
+
+when you download this project to your computer,
+your folder will not have node_modules
+
+but you can go to cmd prompt or terminal where
+package.json is present
+	and run
+		npm intall
+
+this will create node_modules folder if not present
+and install all libraries mentioned in the dependencies part of package.json
+
+Have you created reactjs app now?
+
+package.json
+
+
+src folder
+	all the source codes that we create
+
+
+public folder
+	index.html
+		this is the only html file in our project
+
+SPA	Single Page Applications
+
+public folder is a place for your static files like
+	icons
+	images
+
+you can refer files from public folder like they are available locally	
+we can create sub folders and maintain
+
+
+	
+
+
+
+
+
+
+index.html
+	html page.	static web page
+index.js
+	not a component.
+	is a javascript file
+	uses DOM to inject code into index.html
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+before JSX, the above method was used to create any element in DOM or Virtual DOM
+
+JSX 	-	JavaScript XML
+
+in javascript, can we do like:
+
+	document.getElementById("div1").innerHTML+="<TABLE><THEAD><TR><TH>S.No.</TH><TH>Name</TH></TR></THEAD>
+<TBODY>
+<TR><TD>1</TD><TD>Raja</TD></TR>
+</TBODY></TABLE>";
+
+The above code is html code embedded inside a string 	"" or '' or ``
+
+JSX is not embedding HTML code inside a string literal at all.
+
+
+
+	
+App.js
+
+
+javascript vs jsx
+
+
+Delete all contents of App.js
+ensure that there is one root element in App component
+
+-----------------------
+How to create components in reactjs?
+	1) using class
+		A class that extends Component and override render 			function
+	2) using function
+		functional component
+		arrow functional component
+
+
+signup component
+login component
+	present a form that has
+		username
+		password
+			login button
+	behavior / logic part
+		validate data entered in username and password
+		on clicking login button it says either success/failure
+	style part
+		css/ bootstrap/ any similar to style the appearance
+
+altogether, login becomes a component that can be plugged or removed or moved wherever required whenever.
+
+CSS	Cascading Style Sheet
+is effective method of applying style to web page(s)
+so that, it is easy to maintain/ modify styles for one or more pages
+
+though html itself provides methods to style web pages,
+
+for consistent styling for multiple pages, css (external) is very useful.
+
+a team who is good in aesthetics can work on css and apply style to html pages.
+
+bootstrap
+	is an application of css
+	someone has created huge css file "bootstrap.css" or "bootstrap.min.css" (that reduces file size by removing extra spaces)
+
+so if you know how to refer to external css from a html file, then you can use bootstrap.
+
+
+How to create a component 
+	class based approach
+
+
+in src, create a folder called "components"
+
+we will create all components in this folder.
+
+Task:
+------
+create a Maths.js that accepts 2 numbers input and add them 
+
+create this component inside components folder
+and plug it in App.js
+
+use class based approach
+
+how can we add 2 numbers entered by the user?
+	if you know javascript, you will tend to use DOM.
+
+
+
+props
+state
+event handling
+data binding
+
+props
+	properties
+	input from parent component to child component
+
+in App.js	(parent)
+
+	<Login title="Login page" />
+
+
+in Login.js (child)
+
+	<h3>{this.props.title}</h3>
+
+
+
+
+

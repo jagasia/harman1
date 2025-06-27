@@ -1,0 +1,1674 @@
+in Routing chapter, 
+	Outsourcing Route Configuration (create custom module)				
+When we create a stand-alone project, and that too without routing module,
+still we can introduce routing to our project effectively, without modifying much of the existing project.
+
+we create one more separate module that includes routing and then use lazy loading
+
+------------------------------------------------------
+Http
+-----
+Overview of HTTP in Angular applications				
+
+we accessed a free api from our angular project yesterday, using GET method.
+
+https://fakestoreapi.com/products
+
+Since the above api does not allow http methods except GET, we will use out json server that is running in 3000.
+
+
+http://localhost:3000/products
+
+
+we will create product-service that will contain all code that interacts with the api.
+
+	ng g s product-service
+
+s for service
+
+steps for http client module
+	in app.config.ts,
+		in providers array, add the following
+			provideHttpClient()
+
+
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideHttpClient()
+  ]
+};
+
+
+
+
+
+in product-service.ts
+
+inject httpClient to the constructor
+
+constructor(private http:HttpClient) { }
+
+then create the functions for GET, POST, PUT, DELETE
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+  URL='http://localhost:3000/products';
+  constructor(private http:HttpClient) { }
+
+  fnAllProducts(){
+    return this.http.get(this.URL);
+  }
+
+  fnFindById(id:number){
+    return this.http.get(`${this.URL}/${id}`);
+  }
+
+  fnAddProduct(product:any){
+    return this.http.post(this.URL, product);
+  }
+
+  fnUpdateProduct(product:any){
+    return this.http.put(`${this.URL}/${product.id}`,product);
+  }
+
+  fnDeleteProduct(id:number){
+    return this.http.delete(`${this.URL}/${id}`);
+  }
+}
+
+
+
+
+
+
+-----------------------------------
+Demo:
+i have completed upto Add functionality.
+
+Task:
+Will you complete update and delete functionalities.
+
+Steps:
+1) import HttpClientModule to app.config.ts providers section
+2) create a service
+	ng g s <<servicename>>
+4) inject HttpClient to constructor of the service.
+5) each api call using http client will return Observable.
+subscribe the observable
+
+Refer my code: 
+https://github.com/jagasia/harman1/tree/jag/Angular/http-project
+
+
+
+Now, i have completed Add, Update, Delete
+
+------------------------------------------------------
+find product by id or select product.
+
+I have completed the Select product.
+We faced issues like:
+	select button works only in devtool open in browser.
+
+found that the mouse hover over the button did not change the icon.
+
+So, it was html container issue.
+
+By using proper bootstrap column layout, we solved.
+But still while resizing the browser, the select button did not work.
+
+by using a container for the table that is responsive, we solved it.
+
+<div class="table-responsive">
+	placing the table here...
+</div>
+
+
+--------------------------------------------
+Introduction to RxJS and Observables				
+
+RxJS		Reactive Extension for Javascript
+
+RxJS (Reactive Extensions for JavaScript) is a library for reactive programming using Observables, to make it easier to work with asynchronous data streams.
+
+Angular uses RxJS heavily, especially for:
+
+HTTP requests
+
+Form input changes
+
+Event handling
+
+Route parameters
+
+WebSockets and more
+
+
+
+it is based on Publish Subscribe model.
+
+normally, when we call a function, caller and called functions are sync.
+
+But in pub-sub model,
+
+the publisher do not directly know the subscriber.
+
+when publisher publishes, all the subscribers get response.
+
+publisher uses
+	next method to publish
+
+
+
+
+import { Observable } from 'rxjs';
+
+  fnAllProducts():Observable<any>
+  {
+    return this.http.get(this.URL);
+  }
+
+
+
+
+------------------------------
+Demo:
+
+manual-observable component
+
+allows subscribe, unsubscribe.
+
+By subscribing, we do not get next response immediately. We get only when the publisher publish the response.
+
+by unsubscribing, we do not get published, whenever observer publish.
+
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Observable, Observer } from 'rxjs';
+
+@Component({
+  selector: 'app-manual-observable',
+  imports:[CommonModule],
+  template: `
+    <h2>Manual Observable Demo</h2>
+    <button (click)="subscribe()">Subscribe</button>
+    <button (click)="unsubscribe()">Unsubscribe</button>
+    <button (click)="publish()">Publish</button>
+    <p *ngIf="receivedValue !== null">Received: {{ receivedValue }}</p>
+  `
+})
+export class ManualObservable {
+  private observer!: Observer<string>;
+  private observable: Observable<string>;
+  private subscription: any;
+  private publishCount = 1;
+
+  receivedValue: string | null = null;
+
+  constructor() {
+    // Define a custom Observable and capture the observer
+    this.observable = new Observable<string>((obs) => {
+      console.log('Observable created');
+      this.observer = obs;
+    });
+  }
+
+  subscribe() {
+    if (!this.subscription) {
+      console.log('Subscribing...');
+      this.subscription = this.observable.subscribe({
+        next: (value) => {
+          console.log('Received:', value);
+          this.receivedValue = value;
+        },
+        error: (err) => console.error('Error:', err),
+        complete: () => console.log('Completed')
+      });
+    }
+  }
+
+  unsubscribe() {
+    if (this.subscription) {
+      console.log('Unsubscribing...');
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
+  }
+
+  publish() {
+    if (this.observer) {
+      const value = `Message ${this.publishCount++}`;
+      console.log('Publishing:', value);
+      this.observer.next(value);
+      
+    } else {
+      console.warn('No observer to publish to (subscribe first)');
+    }
+  }
+}
+
+
+Task:
+create an observable,
+subscribe and publish
+
+
+my code: 
+https://github.com/jagasia/harman1/blob/jag/Angular/http-project/src/app/manual-observable/manual-observable.ts
+
+
+----------------------------------------------------------
+Difference between traditional AJAX and Angular's HTTP client		
+
+1. **API Style**
+
+* Traditional AJAX: Low-level, imperative code using XMLHttpRequest or fetch.
+* Angular HttpClient: High-level, declarative API built into Angular.
+
+2. **Integration with Angular**
+
+* Traditional AJAX: Not built into Angular, needs manual setup.
+* Angular HttpClient: Fully integrated with Angular framework.
+
+3. **Observables Support**
+
+* Traditional AJAX: Uses callbacks or Promises.
+* Angular HttpClient: Uses RxJS Observables.
+
+4. **Request Cancellation**
+
+* Traditional AJAX: Difficult to implement.
+* Angular HttpClient: Easy using RxJS unsubscribe or takeUntil.
+
+5. **Interceptors**
+
+* Traditional AJAX: No built-in way to intercept requests globally.
+* Angular HttpClient: Supports interceptors for logging, auth, etc.
+
+6. **Error Handling**
+
+* Traditional AJAX: Must use try-catch or onerror manually.
+* Angular HttpClient: Can use catchError() with RxJS operators.
+
+7. **JSON Parsing**
+
+* Traditional AJAX: Must manually parse response with response.json().
+* Angular HttpClient: Automatically parses JSON responses.
+
+8. **Type Safety (with TypeScript)**
+
+* Traditional AJAX: Requires manual type casting.
+* Angular HttpClient: Supports type inference with generics.
+
+9. **Testing Support**
+
+* Traditional AJAX: Harder to test.
+* Angular HttpClient: Built-in tools like HttpTestingController make testing easier.
+
+---
+
+**Traditional AJAX Example (using fetch):**
+
+```ts
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+```
+
+---
+
+**Angular HttpClient Example:**
+
+```ts
+import { HttpClient } from '@angular/common/http';
+
+constructor(private http: HttpClient) {}
+
+ngOnInit() {
+  this.http.get<any>('https://api.example.com/data')
+    .subscribe({
+      next: data => console.log(data),
+      error: err => console.error('Error:', err)
+    });
+}
+```
+
+---
+
+**Summary:**
+Angular HttpClient is easier to use, more powerful, and better integrated with Angular and RxJS. It should be used in all Angular projects for HTTP requests.
+
+---
+
+------------------------------------------------------------
+RxJS Operators for HTTP Requests: map(), catchError(), retry()		
+
+These operators help handle data transformation, error handling, and retry logic when working with Angular's `HttpClient`.
+
+---
+
+1. **map()**
+
+* Purpose: Transforms the response data.
+* Use Case: Modify or extract specific parts of the HTTP response.
+
+**Example:**
+
+```ts
+import { map } from 'rxjs/operators';
+
+this.http.get<any>('https://api.example.com/users')
+  .pipe(
+    map(response => response.users) // extract "users" from response
+  )
+  .subscribe(data => {
+    console.log(data); // now only the "users" array
+  });
+```
+
+---
+
+2. **catchError()**
+
+* Purpose: Handles errors and allows recovery or rethrow.
+* Use Case: Gracefully handle failed HTTP calls.
+
+**Example:**
+
+```ts
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+this.http.get<any>('https://api.example.com/data')
+  .pipe(
+    catchError(error => {
+      console.error('Error occurred:', error);
+      return of([]); // return an empty array as fallback
+    })
+  )
+  .subscribe(data => {
+    console.log('Data:', data);
+  });
+```
+
+---
+
+3. **retry()**
+
+* Purpose: Automatically retry the request on failure.
+* Use Case: Network errors or temporary issues.
+
+**Example:**
+
+```ts
+import { retry } from 'rxjs/operators';
+
+this.http.get<any>('https://api.example.com/data')
+  .pipe(
+    retry(3) // Retry the request up to 3 times on failure
+  )
+  .subscribe({
+    next: data => console.log(data),
+    error: err => console.error('Failed after retries:', err)
+  });
+```
+
+---
+
+**Combined Example:**
+
+```ts
+import { map, catchError, retry } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+this.http.get<any>('https://api.example.com/data')
+  .pipe(
+    retry(2),
+    map(res => res.result),
+    catchError(err => {
+      console.error('HTTP Error:', err);
+      return of(null);
+    })
+  )
+  .subscribe(data => {
+    console.log('Processed Data:', data);
+  });
+```
+
+---
+
+**Summary:**
+
+* `map()` — transforms the response.
+* `catchError()` — handles errors and returns fallback values.
+* `retry()` — automatically retries on failure.
+
+These operators are essential tools for clean and resilient HTTP request handling in Angular.
+
+---
+------------------------------------------------------
+Using Observables with Async Pipe				
+
+### 🔹 What is the `async` Pipe?
+
+The `async` pipe in Angular:
+
+* Automatically **subscribes** to an Observable or Promise.
+* Updates the view with emitted values.
+* **Unsubscribes automatically** when the component is destroyed.
+
+✅ No need to manually call `subscribe()` or `unsubscribe()`.
+
+---
+
+### 🔹 Basic Example:
+
+**Component (TypeScript):**
+
+```ts
+import { Component } from '@angular/core';
+import { Observable, of } from 'rxjs';
+
+@Component({
+  selector: 'app-demo',
+  templateUrl: './demo.component.html'
+})
+export class DemoComponent {
+  data$: Observable<string[]> = of(['Angular', 'React', 'Vue']);
+}
+```
+
+---
+
+**Template (HTML):**
+
+```html
+<h2>Frameworks</h2>
+<ul>
+  <li *ngFor="let item of data$ | async">{{ item }}</li>
+</ul>
+```
+
+---
+
+### 🔹 Example with HTTP
+
+**Component:**
+
+```ts
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export class UsersComponent {
+  users$: Observable<any>;
+
+  constructor(private http: HttpClient) {
+    this.users$ = this.http.get('https://jsonplaceholder.typicode.com/users');
+  }
+}
+```
+
+**Template:**
+
+```html
+<h2>User List</h2>
+<ul>
+  <li *ngFor="let user of users$ | async">
+    {{ user.name }}
+  </li>
+</ul>
+```
+
+---
+
+### 🔹 Why Use the `async` Pipe?
+
+* ✅ Cleaner templates
+* ✅ No memory leaks (auto-unsubscribes)
+* ✅ Avoids manual `subscribe()` in component code
+* ✅ Ideal for one-time fetches or reactive UIs
+
+---
+
+### 🧠 Tips:
+
+* Works with `Observable` or `Promise`.
+* If you want to perform extra logic on the emitted value, use `*ngIf`:
+
+```html
+<div *ngIf="users$ | async as users">
+  Total: {{ users.length }}
+</div>
+```
+
+---
+
+### ❗ Don't Do This with `async`:
+
+```ts
+// ❌ Don't do this:
+this.users$.subscribe(data => this.users = data);  // Unnecessary
+```
+
+Use `async` in template instead — it’s safer and cleaner.
+
+---
+
+
+---------------------------------------------------------------------
+Overview of HTTP in Angular applications				
+Difference between traditional AJAX and Angular's HTTP client				
+Introduction to RxJS and Observables				
+Injecting HttpClient in services				
+Performing Basic HTTP Requests - GET, POST, DELETE, PUT				
+Handling HTTP Headers and Parameters				
+Using .subscribe() to handle responses				
+Unsubscribing to prevent memory leaks				
+RxJS Operators for HTTP Requests: map(), catchError(), retry()				
+Using Observables with Async Pipe				
+Error Handling in HTTP Requests				
+
+
+
+
+## ✅ Error Handling in HTTP Requests (Angular + RxJS)
+
+---
+
+### 🔹 Why handle errors?
+
+* Prevent app crashes.
+* Show user-friendly error messages.
+* Provide fallback data or retry logic.
+
+---
+
+### 🔹 Operator Used: `catchError()`
+
+* Imported from `rxjs/operators`
+* Catches errors in the observable stream
+* Returns a new observable (like fallback value)
+
+---
+
+### 🔸 Basic Example
+
+```ts
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+constructor(private http: HttpClient) {}
+
+ngOnInit() {
+  this.http.get('https://api.example.com/data')
+    .pipe(
+      catchError(error => {
+        console.error('Error occurred:', error);
+        return of([]);  // return empty array as fallback
+      })
+    )
+    .subscribe(data => {
+      console.log('Received:', data);
+    });
+}
+```
+
+---
+
+### 🔹 Displaying Errors to Users
+
+```ts
+errorMessage = '';
+
+this.http.get('https://api.example.com/items')
+  .pipe(
+    catchError(error => {
+      this.errorMessage = 'Failed to load items';
+      return of(null);  // or fallback data
+    })
+  )
+  .subscribe(result => {
+    if (result) {
+      console.log('Data:', result);
+    }
+  });
+```
+
+---
+
+### 🔹 Handling Different Error Types
+
+```ts
+this.http.get('https://api.example.com/items')
+  .pipe(
+    catchError(error => {
+      if (error.status === 404) {
+        this.errorMessage = 'Data not found';
+      } else if (error.status === 500) {
+        this.errorMessage = 'Server error';
+      } else {
+        this.errorMessage = 'Unknown error';
+      }
+      return of(null);
+    })
+  )
+  .subscribe();
+```
+
+---
+
+### 🔹 Retry with Error Handling
+
+```ts
+import { retry } from 'rxjs/operators';
+
+this.http.get('https://api.example.com/data')
+  .pipe(
+    retry(2),  // try 2 more times if failed
+    catchError(error => {
+      console.error('Request failed:', error);
+      return of([]);  // fallback
+    })
+  )
+  .subscribe(data => {
+    console.log(data);
+  });
+```
+
+---
+
+### ✅ Summary
+
+* Use `catchError()` in `.pipe()` to handle HTTP errors.
+* Return fallback values using `of()`.
+* Show error messages based on error status codes.
+* Use `retry()` to auto-retry requests before failing.
+
+---
+
+-------------------------------------------------------------------------
+Java 8
+--------
+
+Interfaces - Static Methods, Default Methods					
+Lambda Expressions and unanomyous methods					
+Functional Interfaces  , Predicates, Functions, Consumers, Suppliers etc					
+Generics					
+Collections - Iterator, Iterable, Collection Interface, List, Set					
+Collections - Comparable, Comparator, Maps, Collections class					
+Streams, Stream processing methods - map, filter, sorted, max, min etc.,					
+MultiThreading - Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+Introduction to time complexity , Introduction to Big O Notation					
+Optional Methods - empty, of, ofNullable, get, isPresent,, ifPresent					
+SOLID Principles					
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer					
+
+
+
+--------------------------------
+Interfaces - Static Methods, Default Methods
+
+Interfaces:
+-------------
+What is an interface?
+	provides the rules that classes must comply 
+	provide constants whose values can be used by classes
+	java 8 onwards, interfaces can have static &/ default methods 		with implementation
+	an interface can contain only PUBLIC members.
+		even if we do not mention, also, they are public only
+
+	every data member in an interface is public static final 
+		even if we do not mention. 
+		So, a value must be assigned to the data members
+interface Speaker
+{
+	void playSound();
+	int age=20;		//is this allowed? YES
+	public static final String COMPANY_NAME="Jbl";	
+}
+
+class Jbl implements Speaker
+{
+	public void playSound()	
+	{
+		System.out.println("Jbl plays good sound");
+	}
+}
+
+
+static methods in java 8+ interfaces:
+
+why is that static methods are allowed to have body?
+	because, we can call static methods without object
+	we cannot create objects for interface, but we can call
+		static methods using interface name itself.
+
+default methods in java 8+ interfaces:
+
+why is that default methods are allowed to have body?
+	because, if a class does not override that method, 
+		still the default implementation can be used by
+		the object of that implementing class
+
+	still the implementing class can override the default methods
+
+
+
+Here’s a **Notepad-friendly explanation** of **Interfaces with Static and Default Methods**, especially relevant to **Java** (since interfaces behave differently in TypeScript vs Java):
+
+---
+
+## ✅ Interfaces – Static Methods and Default Methods (Java)
+
+---
+
+### 🔹 What is an Interface?
+
+An interface in Java is a **contract** that defines **abstract methods** (by default). It can be implemented by any class.
+
+```java
+interface MyInterface {
+    void sayHello(); // abstract method
+}
+```
+
+---
+
+## 🔸 Default Methods (Java 8+)
+
+* Used to provide **default implementation** inside the interface.
+* Helps in **extending interfaces** without breaking existing implementations.
+
+### ✅ Syntax:
+
+```java
+interface MyInterface {
+    default void greet() {
+        System.out.println("Hello from default method");
+    }
+}
+```
+
+### ✅ Usage:
+
+```java
+class MyClass implements MyInterface {
+    // Inherits default greet() method
+}
+```
+
+---
+
+## 🔸 Static Methods in Interface (Java 8+)
+
+* **Belong to the interface**, not to instances or implementing classes.
+* Can only be called using the interface name.
+
+### ✅ Syntax:
+
+```java
+interface MyInterface {
+    static void printInfo() {
+        System.out.println("Static method in interface");
+    }
+}
+```
+
+### ✅ Usage:
+
+```java
+MyInterface.printInfo(); // Not via class instance
+```
+
+---
+
+### 🔸 Key Differences
+
+| Feature     | Default Method                  | Static Method                        |
+| ----------- | ------------------------------- | ------------------------------------ |
+| Inheritance | Inherited by implementing class | Not inherited                        |
+| Access      | Via object reference            | Via interface name                   |
+| Purpose     | Extend functionality safely     | Utility/helper methods in interfaces |
+
+---
+
+## 🔸 Example with Both
+
+```java
+interface Shape {
+    void draw(); // abstract
+
+    default void fill() {
+        System.out.println("Filling with color");
+    }
+
+    static void shapeInfo() {
+        System.out.println("Shapes have dimensions");
+    }
+}
+
+class Circle implements Shape {
+    public void draw() {
+        System.out.println("Drawing circle");
+    }
+}
+
+public class TestApp {
+    public static void main(String[] args) {
+        Circle c = new Circle();
+        c.draw();
+        c.fill(); // default method
+
+        Shape.shapeInfo(); // static method
+    }
+}
+```
+
+---
+
+## 🔸 Summary
+
+* **Default methods** allow interfaces to have method bodies (inherited by implementing classes).
+* **Static methods** are called using the interface name and are **not inherited**.
+* Both were added in **Java 8** to support better **interface evolution**.
+
+---
+Task:
+-------
+Complete the revision of Module 2 and ask doubts if any.
+Java 8 interfaces
+	static methods
+	default methods
+	all about what is allowed and not
+
+---------------------------------------------------
+
+Lambda
+
+Java 8 onwards, we can use Lambda (anonymous method)
+is used only to provide quick implementation of Functional interfaces.
+
+what is a functional interface?
+	an interface that has only 1 abstract method
+		Comparator
+		Runnable
+		Predicate
+		
+
+what is a marker interface?
+	an interface that has 0 abstract method
+		Serializable
+
+
+for lambda:
+
+Collections.sort(<<expects an implementation of Comparator>>);
+
+Collections.sort((a,b)->b-a));	//descending order
+
+Task:
+
+can you modify the below code, to sort the arr in descending order?
+
+import java.util.Arrays;
+
+public class App {
+
+	public static void main(String[] args) {
+		Integer arr[]= {41,24,53,45,65};
+		Arrays.sort(arr);
+		for(Integer x:arr)
+		{
+			System.out.println(x);
+		}
+	}
+
+}
+-----------------
+Task:
+
+create a Thread that displays 1 to 10 each with a delay of 1000 ms.
+
+Create the thread using lambda.
+
+
+
+
+
+public class App2 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(()->{
+			for(int i=1;i<=10;i++) {
+				System.out.println(i);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		t1.start();
+	}
+
+}
+
+
+
+
+
+
+public class App3 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				for(int i=1;i<=10;i++) {
+					System.out.println(i);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
+}
+
+
+
+
+--------------------------------------------------
+
+---
+
+# Java Lambda Expressions and Anonymous Methods (Anonymous Classes)
+
+1. Lambda Expression (Java 8+)
+
+---
+
+* Lambda expressions are used to implement functional interfaces (interfaces with only one abstract method) using a short syntax.
+
+Syntax:
+
+```
+(parameters) -> expression
+```
+
+Or with a block:
+
+```
+(parameters) -> {
+    // statements
+    return result;
+}
+```
+
+Example 1: Using lambda with Runnable
+
+```java
+public class LambdaExample {
+    public static void main(String[] args) {
+        Runnable r = () -> System.out.println("Hello from Lambda!");
+        new Thread(r).start();
+    }
+}
+```
+
+Example 2: Lambda with custom functional interface
+
+```java
+interface Calculator {
+    int operate(int a, int b);
+}
+
+public class LambdaCalc {
+    public static void main(String[] args) {
+        Calculator add = (a, b) -> a + b;
+        Calculator multiply = (a, b) -> a * b;
+
+        System.out.println("Add: " + add.operate(10, 5));
+        System.out.println("Multiply: " + multiply.operate(10, 5));
+    }
+}
+```
+
+---
+
+2. Anonymous Class
+
+---
+
+* Anonymous classes are used to create a subclass or implement an interface inline without creating a separate class.
+
+Example 1: Anonymous class with Runnable
+
+```java
+public class AnonymousExample {
+    public static void main(String[] args) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Hello from Anonymous Class!");
+            }
+        };
+        new Thread(r).start();
+    }
+}
+```
+
+Example 2: Anonymous class with interface
+
+```java
+interface Greeting {
+    void sayHello();
+}
+
+public class AnonymousGreeting {
+    public static void main(String[] args) {
+        Greeting g = new Greeting() {
+            @Override
+            public void sayHello() {
+                System.out.println("Hello from Anonymous Greeting!");
+            }
+        };
+        g.sayHello();
+    }
+}
+```
+
+---
+
+## Lambda vs Anonymous Class Summary
+
+1. Lambdas are short and used for functional interfaces only.
+2. Anonymous classes are more flexible and can override multiple methods.
+3. Use lambdas for simplicity and cleaner code when applicable.
+4. Use anonymous classes when you need more control or multiple method implementations.
+
+---
+Task:
+-------
+I have pushed the notes to git.
+Observe the same
+
+-------------------------
+Functional Interfaces:-
+ Predicates, Functions, Consumers, Suppliers etc	Stream API
+
+				
+
+
+
+SOLID Principles					
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer					
+
+SOLID
+	Single Responsibility principle
+	Open Close principle
+	Liskov Substitution principle
+	Interface Seggregation principle
+	Dependency Inversion principle
+
+
+
+Single Responsibility principle
+	A class can be created for serving one responsibility
+
+ex:
+
+class Account{
+	sendInvoice()
+	printReceipt()
+	emailClient()
+}
+
+class Invoice{
+	sendInvoice()
+}
+
+class Receipt{
+	printReceipt()
+}
+
+class Client{
+	emailClient()
+}
+
+---------------------
+# Single Responsibility Principle (SRP) in Java
+
+## Definition:
+
+A class should have only one reason to change.
+This means a class should do only one job or task.
+
+## Why Use SRP:
+
+* Makes your code easier to understand.
+* Easier to test and debug.
+* Changes in one part won't break unrelated features.
+
+## Bad Example - Violates SRP:
+
+This class handles data, saving to database, and sending emails.
+
+```java
+public class Employee {
+    private String name;
+    private String email;
+
+    public void saveToDatabase() {
+        System.out.println("Saving employee to database...");
+    }
+
+    public void sendEmail() {
+        System.out.println("Sending email to " + email);
+    }
+}
+```
+
+Problem:
+
+* If database logic changes → you must edit this class.
+* If email format changes → you must edit this class.
+* Too many responsibilities.
+
+## Good Example - Follows SRP:
+
+Each class has a single responsibility.
+
+```java
+public class Employee {
+    private String name;
+    private String email;
+
+    public Employee(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+}
+```
+
+```java
+public class EmployeeRepository {
+    public void save(Employee employee) {
+        System.out.println("Saving " + employee.getName() + " to database...");
+    }
+}
+```
+
+```java
+public class EmailService {
+    public void sendEmail(Employee employee) {
+        System.out.println("Sending email to " + employee.getEmail());
+    }
+}
+```
+
+Main class to use everything:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Employee emp = new Employee("John Doe", "john@example.com");
+
+        EmployeeRepository repo = new EmployeeRepository();
+        repo.save(emp);
+
+        EmailService emailService = new EmailService();
+        emailService.sendEmail(emp);
+    }
+}
+```
+
+## Benefits:
+
+* Easy to maintain.
+* Clear roles for each class.
+* Safe to change email or DB logic separately.
+
+## Summary:
+
+* One class = one job.
+* One reason to change.
+* Split logic into separate classes if needed.
+
+---
+
+
+---------------------------------------
+Open Close principle
+
+A class is open for extension, but closed for modification.
+	means, you can inherit a class to extend the features.
+	but you cannot modify the existing class.
+
+
+
+Open/Closed Principle (OCP)
+
+Definition:
+A software module (class, function, etc.) should be open for extension but closed for modification.
+
+Explanation:
+This means you should be able to add new features or behavior to a class without changing its existing code. The goal is to avoid breaking existing functionality when new requirements come in.
+
+Problem Example:
+
+```
+class AreaCalculator {
+    public double calculateArea(Object shape) {
+        if (shape instanceof Circle) {
+            Circle c = (Circle) shape;
+            return Math.PI * c.radius * c.radius;
+        } else if (shape instanceof Rectangle) {
+            Rectangle r = (Rectangle) shape;
+            return r.length * r.width;
+        }
+        return 0;
+    }
+}
+```
+
+This design violates the Open/Closed Principle because every time a new shape is added, the AreaCalculator class must be modified.
+
+Improved Example using OCP:
+
+```
+interface Shape {
+    double calculateArea();
+}
+
+class Circle implements Shape {
+    double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle implements Shape {
+    double length;
+    double width;
+
+    public Rectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    public double calculateArea() {
+        return length * width;
+    }
+}
+
+class AreaCalculator {
+    public double calculateArea(Shape shape) {
+        return shape.calculateArea();
+    }
+}
+```
+
+Now, if you want to support a new shape like Triangle, you can add a new class that implements the Shape interface without changing the AreaCalculator.
+
+Conclusion:
+Follow the Open/Closed Principle to make your code easier to maintain and extend. Use abstraction, interfaces, and polymorphism to achieve this.
+------------------------------------
+
+Liskov Substitution Principle (LSP)
+
+Definition:
+Objects of a subclass should be able to replace objects of the superclass without affecting the correctness of the program.
+
+Explanation:
+This principle is about inheritance. A derived (child) class must behave in a way that does not break the expectations of the base (parent) class. In other words, wherever a base class is used, you should be able to use any subclass without causing errors or incorrect behavior.
+
+Bad Example (Violates LSP):
+
+```
+class Bird {
+    public void fly() {
+        System.out.println("Bird is flying");
+    }
+}
+
+class Ostrich extends Bird {
+    @Override
+    public void fly() {
+        throw new UnsupportedOperationException("Ostrich can't fly");
+    }
+}
+```
+
+In this case, `Ostrich` is a type of `Bird`, but it cannot fly. If someone uses an `Ostrich` where a `Bird` is expected and calls `fly()`, the program will crash. This violates LSP.
+
+Better Design:
+
+```
+interface Bird {
+    void eat();
+}
+
+interface FlyingBird extends Bird {
+    void fly();
+}
+
+class Sparrow implements FlyingBird {
+    public void eat() {
+        System.out.println("Sparrow is eating");
+    }
+
+    public void fly() {
+        System.out.println("Sparrow is flying");
+    }
+}
+
+class Ostrich implements Bird {
+    public void eat() {
+        System.out.println("Ostrich is eating");
+    }
+}
+```
+
+Now, `Ostrich` does not implement `FlyingBird`, so there's no problem. This design respects LSP because each class only promises behavior it can actually support.
+
+Conclusion:
+Follow LSP to ensure that subclasses can be safely substituted for their parent classes. This makes your code more reliable and easier to extend. Use interfaces and proper class design to avoid breaking this principle.
+
+
+-------------------------------------------------------
+---
+
+Interface Segregation Principle (ISP)
+
+Definition:
+Clients should not be forced to depend on interfaces they do not use.
+
+Explanation:
+An interface should have only the methods that are relevant to the implementing class. Splitting large interfaces into smaller, more specific ones helps avoid unnecessary method implementations.
+
+Bad Example (Violates ISP):
+
+```
+interface Worker {
+    void work();
+    void eat();
+}
+
+class Robot implements Worker {
+    public void work() {
+        System.out.println("Robot is working");
+    }
+
+    public void eat() {
+        // Robot does not eat
+        throw new UnsupportedOperationException();
+    }
+}
+```
+
+Here, `Robot` is forced to implement `eat()` even though it does not make sense. This violates ISP.
+
+Better Design:
+
+```
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+class Human implements Workable, Eatable {
+    public void work() {
+        System.out.println("Human is working");
+    }
+
+    public void eat() {
+        System.out.println("Human is eating");
+    }
+}
+
+class Robot implements Workable {
+    public void work() {
+        System.out.println("Robot is working");
+    }
+}
+```
+
+Now, each class implements only the interfaces it needs. This respects the Interface Segregation Principle.
+
+Conclusion:
+Design small, specific interfaces instead of large, general ones. This keeps your code flexible, avoids unnecessary code, and follows the ISP.
+
+
+--------------------------------------------------
+
+
+---
+
+Dependency Inversion Principle (DIP)
+
+Definition:
+High-level modules should not depend on low-level modules.
+Both should depend on abstractions.
+Abstractions should not depend on details.
+Details should depend on abstractions.
+
+Explanation:
+Instead of a high-level class directly creating or depending on a low-level class, both should depend on interfaces or abstract classes. This reduces tight coupling and makes code more flexible and testable.
+
+Bad Example (Violates DIP):
+
+```
+class LightBulb {
+    public void turnOn() {
+        System.out.println("LightBulb is on");
+    }
+
+    public void turnOff() {
+        System.out.println("LightBulb is off");
+    }
+}
+
+class Switch {
+    private LightBulb bulb;
+
+    public Switch() {
+        bulb = new LightBulb();
+    }
+
+    public void operate() {
+        bulb.turnOn();
+    }
+}
+```
+
+Here, `Switch` depends directly on the `LightBulb` class. You cannot easily replace `LightBulb` with another type of device.
+
+Better Design (Follows DIP):
+
+```
+interface Switchable {
+    void turnOn();
+    void turnOff();
+}
+
+class LightBulb implements Switchable {
+    public void turnOn() {
+        System.out.println("LightBulb is on");
+    }
+
+    public void turnOff() {
+        System.out.println("LightBulb is off");
+    }
+}
+
+class Switch {
+    private Switchable device;
+
+    public Switch(Switchable device) {
+        this.device = device;
+    }
+
+    public void operate() {
+        device.turnOn();
+    }
+}
+```
+
+Now `Switch` depends on the `Switchable` interface, not on a specific class. You can easily switch to a `Fan`, `Heater`, or any other device that implements `Switchable`.
+
+Conclusion:
+Use interfaces or abstract classes to invert dependencies.
+High-level logic should not be tightly coupled to low-level implementation details.
+This makes your code more modular, flexible, and easier to test.
+
+
+Activity:
+----------
+Understand the SOLID principles.
+Notes, observations provided above in the notes file.
+
+
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer		----------------------------------------------------------
+Singleton
+	what is singleton means?
+		there exists only one object for a particular class,
+			then it is called as singleton class
+		ex:
+			Runtime is a singleton class
+
+
+			
+
+		Runtime rt=Runtime.getRuntime();
+		Runtime rt2=Runtime.getRuntime();
+		//we have not created any object of Runtime.
+		//there already exists an object of Runtime,
+		//we got 2 reference variables referring to the one and only
+		//Runtime object available
+
+
+How can we create a Singleton class?
+
+	1) create a private constructor. So, we are not allowing anyone to create object of this class.
+	2) provide a public static method to get object of this class
+	3) keep a static object of the same class in itself. Because, static means, there is only 1 copy. it is not specific to every object.
+
+
+
+
+
+public class Singleton {
+	private static Singleton obj=null;
+	
+	private Singleton() {}
+	
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public static Singleton getSingleton() {
+		if(obj==null) {
+			obj=new Singleton();
+		}
+		return obj;
+	}
+	
+}
+
+
+
+
+
+public class AppSingleton {
+
+	public static void main(String[] args) {
+		Singleton s1=Singleton.getSingleton();
+		Singleton s2=Singleton.getSingleton();
+		
+		s1.setName("Raja");
+		s2.setName("Suresh");
+		s1.setName("Ravi");
+		System.out.println(s1.getName());
+		System.out.println(s2.getName());
+		
+	}
+
+}
+
+
+
+
+
+--------------------------
+volatile:		any variable can be declared as volatile
+		to ensure, the threads do not keep the value in their 			cache
+---------------------------------------------
+
+Task:
+-------
+What are 
+Singleton,Factory, Adaptor, Observer					
+
+creational design patterns
+	Singleton
+	Factory
+	AbstractFactory
+	Builder
+	Prototype
+structural design patterns
+	Adaptor
+	Bridge
+	Decorator
+	Proxy
+behavioral design patterns
+	Observer
+	Chain of responsibility
+
+There are more design patterns available in each category

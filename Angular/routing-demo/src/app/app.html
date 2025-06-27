@@ -1,0 +1,31 @@
+<app-nav></app-nav>
+<div class="p-5 text-white text-center bg-primary">
+  <h1>Routing demo</h1>
+</div>
+<div class="row text-center">
+  <div class="col-md-4">
+    <!-- <app-register></app-register>
+    <br/>
+    <app-hello>
+      <p p1>Hi, app component has provided this content in between start and end tags....</p>
+      <div d1>THis is inside div</div>
+    </app-hello> -->
+  </div>
+  <div class="col-md-4">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="col-md-4">
+    <!-- <input type="text" name="color" [(ngModel)]="color" >
+    <input type="button" value="change">
+    <app-life-cycle [color]="color"></app-life-cycle> -->
+  </div>
+</div>
+<br><br><br>
+<hr><hr><hr><hr><hr><br><br><br>
+<div class="row text-center">
+<div class="col-md-4"></div>
+<div class="col-md-4">
+  <router-outlet name="admin"></router-outlet>
+</div>
+<div class="col-md-4"></div>
+</div>
