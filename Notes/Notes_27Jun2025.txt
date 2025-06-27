@@ -229,3 +229,180 @@ and use @PreAuthorize in controller methods,
 
 you observe that, based on the role, only they are allowed access.
 
+-------------------------------------------------------------
+
+
+in @PreAuthorize, if you use
+	hasRole("USER")	then it will translate into ROLE_USER
+if you use
+	hasAuthority("user') then it means user only.
+
+
+
+
+@PreAuthorize
+("hasAnyAuthority('READ_PRIVILEGE', 'WRITE_PRIVILEGE')")
+
+to allow any users who has any of or all of these authorities can be allowed.
+
+
+
+
+--------------------------------------
+=========================
+
+
+---
+
+```
+@PreAuthorize - Used to authorize method access based on user roles, authorities, or custom logic.
+It uses Spring Expression Language (SpEL) for conditions.
+
+----------------------------
+Common Expressions
+----------------------------
+
+1. hasRole('ROLE_NAME')
+   - Example: @PreAuthorize("hasRole('ADMIN')")
+   - Note: Spring adds 'ROLE_' prefix automatically
+
+2. hasAuthority('AUTHORITY_NAME')
+   - Example: @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
+   - Note: No prefix is added automatically
+
+3. hasAnyRole('ROLE1', 'ROLE2')
+   - Example: @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+
+4. hasAnyAuthority('AUTH1', 'AUTH2')
+   - Example: @PreAuthorize("hasAnyAuthority('READ', 'WRITE')")
+
+5. !hasRole('ROLE_NAME')
+   - Example: @PreAuthorize("!hasRole('GUEST')")
+
+6. isAuthenticated()
+   - Example: @PreAuthorize("isAuthenticated()")
+   - True if user is logged in (any authentication)
+
+7. isAnonymous()
+   - Example: @PreAuthorize("isAnonymous()")
+   - True if user is not logged in
+
+8. isFullyAuthenticated()
+   - Example: @PreAuthorize("isFullyAuthenticated()")
+   - True if not using remember-me login
+
+9. authentication.name
+   - Example: @PreAuthorize("authentication.name == 'admin'")
+
+10. Method parameter check
+    - Example: @PreAuthorize("#id == authentication.principal.id")
+    - '#id' refers to method argument named 'id'
+
+11. Custom method in a bean
+    - Example: @PreAuthorize("@securityService.canAccess(#userId)")
+
+----------------------------
+Examples
+----------------------------
+
+@PreAuthorize("hasRole('ADMIN')")
+public void deleteUser(Long id) {
+    // Only ADMIN role can delete
+}
+
+@PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+public void manageUsers() {
+    // ADMIN or MODERATOR can access
+}
+
+@PreAuthorize("#userId == authentication.principal.id")
+public void viewProfile(Long userId) {
+    // Only the owner can view their profile
+}
+
+@PreAuthorize("@myService.checkPermission(#orderId)")
+public void updateOrder(Long orderId) {
+    // Use custom logic to authorize
+}
+```
+
+---
+
+-------------------------------------------
+-------------------------------------------
+Frontend + Backend
+
+to signup
+to login
+and use the token to access the end points based on role.
+
+Demo:
+--------
+we have added Product 
+entity, repository, service, controller
+
+and allow only admins to
+add, update, delete products
+
+allow users and admins to
+read all products, read product by id
+
+
+
+To be able to supply jwt token in header in swagger:
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
+@Configuration
+@SecurityScheme(
+  name = "Bearer Authentication",
+  type = SecuritySchemeType.HTTP,
+  bearerFormat = "JWT",
+  scheme = "bearer"
+)
+public class OpenAPI30Configuration {}
+
+
+
+
+in controller,
+
+add this on the end point methods:
+
+@SecurityRequirement(name = "Bearer Authentication")
+and add the parameter in the method:
+
+ex:
+
+	@GetMapping("/v2/admin/home")
+	@SecurityRequirement(name = "Bearer Authentication")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public String adminHome(Authentication authentication)
+	{
+		return "Hi Admin, welcome";
+	}
+
+
+
+
+//FILE UPLOAD IN SWAGGER OPEN API 3
+@RequestMapping(method = RequestMethod.POST, value = "/v1/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public String uploadFile(@RequestPart("file") MultipartFile file) throws IOException
+	{
+		
+		return "uploaded file length is "+file.getBytes().length;
+	}
+
+
+
+
+
+
+
+
+--------------------------------------------------------
