@@ -1,0 +1,20 @@
+<p [ngStyle]="{'color':color}">This is a paragraph</p>
+<input type="text" [ngClass]="{'form-control':true, 'is-invalid':false}" />
+<br/>
+Red: <input type="range" name="red" [(ngModel)]="red" min="0" max="255"><br/>
+Green: <input type="range" name="green" [(ngModel)]="green" min="0" max="255"><br/>
+Blue: <input type="range" name="blue" [(ngModel)]="blue" min="0" max="255"><br/>
+
+<br/>
+<div [style.backgroundColor]= "'rgb('+red+','+green+','+blue+')'"><br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+</div>
+{{red}}<br/>{{green}}<br/>{{blue}}

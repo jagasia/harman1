@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <form *ngIf="productForm" [formGroup]="productForm">
+      Id: <input type="text" class="form-control" formControlName="id" />
+      Title: <input type="text" class="form-control" formControlName="title" />
+      Price: <input type="number" class="form-control" formControlName="price" />
+      Description: <input type="text" class="form-control" formControlName="description" />
+      Category: <input type="text" class="form-control" formControlName="category" />
+      Image: <input type="text" class="form-control" formControlName="image" />
+      <br />
+      <input type="button" value="Add" class="btn btn-info" (click)="fnAdd()" />&nbsp;
+      <input type="button" value="Update" class="btn btn-warning" (click)="fnUpdate()" />&nbsp;
+      <input type="button" value="Delete" class="btn btn-danger" (click)="fnDelete()" />&nbsp;
+    </form>
+  </div>
+  <div class="col-sm-4">
+    
+  </div>
+</div>
+
+<br />
+
+
+<div class="row">
+    <div class="col-12 col-sm-2"></div>
+    <div class="col-12 col-sm-8">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of products">
+        <td>{{ p.id }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.price }}</td>
+        <td>{{ p.description }}</td>
+        <td>{{ p.category }}</td>
+        <td><img [src]="p.image" height="100" alt="" /></td>
+        <td>
+          <button class="btn btn-info" (click)="fnSelect(p)">Select</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+    </div>
+    <div class="col-12 col-sm-2"></div>
+</div>

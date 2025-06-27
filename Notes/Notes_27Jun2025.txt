@@ -1,0 +1,718 @@
+Spring security
+-----------------
+Yesterday, we configured the spring security such that, a default login page came to allow users to login. And there was a browser session automatically remembering if we logged in or not.
+
+But we will not use that login page, because, we are not creating web application, we are creating webservice that is stateless. (REST is stateless) and each request is independent.
+
+so, we are providing login form from ReactJs/ Angular or any front end or from Postman. 
+
+So, we will move to next level.
+
+ie., we are going to authenticate from our controller method.
+
+So that, from reactjs frontend, we call a controller endpoint method to login. or from postman, we call an end point to login.
+
+
+we need "AuthenticationManger" bean, that can be used to authenticate users login by code.
+
+
+
+if all endpoints are allowed access only after logging in, then how we will login? how we will signup??????
+
+	specify what are all the endpoints allowed (permitAll)
+	what other urls/ endpoints are authenticated
+
+
+we specify these in a bean "securityFilterChain"
+
+
+
+so we add the following beans in our configuration class:
+
+  @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+ @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/swagger-ui/**","/swagger-resources/*","/v3/api-docs/**").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/user/**").authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/admin/**").authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                
+//                .cors((cors) -> cors
+//        				.configurationSource(myWebsiteConfigurationSource()))
+//                
+                .build();
+    }
+
+
+====================================
+Steps for jwt:
+1) add the dependencies to pom.xml
+
+<dependencies>
+    <!-- JJWT Core -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.11.5</version>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson -->
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+
+2) jwt util/ jwt service code.
+
+we should update the security key
+
+update the validity of the token
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))		//30 minutes
+
+
+next, you need to create a 
+	jwt filter
+
+
+
+
+summary:
+
+for authenticating users via our controller method and use jwt:
+following codes to be added or update the configuration:
+
+1) add AuthenticationManager bean to config class (done)
+2) add SecurityFilterChain bean to config class
+3) add jwt dependencies to pom.xml	(done)
+4) add a JwtService class to the project (service=bean) (done)
+5) add a JwtFilter class to the project and configure it in config class (done)
+6) in controller,
+	create end points for "login", "signup"	(done)
+
+7) and configure such that login, signup endpoints are permitAll
+others, authenticated		(done)
+
+
+
+
+
+
+26-jun-security-jwt
+
+Task:
+
+Complete upto Login and getting jwt token.
+
+--------------------------------------------
+Lets do the code for signup.
+
+so far, we are using "NoOpPasswordEncoder"
+that means, the password is not encrypted. So it is visible in database.
+
+now, lets use BCrypt password encoder
+
+in our configuration, we update the password encoder bean.
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+//		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
+	}
+
+
+now, in our db, table, there are 3 users already. I am going to update their passwords.
+
+Time being i will use online website to encryt the password and update the table records.
+
+https://bcrypt-generator.com/
+
+i have encrypted each password and updated the db.
+
+now, when i enter password as "jag", it is encrypted as 
+$2a$12$xTSV9TQvCd9dzDSfSN4wbe.F8vTpnDIb33frVx2ZD1F7nxG7NPS9O
+
+and compared it with database. it logs in successfully.
+
+-------------------------------
+during signup, the user will enter the password as plain text,
+our code should encryt the password before persisting it in the db.
+
+
+Steps for signup:
+
+1) in config class, update the password encoder bean:-
+@Bean
+	public PasswordEncoder passwordEncoder() {
+//		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
+	}
+
+
+
+2) in service, add a method for signup:-
+
+	public MyUser signup(MyUser myUser) {
+		myUser.setPassword(passwordEncoder.encode(myUser.getPassword()));
+		return ur.save(myUser);
+	}
+
+
+3) in controller, modify the signup endpoint:- 
+
+
+	@PostMapping("/signup")
+	public String signup(@RequestBody MyUser user) {
+		if(us.signup(user)!=null)
+			return "Signed up successfully";
+		else
+			return "Failed";
+	}
+
+
+4) restart the project.
+
+test in postman, by signing up and then logging in.
+
+ensure, no tokens unnecessarily sent.
+
+
+
+--------------------
+we allow users to signup
+	username
+	password
+	roles		as comma separated value
+
+we allow users to login by providing
+	username
+	password
+
+but, our code, will fetch record from database, and convert the comma separated roles into granted authorities collection
+
+Now, introducing method security
+ie., which role holder is allowed to access while method?
+
+we have to use
+	@EnableMethodSecurity 
+in our configuration class
+
+
+
+
+How to use jwt token, while accessing any endpoint that is authenticated?
+
+we should send a header
+	Authorization
+	Bearer <token here>
+
+
+
+Task:
+
+After implementing @EnableMethodSecurity
+
+and use @PreAuthorize in controller methods,
+
+you observe that, based on the role, only they are allowed access.
+
+-------------------------------------------------------------
+
+
+in @PreAuthorize, if you use
+	hasRole("USER")	then it will translate into ROLE_USER
+if you use
+	hasAuthority("user') then it means user only.
+
+
+
+
+@PreAuthorize
+("hasAnyAuthority('READ_PRIVILEGE', 'WRITE_PRIVILEGE')")
+
+to allow any users who has any of or all of these authorities can be allowed.
+
+
+
+
+--------------------------------------
+=========================
+
+
+---
+
+```
+@PreAuthorize - Used to authorize method access based on user roles, authorities, or custom logic.
+It uses Spring Expression Language (SpEL) for conditions.
+
+----------------------------
+Common Expressions
+----------------------------
+
+1. hasRole('ROLE_NAME')
+   - Example: @PreAuthorize("hasRole('ADMIN')")
+   - Note: Spring adds 'ROLE_' prefix automatically
+
+2. hasAuthority('AUTHORITY_NAME')
+   - Example: @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
+   - Note: No prefix is added automatically
+
+3. hasAnyRole('ROLE1', 'ROLE2')
+   - Example: @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+
+4. hasAnyAuthority('AUTH1', 'AUTH2')
+   - Example: @PreAuthorize("hasAnyAuthority('READ', 'WRITE')")
+
+5. !hasRole('ROLE_NAME')
+   - Example: @PreAuthorize("!hasRole('GUEST')")
+
+6. isAuthenticated()
+   - Example: @PreAuthorize("isAuthenticated()")
+   - True if user is logged in (any authentication)
+
+7. isAnonymous()
+   - Example: @PreAuthorize("isAnonymous()")
+   - True if user is not logged in
+
+8. isFullyAuthenticated()
+   - Example: @PreAuthorize("isFullyAuthenticated()")
+   - True if not using remember-me login
+
+9. authentication.name
+   - Example: @PreAuthorize("authentication.name == 'admin'")
+
+10. Method parameter check
+    - Example: @PreAuthorize("#id == authentication.principal.id")
+    - '#id' refers to method argument named 'id'
+
+11. Custom method in a bean
+    - Example: @PreAuthorize("@securityService.canAccess(#userId)")
+
+----------------------------
+Examples
+----------------------------
+
+@PreAuthorize("hasRole('ADMIN')")
+public void deleteUser(Long id) {
+    // Only ADMIN role can delete
+}
+
+@PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+public void manageUsers() {
+    // ADMIN or MODERATOR can access
+}
+
+@PreAuthorize("#userId == authentication.principal.id")
+public void viewProfile(Long userId) {
+    // Only the owner can view their profile
+}
+
+@PreAuthorize("@myService.checkPermission(#orderId)")
+public void updateOrder(Long orderId) {
+    // Use custom logic to authorize
+}
+```
+
+---
+
+-------------------------------------------
+-------------------------------------------
+Frontend + Backend
+
+to signup
+to login
+and use the token to access the end points based on role.
+
+Demo:
+--------
+we have added Product 
+entity, repository, service, controller
+
+and allow only admins to
+add, update, delete products
+
+allow users and admins to
+read all products, read product by id
+
+
+
+To be able to supply jwt token in header in swagger:
+
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
+@Configuration
+@SecurityScheme(
+  name = "Bearer Authentication",
+  type = SecuritySchemeType.HTTP,
+  bearerFormat = "JWT",
+  scheme = "bearer"
+)
+public class OpenAPI30Configuration {}
+
+
+
+
+in controller,
+
+add this on the end point methods:
+
+@SecurityRequirement(name = "Bearer Authentication")
+and add the parameter in the method:
+
+ex:
+
+	@GetMapping("/v2/admin/home")
+	@SecurityRequirement(name = "Bearer Authentication")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public String adminHome(Authentication authentication)
+	{
+		return "Hi Admin, welcome";
+	}
+
+
+
+
+//FILE UPLOAD IN SWAGGER OPEN API 3
+@RequestMapping(method = RequestMethod.POST, value = "/v1/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public String uploadFile(@RequestPart("file") MultipartFile file) throws IOException
+	{
+		
+		return "uploaded file length is "+file.getBytes().length;
+	}
+
+
+
+
+
+
+
+
+--------------------------------------------------------
+Demo for front end.
+
+1) signup
+2) login
+3) product table	(all are allowed to access)
+4) product form
+	add, update, delete are allowed for admin only
+
+5) logout
+	to clear the storage that contains token
+
+
+
+
+CORS
+	Cross Origin Resource Sharing
+
+normally CORS is disabled.
+
+we have to enable CORS in our restful webservice
+
+
+
+
+import axios from "axios";
+
+class ProductService
+{
+    URL='http://localhost:8080/api/v2/product'
+
+    getToken(){
+        var token=localStorage.getItem('token');
+        if(!token){
+            throw new Error("You have not logged in");
+        }else{
+            return JSON.parse(token);
+        }
+    }
+
+    fnAllProducts(){
+        var token=this.getToken();
+        return axios.get(this.URL,{headers:{Authorization:`Bearer ${token}`}});        
+    }
+}
+export default new ProductService();
+---------------------------------------------------------
+---------------------------------------------------------
+http://localhost:8080/swagger-ui/index.html
+-----------------------------------
+
+
+OAuth2
+---------
+allow us to provide access using users login via
+	google
+	github
+	facebook
+etc
+
+our application will consider that the user has logged in, by allowing them to login using above apis
+
+gmail
+-------
+we have to create a project/app in google cloud platform
+
+https://console.cloud.google.com/
+
+
+
+AIzaSyBavXyPXnBK8t0419aGJWSoQKptQ5wnSnI
+
+
+
+Demo for oauth2:
+
+1) create a spring boot app
+	spring web
+	spring security
+	oauth2 client
+
+2) create a config class:
+package com.harman.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class MySecurityConfiguration {
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
+	{
+		return http
+				.csrf(csrf->csrf.disable())
+				.authorizeHttpRequests((auth)->
+				auth
+				.anyRequest()
+				.authenticated()
+				)
+				.formLogin((form)->form.defaultSuccessUrl("/home", true))
+				.oauth2Login(x->x.defaultSuccessUrl("/home",true))
+				.build();
+	}
+
+}
+
+
+3) in application.properties:
+
+spring.security.user.name=uday
+spring.security.user.password=abcd
+
+#Google oauth2 configuration
+spring.security.oauth2.client.registration.google.client-id=
+spring.security.oauth2.client.registration.google.client-secret=
+
+
+-------------------------------
+Microservices:
+---------------------
+
+Monolithic vs Microservices
+-------------------------------
+Now a days, we are able to book tickets for movies using
+	ags website
+	book my show app
+	
+many website, many apps.
+
+All these are different front ends that access an api or back end.
+
+so, we create applications, that can be accessed from any other enterprises using any frontend technologies created in any language or platform
+
+this is not possible if we create a monolithic application
+
+monolithic applications provide all the
+	application/ ui
+	business logic/ services
+	data logic/ services
+
+in a single application/project
+
+if we want to allow third party to access our project, we cannot share the entire project with them.
+
+so, we need to split the application into layers.
+
+frontend can be developed using
+	reactjs
+	angular
+	
+
+backend can be
+	one or more restful webservices
+
+this is what microservice architecture suggests.
+
+challenges in this architecture is:
+
+ability to access webservices from each other
+and security
+and transaction
+and many difficulties are there.
+
+But, advantage is parallel production
+creating independent services
+
+one service is down, another is not affected.
+
+Spring cloud
+---------------
+	feign client
+	eureka service discovery
+	api gateway
+	load balancer
+	circuit breaker
+
+
+
+feign client
+	is used to allow one service to call another
+
+eureka service discovery
+	is used to monitor the services status up or down and health
+
+api gateway
+	the public need not know all the url, 
+	let them know only the url of gateway. and based on the end 		point, gateway shall call the corresponding service.
+
+load balancer
+	we can have multiple services, we will distribute the load, by evenly calling different services. We can clone the services and deploy them in different geographical locations and use load balancer to choose different clone of the service evenly.
+
+circuit breaker
+	when a service is down, we want to exit the circuit just like exception handling, using fallback method.
+
+Demo: feign client
+------------------------
+product service is running in 
+	http://localhost:5000/product
+
+we will create another web service that will use feign client to access this product service
+
+1) create a spring boot app
+	spring-cloud-feign
+
+spring web
+lombok
+openfeign
+
+2) steps for feign.
+
+create an interface
+
+
+package com.harman.demo.api;
+
+import java.util.List;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import com.harman.demo.Product;
+
+@FeignClient(name = "product-api", url = "http://localhost:5000/product")
+public interface ProductApi {
+
+	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Product create(@RequestBody Product product);
+	
+	@GetMapping
+	public ResponseEntity<List<Product>> read();
+	
+	@GetMapping("/{id}")
+	public Product read(@PathVariable("id") Long id);
+	
+	@PutMapping("/{id}")
+	public Product update(@PathVariable Long id, @RequestBody Product product);	
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Product> delete(@PathVariable Long id);
+	
+	@GetMapping("/category/{category}")
+	public List<Product> findByCategory(@PathVariable String category);
+	
+	@GetMapping("/range/{from}/{to}")
+	public List<Product> findProductsInRange(@PathVariable("from") Double from,@PathVariable Double to);
+}
+
+
+Product class we create here as type definition:
+
+package com.harman.demo;
+public class Product {
+	private Long id;
+	private String name;
+	private String category;
+	private Double price;
+	
+}
+
+
+
+3) in our controller,
+
+autowire that interface
+and use it
+
+
+
+package com.harman.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.harman.demo.Product;
+import com.harman.demo.api.ProductApi;
+
+@RestController
+public class MyController {
+	@Autowired
+	private ProductApi api;
+
+	@GetMapping
+	public ResponseEntity<List<Product>> home() {
+		ResponseEntity<List<Product>> products = api.read();
+		return products;
+	}
+}
+
+
+
+
+---------------------------------------
+Task:
+-------
+check the above feign client demo 

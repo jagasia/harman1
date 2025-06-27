@@ -1,0 +1,1299 @@
+MultiThreading - 
+Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+
+Thread Pools
+what is a pool. Pool means, ready to serve.
+Instead of creating objects of threads whenever required, we may obtain the objects from the pool.
+	readily available
+	same set of instances can be re-used
+	avoid, unnecessarily creating lot of threads, exhaust
+	performace
+	
+
+
+3 Threads executing 10 tasks using executer service:-
+---------------------------------------------------------
+
+class Task implements Runnable {
+    private String name;
+
+    public Task(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(name + " is running on " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(2000); // Simulate processing
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(name + " completed.");
+    }
+}
+
+
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadPoolExample {
+    public static void main(String[] args) {
+        // Step 1: Create a thread pool with 3 threads
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        // Step 2: Create and submit tasks (Runnable)
+        for (int i = 1; i <= 10; i++) {
+            Runnable task = new Task("Task-" + i);
+            executor.execute(task);
+        }
+
+        // Step 3: Shut down the executor
+        executor.shutdown();
+    }
+}
+
+
+
+Output:-
+-----------
+Task-2 is running on pool-1-thread-2
+Task-3 is running on pool-1-thread-3
+Task-1 is running on pool-1-thread-1
+Task-3 completed.
+Task-4 is running on pool-1-thread-3
+Task-2 completed.
+Task-1 completed.
+Task-5 is running on pool-1-thread-2
+Task-6 is running on pool-1-thread-1
+Task-5 completed.
+Task-4 completed.
+Task-8 is running on pool-1-thread-3
+Task-6 completed.
+Task-7 is running on pool-1-thread-2
+Task-9 is running on pool-1-thread-1
+Task-9 completed.
+Task-10 is running on pool-1-thread-1
+Task-7 completed.
+Task-8 completed.
+Task-10 completed.
+
+
+
+------------
+
+8. ExecutorService Important Methods
+-------------------------------------
+- execute(Runnable): run a task
+- submit(Runnable/Callable): run a task and get result using Future
+- shutdown(): stop accepting new tasks
+- shutdownNow(): stop all tasks immediately
+- awaitTermination(): wait for tasks to finish
+
+9. Best Practices
+------------------
+- Always shutdown the executor
+- Use try-catch inside tasks to handle exceptions
+- Choose correct pool size to avoid overload
+
+10. Summary
+-------------
+- Thread pools manage threads efficiently
+- Use ExecutorService to work with thread pools
+- Improves performance and scalability
+
+----------------------------------------------------
+----------------------------------------------------
+
+Time complexity:
+--------------------
+
+A program becomes process when it is executed in a processor.
+A processor allocates resources to a process.
+resources are:
+	time
+	memory
+
+A performance is measures in terms of effective utilization of resources.
+
+Time complexity
+	for a given program, how much time is taken to execute.
+
+Time complexity describes how the runtime of an algorithm increases with the size of input.
+
+Big O notations
+	are used to describe, how the time complexity changes when
+		the input size changes
+	it is always the worst case scenario taken for consideration
+
+
+
+
+
+
+
+Here's a brief and beginner-friendly explanation of each of the listed topics, suitable for training sessions or self-study:
+
+✅ Introduction to Time Complexity
+Time complexity describes how the runtime of an algorithm increases with the size of input.
+
+It helps us compare algorithms based on performance.
+
+Expressed using Big O notation: e.g.,
+
+O(1) → Constant time
+
+O(n) → Linear time
+
+O(n²) → Quadratic time
+
+📌 Example:
+
+java
+Copy
+Edit
+for(int i = 0; i < n; i++) {
+    System.out.println(i); // O(n)
+}
+✅ Introduction to Big O Notation
+Big O notation represents the worst-case time complexity.
+
+Focuses on how fast an algorithm grows with increasing input size.
+
+📘 Common notations:
+
+O(1) – Constant (best)
+
+O(log n) – Logarithmic
+
+O(n) – Linear
+
+O(n log n) – Linearithmic (e.g., merge sort)
+
+O(n²) – Quadratic (e.g., nested loops)
+
+
+------------------------------------------------
+Before Optional was introduced, we used to return null when something not found
+
+for example, there is a CRUD method called
+	findEmployeeById(id)
+
+if we enter an invalid id, then there is no employee found.
+
+So, we return null
+
+null.<anything> gives null pointer exception.
+
+that is why they introduced Optional
+
+
+
+
+
+
+Here’s a **Notepad-friendly explanation** of important methods from the `java.util.Optional` class. Suitable for quick reference or training notes.
+
+---
+
+```
+Optional Methods in Java
+-------------------------
+
+1. Optional.empty()
+   ------------------
+   - Returns an empty Optional instance.
+   - Used to represent absence of a value.
+
+   Example:
+   Optional<String> emptyOpt = Optional.empty();
+
+
+2. Optional.of(value)
+   --------------------
+   - Returns an Optional with the specified non-null value.
+   - Throws NullPointerException if the value is null.
+
+   Example:
+   Optional<String> nameOpt = Optional.of("John");
+
+   // Optional.of(null); // throws NullPointerException
+
+
+3. Optional.ofNullable(value)
+   ----------------------------
+   - Returns an Optional describing the specified value,
+     or an empty Optional if the value is null.
+
+   Example:
+   String name = getName(); // may return null
+   Optional<String> nameOpt = Optional.ofNullable(name);
+
+
+4. get()
+   -------
+   - Returns the value if present, otherwise throws NoSuchElementException.
+   - Should be used carefully, only if value is guaranteed to be present.
+
+   Example:
+   Optional<String> opt = Optional.of("Test");
+   String value = opt.get(); // returns "Test"
+
+
+5. isPresent()
+   -------------
+   - Returns true if a value is present, false otherwise.
+
+   Example:
+   Optional<String> opt = Optional.of("Hello");
+   if (opt.isPresent()) {
+       System.out.println("Value: " + opt.get());
+   }
+
+
+6. ifPresent(Consumer)
+   ---------------------
+   - Performs the given action if a value is present.
+
+   Example:
+   Optional<String> opt = Optional.of("Skill");
+   opt.ifPresent(val -> System.out.println("Value: " + val));
+
+
+Summary:
+---------
+| Method          | Null-safe | Throws Exception | Usage                           |
+|-----------------|-----------|------------------|----------------------------------|
+| empty()         | Yes       | No               | Create empty Optional            |
+| of(value)       | No        | Yes              | Wrap non-null value              |
+| ofNullable(val) | Yes       | No               | Wrap value (null-safe)           |
+| get()           | No        | Yes              | Extract value (if present only)  |
+| isPresent()     | Yes       | No               | Check if value is present        |
+| ifPresent()     | Yes       | No               | Perform action if value present  |
+```
+
+---
+
+Let me know if you want this as a `.txt` or `.pptx` file.
+
+
+
+-------------------------------------------------------
+What is a Database and Characteristics of RDBMS					
+Transaction Management and ACID Properties					
+Database Schema, Tables, Rows, and Columns and Primary Key & Foreign Key					
+CREATE, ALTER, DROP (DDL)					
+INSERT, UPDATE, DELETE (DML)					
+SELECT with WHERE, ORDER BY, LIMIT					
+Aggregate Functions (SUM, AVG, COUNT, MIN, MAX)					
+Joins - Inner, Left, Right and Outer					
+Transactions and Concurrency Control 					
+Commit and Rollback					
+Isolation Levels (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE)					
+Query Optimization Techniques					
+Indexing Strategies					
+Partitioning and Sharding					
+
+
+
+RDBMS
+---------
+Relational Database Management system
+
+Relational
+------------
+Dr. E.F. Codd in 1970s, defined 12 rules to consider a software as a relational dbms
+
+What is a relation?
+	any data in row column format
+
+	table is an example for relation.
+	
+
+
+What is a database?
+	a database is made up of objects including tables, views, indexes, 
+
+
+
+Here's a **Notepad-friendly** version of the requested database concepts and SQL operations. It's formatted with minimal styling for plain-text readability:
+
+---
+
+```
+DATABASE AND RDBMS BASICS
+-------------------------
+A Database is an organized collection of data, typically stored and accessed electronically.
+
+RDBMS (Relational Database Management System) stores data in tabular form (rows and columns).
+
+CHARACTERISTICS OF RDBMS:
+- Data stored in tables (relations)
+- Each table has a schema (structure)
+- Uses SQL for querying
+- Ensures data integrity via constraints
+- Supports ACID transactions
+
+TRANSACTION MANAGEMENT AND ACID PROPERTIES
+------------------------------------------
+Transaction: A unit of work (e.g., INSERT, UPDATE) that must either fully complete or fully fail.
+
+ACID Properties:
+- A - Atomicity: All or nothing
+- C - Consistency: DB must remain valid before and after transaction
+- I - Isolation: Transactions should not interfere
+- D - Durability: Once committed, changes are permanent
+
+DATABASE OBJECTS
+----------------
+- Schema: Logical structure of the database (tables, views, etc.)
+- Table: Collection of rows and columns
+- Row: Record (also called tuple)
+- Column: Attribute (also called field)
+
+KEYS
+----
+Primary Key: Uniquely identifies each row in a table  
+Foreign Key: Refers to primary key in another table
+
+DDL - DATA DEFINITION LANGUAGE
+------------------------------
+CREATE TABLE:
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT
+);
+
+ALTER TABLE:
+ALTER TABLE students ADD email VARCHAR(100);
+
+DROP TABLE:
+DROP TABLE students;
+
+DML - DATA MANIPULATION LANGUAGE
+--------------------------------
+INSERT:
+INSERT INTO students (id, name, age) VALUES (1, 'John', 20);
+
+UPDATE:
+UPDATE students SET age = 21 WHERE id = 1;
+
+DELETE:
+DELETE FROM students WHERE id = 1;
+
+SELECT QUERIES
+--------------
+SELECT * FROM students;
+
+WHERE:
+SELECT * FROM students WHERE age > 18;
+
+ORDER BY:
+SELECT * FROM students ORDER BY age DESC;
+
+LIMIT:
+SELECT * FROM students LIMIT 5;
+
+AGGREGATE FUNCTIONS
+-------------------
+SELECT COUNT(*) FROM students;
+SELECT AVG(age) FROM students;
+SELECT SUM(age) FROM students;
+SELECT MIN(age) FROM students;
+SELECT MAX(age) FROM students;
+
+JOINS
+-----
+INNER JOIN:
+SELECT * FROM students s
+JOIN scores sc ON s.id = sc.student_id;
+
+LEFT JOIN:
+SELECT * FROM students s
+LEFT JOIN scores sc ON s.id = sc.student_id;
+
+RIGHT JOIN:
+SELECT * FROM students s
+RIGHT JOIN scores sc ON s.id = sc.student_id;
+
+FULL OUTER JOIN (if supported):
+SELECT * FROM students s
+FULL OUTER JOIN scores sc ON s.id = sc.student_id;
+
+TRANSACTIONS AND CONCURRENCY CONTROL
+------------------------------------
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+UPDATE accounts SET balance = balance + 500 WHERE id = 2;
+COMMIT;
+
+ROLLBACK:
+ROLLBACK;  -- Undo all operations since BEGIN or SAVEPOINT
+
+ISOLATION LEVELS
+----------------
+- READ UNCOMMITTED: Dirty reads allowed
+- READ COMMITTED: Only committed data visible
+- REPEATABLE READ: Same rows read multiple times are consistent
+- SERIALIZABLE: Full isolation (slowest, safest)
+
+QUERY OPTIMIZATION TECHNIQUES
+-----------------------------
+- Use SELECT columns instead of SELECT *
+- Use WHERE clauses to reduce result set
+- Use indexes on frequently filtered/joined columns
+- Avoid nested subqueries if JOINs can be used
+- Analyze and tune execution plans
+
+INDEXING STRATEGIES
+-------------------
+- Create indexes on primary key and foreign key columns
+- Use composite indexes for multiple-column filters
+- Avoid indexing columns with low selectivity (like boolean fields)
+- Too many indexes can slow down INSERT/UPDATE
+
+PARTITIONING AND SHARDING
+-------------------------
+Partitioning: Splitting table data across partitions (by range, list, hash)
+  - Horizontal partitioning = row-based
+  - Improves query performance and maintenance
+
+Sharding: Splitting data across multiple databases/servers
+  - Used for scalability in distributed systems
+  - Each shard holds a portion of the data
+```
+
+---
+
+Let me know if you'd like this exported as a `.txt` file.
+
+
+Activity:
+
+Database Schema, Tables, Rows, and Columns and Primary Key & Foreign Key					
+
+--------------------------------------
+Constraints
+----------------
+NOT NULL
+UNIQUE
+PRIMARY KEY
+FOREIGN KEY
+CHECK
+
+These constraints are created to implement INTEGRITY
+
+Entity Integerity		
+	PRIMARY KEY, UNIQUE
+Domain Integrity
+	CHECK 
+Referential Integrity
+	FOREIGN KEY
+User defined Integrity
+	Triggers
+
+
+Structured Query Language:
+----------------------------------
+SQL is considered as the language to interact with RDBMS.
+
+Each RDBMS has their own varient of SQL
+	Microsoft SQL Server	Transact-SQL	t-sql
+	Oracle			iSQL
+	MySQL			mySql
+	
+SQL is further divided into
+	Data Definition Language		CREATE, ALTER, DROP, TRUNCATE
+	Data Query Language		SELECT
+	Data Manipulation Language		INSERT, UPDATE, DELETE
+	Data Control Language		GRANT REVOKE
+	Transaction Control Language		COMMIT, SAVEPOINT, ROLLBACK
+	PL/SQL		Procedural Language extension to SQL
+
+
+MySQL server and MySQL Workbench are installed in cloud lab.
+
+username:	root
+password:	rootuser
+
+
+Data Definition language
+	when you create a table, you are defining the data
+	that each row should have n columns and each column on x data type etc
+	altering a table is also changing the data definition
+	droping the table
+	truncating a table is like drop and create a table
+
+CREATE
+ALTER
+DROP
+TRUNCATE
+
+Not only tables, data definition includes other database objects also.
+
+like CREATE VIEW, DROP VIEW, etc.
+
+
+creating constraints 
+	while creating table
+	altering table
+	
+dropping constraints later
+
+
+
+CREATE TABLE STUDENT(
+ID INT PRIMARY KEY,
+NAME VARCHAR(50) NOT NULL,
+DOB DATE,
+PHONE CHAR(10)
+);
+
+
+
+
+
+DESC STUDENT;
+
+ID	int(11)	NO	PRI		
+NAME	varchar(50)	NO			
+DOB	date	YES			
+PHONE	char(10)	YES			
+
+
+Alter the table to add one more column.
+
+ALTER TABLE STUDENT ADD ADDRESS VARCHAR(100);
+
+
+
+DESC STUDENT;
+
+
+ID	int(11)	NO	PRI		
+NAME	varchar(50)	NO			
+DOB	date	YES			
+PHONE	char(10)	YES			
+ADDRESS	varchar(100)	YES			
+
+Alter the table to change the datatype of PHONE
+
+
+ALTER TABLE STUDENT MODIFY DOB CHAR(10);
+
+DESC STUDENT;
+
+
+
+
+ALTER
+	add
+	modify
+	drop
+	rename
+
+DDL cannot be rolled back. Only DML can be rolled back.
+
+
+DROP vs TRUNCATE
+	drop table removes not only data, but also the schema
+	TRUNCATION removes only the data. But actually it is like DROP and CREATE. Very fast and does not notify delete triggers.
+	There is no options to conditionally delete certain records using TRUNCATE. It will always makes table into 0 rows.
+	Cannot rollback also.
+
+ALTER to
+	add, remove constraints also
+
+
+Task:
+------
+Pracitally observer
+	DDL
+		CREATE, ALTER, DROP, TRUNCATE
+	add, drop constraints while creating or altering tables.
+
+
+DML
+	INSERT
+		for adding 1 row to a table
+		for adding multiple rows to a table
+	UPDATE
+		0 or more records or all records
+	DELETE
+		0 or more or all records
+
+commit vs rollback for DML (in case multiple simultaneous sessions)
+
+--------------------------------------------------------------
+INSERT INTO employees (id, name, dept) VALUES (101, 'Alice', 'HR');
+
+in this syntax, we can specify all or only required columns in any order, then VALUES followed by the values corresponding to the mentioned columns
+
+but ensure, all columns that are NOT NULL must be present in the list
+
+Another:
+
+INSERT INTO employees VALUES (101, 'Alice', 'HR');
+
+in above method, all columns present in the table must be supplied with values in same order only.
+
+suppose, if any column allows null, you can use NULL
+if any column has default value, you can use DEFAULT
+
+INSERT INTO employees VALUES (101, 'Alice', NULL);
+
+INSERT INTO employees VALUES (101, 'Alice', DEFAULT);
+
+
+
+the above all are single row insert statements.
+
+--------------------------------------------
+
+Multiple rows:
+
+INSERT INTO employees (id, name, dept)
+VALUES 
+  (102, 'Bob', 'Finance'),
+  (103, 'Charlie', 'IT');
+
+
+
+
+UPDATE:
+
+
+ UPDATE
+Updates 0, 1, or many rows based on the condition.
+
+UPDATE employees SET dept = 'Sales' WHERE dept = 'Marketing';
+
+
+If WHERE clause is omitted, then all rows are updated.
+
+if where clause conditions returns false, then those rows are not updated.
+
+
+an UPDATE statement may affect 0 or 1 or more or all rows based on condition.
+
+no condition = all rows affected
+
+DELETE also behaves same,
+	when no condition, all rows deleted
+	when condition is false, those rows are not deleted
+
+
+COMMIT
+	is used to make previously executed DML statements permanent.
+	Depending on the environment (like workbench/ sql plus / sql developer, etc), the commit is automatic when the env is closed properly.
+
+some env provide auto commit mode. There, rollback will not work.
+
+ROLLBACK
+	undos the changes done by DML, (which are not yet committed).
+
+Demo:
+--------
+Session 1 updates a row. Not yet commit/rollback.
+Session 2 updates same row. Is waiting...
+Session 1 commits or rollsback, then Session 2 update is completed.
+
+commit		changes are considered final. permanent.
+rollback		changes are undo
+
+Every DML statement is itself a transaction.
+	So, if dml is successful, it is commited
+	any error, it is rolledback.
+
+multiple DML statements can be considered as 1 transaction
+and make sure you commit after all those DML together as 1 commit.
+
+a commit/ rollback will confirm all dml executed which are pending to commit/rollback.
+
+Concurrency problems:-
+Dirty read
+Panthom read
+non repeatable read
+
+What is dirty read?
+-----------------------
+	when a transaction reads data which is under change by another transaction, it is dirty read because, there is a risk that the another transaction may rollback those changes.
+
+most of client tools like sql workbench, sql developer etc, does not allow "Read Uncommitted". So dirty reads are addressed by these environements.
+
+transactions can choose their concurrency mode:
+	read uncommitted-	dirty, panthom, non repeatable read
+	read committed- panthom, non repeatable read			
+	serialized
+	snapshot
+
+
+What is panthom read?
+	the data which is under modification, the changes which are not yet committed are not visible to others.
+	but it is possible that within a range of data we access, they may add or remove records.
+
+	range lock solve this
+
+
+
+
+
+==============================
+TRANSACTION CONCURRENCY ISSUES
+==============================
+
+1. Dirty Read
+   - A transaction reads uncommitted data from another transaction.
+   - Risk: If the other transaction rolls back, data becomes inconsistent.
+   - Example:
+     T1: UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+     T2: SELECT balance FROM accounts WHERE id = 1;  -- Dirty read
+
+2. Non-Repeatable Read
+   - A row is read twice, and the value is different the second time.
+   - Caused by another transaction modifying and committing in between.
+   - Example:
+     T1: SELECT salary FROM emp WHERE id = 101;  -- 50,000
+     T2: UPDATE emp SET salary = 60000 WHERE id = 101; COMMIT;
+     T1: SELECT salary FROM emp WHERE id = 101;  -- 60,000
+
+3. Phantom Read
+   - Re-executing a query returns different row sets due to inserts/deletes.
+   - Example:
+     T1: SELECT * FROM orders WHERE customer_id = 5;
+     T2: INSERT INTO orders (...) VALUES (..., 5); COMMIT;
+     T1: SELECT * FROM orders WHERE customer_id = 5;  -- Extra row appears
+
+4. Lost Update
+   - Two transactions read the same data and update it, but one update is lost.
+   - Example:
+     T1: SELECT balance FROM account WHERE id = 1;  -- 1000
+     T2: SELECT balance FROM account WHERE id = 1;  -- 1000
+     T1: UPDATE account SET balance = 900 WHERE id = 1;
+     T2: UPDATE account SET balance = 800 WHERE id = 1;  -- T1 lost
+
+==============================
+ISOLATION LEVELS (SQL STANDARD)
+==============================
+
+Level              | Dirty Read | Non-Repeatable Read | Phantom Read
+------------------|------------|----------------------|--------------
+Read Uncommitted  | Possible   | Possible             | Possible
+Read Committed    | Not Possible | Possible           | Possible
+Repeatable Read   | Not Possible | Not Possible       | Possible
+Serializable      | Not Possible | Not Possible       | Not Possible
+
+==============================
+DESCRIPTION OF ISOLATION LEVELS
+==============================
+
+1. Read Uncommitted
+   - Can read uncommitted data (dirty read)
+   - Fastest, least safe
+
+2. Read Committed
+   - Only committed data can be read
+   - Prevents dirty reads
+
+3. Repeatable Read
+   - Re-reading rows returns same data
+   - Prevents dirty and non-repeatable reads
+
+4. Serializable
+   - Highest isolation level
+   - Full isolation, prevents all anomalies
+
+==============================
+CONCURRENCY CONTROL METHODS
+==============================
+
+1. Pessimistic Locking
+   - Locks rows during read/write
+   - Ensures safety, may cause blocking
+
+2. Optimistic Locking
+   - No locks; uses version checks before commit
+   - Good for low-conflict scenarios
+
+3. MVCC (Multi-Version Concurrency Control)
+   - Each transaction sees its own snapshot
+   - Readers don’t block writers and vice versa
+   - Used in PostgreSQL, MySQL InnoDB, Oracle
+
+==============================
+SUMMARY
+==============================
+
+Issue              | How to Prevent
+------------------|----------------------------
+Dirty Read         | Use Read Committed or higher
+Non-Repeatable Read| Use Repeatable Read or higher
+Phantom Read       | Use Serializable
+Lost Update        | Use Locking or MVCC
+```
+
+
+
+Activity:
+
+Ensure that you are comfortable with
+contraints
+ddl
+dml
+transaction properties
+concurrency issues and isolation levels to address them
+
+---------------------------------------------------------------------------
+SELECT statement
+---------------------
+
+is read only statement.
+
+SELECTION	selecting rows that meets condition
+PROJECTION	projecting columns that are relevant
+UNION		combining the result of 2 queries
+UNION ALL	including duplicates repeating
+INTERSECT	only common rows between 2 query results
+MINUS		All rows from 1st query result - common rows
+
+select * from tablename;
+	--very simple select statement
+	what is * means?
+		all columns of the table
+
+select col1, col3, col4 from tablename;
+	--we are projecting only specified columns
+
+we can also, specify column names and expression
+
+select col1*col2 from tablename;
+	the result of multiplication will be returned as output.
+
+this multiplication does not affect the original data in the table
+
+
+what are all the clauses in select statements?
+
+	WHERE
+	ORDER BY
+	GROUP BY 
+	HAVING
+	JOIN	
+		INNER JOIN
+		OUTER JOIN
+			LEFT, RIGHT, FULL
+		CROSS JOIN
+		NATURAL JOIN
+		SELF JOIN
+		EQUI, NON EQUI JOIN
+	SUB QUERIES
+		in-line subqueries
+		regual subqueries
+
+	FUNCTIONS used in select statements
+	
+	CASE function / statement
+
+	DISTINCT
+
+
+
+select distinct * from trandetails;
+
+
+select distinct * from trandetails where acnumber='A00001';
+
+
+-------------------
+What is the purpose of GROUP BY in SELECT statement?
+	Whenever we use aggregate functions, we get 1 result per relation (ex: table. and tables if join is used)
+	if we use group by, we get 1 aggregate result per group
+
+
+ex:
+
+	select sum(salary) from employees;
+		you will get 1 result
+
+	select sum(salary) from employees group by department;
+		you will get 1 result per department
+
+	select department, sum(salary) from employees group by department;
+
+having:
+	you want to give a condition, and those groups that meat this condition only resulted
+
+not all group. so i use having
+
+
+select acnumber, count(transaction_amount) from trandetails group by acnumber;
+
+
+A00001	6
+A00002	3
+A00007	3
+
+
+
+--------------------------------------
+when to use JOINs and when to use sub queries?
+--------------------------------------------------------
+for example, there are 2 tables:
+
+CUSTOMER
+
+C00001	Ramesh	Chandra	Sharma	Delhi	9543198345	Service	1976-12-06
+C00002	Avinash	Sunder	Minha	Delhi	9876532109	Service	1974-10-16
+C00003	Rahul		Rastogi	Delhi	9765178901	Student	1981-09-26
+C00004	Parul		Gandhi	Delhi	9876532109	Housewife	1976-11-03
+C00005	Naveen	Chandra	Aedekar	Mumbai	8976523190	Service	1976-09-19
+C00006	Chitresh		Barwe	Mumbai	7651298321	Student	1992-11-06
+C00007	Amit	Kumar	Borkar	Mumbai	9875189761	Student	1981-09-06
+C00008	Nisha		Damle	Mumbai	7954198761	Service	1975-12-03
+C00009	Abhishek		Dutta	Kolkata	9856198761	Service	1973-05-22
+C00010	Shankar		Nair	Chennai	8765489076	Service	1976-07-12
+							
+LOAN
+
+
+C00001	B00001	100000
+C00002	B00002	200000
+C00009	B00008	400000
+C00010	B00009	500000
+C00001	B00003	600000
+C00002	B00001	600000
+		
+
+Write a query to display the customer numbers who have taken atleast 1 loan.
+
+customer table has custid
+loan table has custid
+
+
+we can write query for the above requirement using
+	join
+	subquery
+
+
+JOIN
+	use inner join on custid as common, Only where custid found in loan only comes.
+
+Sub query
+	you use WHERE EXISTS with correlated sub query
+	the sub query depends on outer query
+
+	
+both of the above is product only.
+
+
+
+
+SELECT DISTINCT C.CUSTID
+FROM CUSTOMER C
+JOIN LOAN L
+ON C.CUSTID=L.CUSTID;
+
+
+
+SELECT C.CUSTID
+FROM CUSTOMER C
+WHERE EXISTS
+(SELECT L.CUSTID FROM LOAN L WHERE L.CUSTID=C.CUSTID);
+
+Since both above queries produce same result, you have a doubt, when to use joins?
+
+ans:
+	use join only when you need to retrieve columns from multiple tables.
+	to retrieve columns from 1 table, you dont need to use joins.
+
+
+for the given above scenario, we return only 1 columns. So, i use sub query.
+
+Activity:
+	What are the types of JOINs?
+
+Also ensure that you run the script 
+
+https://raw.githubusercontent.com/jagasia/harman1/refs/heads/jag/RDBMS/Bank.txt
+
+so that you get sample tables and records.
+
+Exercises related to these tables, i will give next activity.
+
+
+
+
+
+SELECT E.EMPLOYEE_ID, E.FIRST_NAME,E.MANAGER_ID, M.FIRST_NAME 
+FROM EMPLOYEES E
+LEFT JOIN EMPLOYEES M
+ON
+E.MANAGER_ID=M.EMPLOYEE_ID
+ORDER BY E.EMPLOYEE_ID;
+
+
+
+
+JOIN Syntax
+	theta join syntax
+	JOIN syntax
+
+now also in mysql, we can use theta join syntax
+
+tablename, tablename2
+
+instead of 
+
+tablename join tablename2
+
+---------------------
+JOIN	means INNER JOIN
+
+produces result where only matching records are returned
+
+
+
+
+
+SELECT E.EMPLOYEE_ID, FIRST_NAME, LAST_NAME, E.DEPARTMENT_ID, D.DEPARTMENT_NAME 
+FROM EMPLOYEES E
+JOIN DEPARTMENTS D
+ON E.DEPARTMENT_ID=D.DEPARTMENT_ID
+ORDER BY E.EMPLOYEE_ID;
+
+There are 107 employees in EMPLOYEES table, but
+106 records returned. Because, Kimberely Grant is an employee whose department_id is null.
+
+so no matching row found for kimberely grant.
+
+106 rows returned.
+
+SELECT E.EMPLOYEE_ID, FIRST_NAME, LAST_NAME, E.DEPARTMENT_ID, D.DEPARTMENT_NAME 
+FROM EMPLOYEES E
+LEFT JOIN DEPARTMENTS D
+ON E.DEPARTMENT_ID=D.DEPARTMENT_ID
+ORDER BY E.EMPLOYEE_ID;
+
+Now, left outer join returns all rows from left side employees table (107 rows) and matching values from right side table
+
+left outer join.
+
+
+right outer join will return all rows from right side table.
+
+full outer join will return all rows from both side tables, and matching values, missing means, null will be there.
+
+
+
+
+NON-EQUI JOIN
+
+select e.employee_id, e.first_name, e.salary, j.job_title
+FROM employees e
+join jobs j
+on e.salary between j.min_salary and j.max_salary;
+
+
+
+
+NATURAL JOIN
+
+SELECT * FROM EMPLOYEES JOIN DEPARTMENTS USING(DEPARTMENT_ID);
+
+Activity
+---------
+
+Query Optimization Techniques					
+Indexing Strategies					
+Partitioning and Sharding					
+
+
+
+
+---
+
+## Query Optimization Techniques
+
+1. Use SELECT specific columns instead of SELECT \*
+   Example: SELECT name, age FROM users
+
+2. Use WHERE clauses to filter data early
+   Example: SELECT \* FROM orders WHERE status = 'DELIVERED'
+
+3. Avoid functions on indexed columns
+   Bad: WHERE YEAR(created\_date) = 2024
+   Good: WHERE created\_date BETWEEN '2024-01-01' AND '2024-12-31'
+
+4. Use EXISTS instead of IN for subqueries
+   Bad: SELECT \* FROM orders WHERE customer\_id IN (SELECT id FROM customers)
+   Good: SELECT \* FROM orders o WHERE EXISTS (SELECT 1 FROM customers c WHERE c.id = o.customer\_id)
+
+5. Use efficient joins
+
+   * Prefer INNER JOIN over OUTER JOIN when possible
+   * Avoid unnecessary joins
+
+6. Use EXPLAIN (or execution plan) to analyze query performance
+
+---
+
+## Indexing Strategies
+
+1. Single-column index
+   Example: CREATE INDEX idx\_username ON users(username);
+
+2. Composite index (multi-column)
+   Example: CREATE INDEX idx\_order ON orders(customer\_id, order\_date);
+
+3. Covering index (includes all queried columns)
+
+4. Unique index
+   Example: CREATE UNIQUE INDEX idx\_email ON users(email);
+
+5. Full-text index (for text search)
+   MySQL: FULLTEXT; PostgreSQL: tsvector
+
+6. Avoid over-indexing - too many indexes slow down writes
+
+---
+
+## Partitioning and Sharding
+
+Partitioning (within same database):
+
+1. Horizontal Partitioning
+
+   * Split rows across partitions
+   * Types: RANGE, LIST, HASH
+   * Example:
+     CREATE TABLE sales\_y2024 PARTITION OF sales
+     FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+
+2. Vertical Partitioning
+
+   * Split columns into different tables
+   * Example: move large text/BLOB to another table
+
+Sharding (across multiple databases/servers):
+
+1. Distribute data across shards
+
+   * Example: Use customer\_id % 4 to choose shard
+
+2. Benefits:
+
+   * High scalability
+   * Parallel processing
+
+3. Challenges:
+
+   * Complex joins
+   * Requires app-level logic
+
+---
+
+
+--------------------------------------------------
+Hibernate
+-----------
+Database access from java programs
+
+JDBC is/was used to access databases from java program.
+
+But when we JDBC, there are some drawbacks.
+	1) we are writing SQL code inside java. So when we migrate from say, mysql to oracle etc, it requires us to modify the SQL statements according to the new RDBMS
+
+	2) whenever the database schema is modified, it requires lot of changes in our java code.
+	ex: if i add 1 additional column, i need to change the SQL statements.
+
+	3) lot of boiler plate codes. If a table has 5 columns for ex, then it is almost same code for CRUD, whoever writes, unless there is a specific new requirement. So that obvious code can be generated by a framework.
+
+	4) we need to separate the configuration data from code. We do not want to hard code the database connection information. 
+	hibernate provides us configuration system
+
+Hibernate will generate the default code required for CRUD. And allows us to write custom code like advanced join or filter condtions.
+
+Steps:
+--------
+1) your project should have hibernate jar files in your classpath or build path. 
+In case we work in maven projects, then hibernate dependencies to be added to pom.xml
+
+2) hibernate provides, 2 types of configuration files.
+	hibernate.cfg.xml		
+		contains all details related to connection with db
+			driverClassName
+			url
+			username
+			password
+			dialect
+			show_sql
+			ddl_auto
+
+	entity.hbm.xml	(this can be skipped if we use annotation)
+		object relational mapping
+
+		what is the entity class => table name
+		properties vs columns
+		what is the identifier	PRIMARY KEY
+
+	for each entity class, we will have 
+		a separate hbm file or annotations
+
+Annotations
+	@Entity		marks a class as entity, this becomes a 					table in db
+	@Table		optional when entity name = table name
+	@Id		marks a field as primary key (mandatory)
+	@Column		optional when property name = column
+	@NotNull
+	
+min, max, size, etc 	validation annotations
+
+SessionFactory to establish session
+
+What is a session?
+	you login to an RDBMS in order to execute queries, using username and password.
+	The same is a session until you logout
+
+hibernate also will login using the credentials we provided using configuration
+
+session is used to do any interaction with the rdbms
+
+get transaction ref
+commit/rollback
+
+
+we can close the session, (logout)
+
+managed vs unmanaged objects
+
+managed object
+	is in sync with the row in the table in the db
+	if you find an object from db, it is in managed state
+
+unmanaged
+	if you create an object of entity class, it is unmanaged
+	
+
+
+@Transient
+	any field marked as transient, will not become column in the table. For example, i need a global SimpleDateFormat variable
+---------------------------------
+
+
+Task:
+-------
+Refer to my project:
+https://github.com/jagasia/harman1/tree/jag/Java/23-jun-hibernate-1
+
+And create a simple hibernate project using maven.
+Ask me if you face any issues.
+
+And check if the table, records are created by hibernate in your mysql database.
+
+Notes:
+	in hibernate.cfg.xml
+		url needs to be updated with your db name
+		password in my case is empty. but yours is rootuser
+

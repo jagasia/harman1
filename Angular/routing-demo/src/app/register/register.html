@@ -1,0 +1,20 @@
+{{user.value | json}}
+<br/>
+<form [formGroup]="user">
+Username: <input type="text" formControlName="username" [ngClass]="{'form-control':true, 'is-invalid':f.username.errors && f.username.touched && f.username.dirty}" >
+<div class="text-danger" *ngIf="f.username.errors && f.username.touched && f.username.dirty">Username is invalid</div>
+Password: <input type="password" formControlName="password" class="form-control" >
+Confirm Password: <input type="password" formControlName="cpassword" class="form-control" >
+ <div class="text-danger" *ngIf="user.hasError('passwordMismatch') && f.cpassword.touched">
+    Passwords do not match
+  </div>
+Email: <input type="email" formControlName="email" class="form-control" >
+<div class="text-danger" *ngIf="f.email.errors?.['required']">Email is mandatory</div>
+<div class="text-danger" *ngIf="f.email.errors?.['email']">Email is invalid</div>
+Phone: <input type="number" formControlName="phone" class="form-control" >
+<div class="text-danger" *ngIf="f.phone.errors?.['required']">Phone is mandatory</div>
+<div class="text-danger" *ngIf="f.phone.errors?.['pattern']">Phone is invalid</div>
+<br/>
+</form>
+<br/>
+{{user.controls['phone'].errors.pattern | json}}

@@ -1,0 +1,7 @@
+<input type="text" name="color" [(ngModel)]="color" >
+<br/>
+<input type="text" name="bgColor" [(ngModel)]="bgColor">
+<div [ngStyle]="{'color':color,'backgroundColor':bgColor}">
+    <br/><br/><br/><br/><br/><br/><br/>This
+    is the content displayed inside
+</div>

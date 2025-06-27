@@ -1,0 +1,515 @@
+Yesterday, we have used 
+	routing
+	axios
+
+apart from axios, we can also use
+	fetch
+	ajax
+to access apis.
+-------------------------------------------
+Reducer
+
+So far, we have used useState hook for retaining data across lifecycle of a component.
+
+state is useful when it is simple.
+
+useReducer is useful to handle complex state operations.
+
+Lets start with counter component example using useReducer.
+
+
+Demo:
+--------
+to use reducer, we should know 3 things:
+1) dispatch functionality defined as a function / arrow function
+ex:
+    const action=(state, action)=>{
+        switch(action.type){
+            case "increment":
+                if(state.count<100)
+                    return {count:state.count+1}
+            case "decrement":
+                if(state.count>0)
+                return {count:state.count-1}
+        }
+        return {count:state.count}
+    }
+
+2) use the hook called useReducer hook and that has 4 portions:
+	const [state, dispatch]=new useReducer(action, {count:0});
+
+	state = this is the state
+	dispath	=	is the function pointer to call the action
+
+	useReducer hook, takes 2 arguments
+		action = function pointer	used when dispatch
+		initial state	{count:0}
+
+3) to update the state, we need to use dispatch function pointer
+
+ex:
+dispatch({type:"decrement"})
+
+-----------complete code---------------------
+
+import { useReducer } from "react"
+
+export const Counter=()=>{
+
+
+    //define the action function. this is called when we dispatch
+    const action=(state, action)=>{
+        switch(action.type){
+            case "increment":
+                if(state.count<100)
+                    return {count:state.count+1}
+            case "decrement":
+                if(state.count>0)
+                return {count:state.count-1}
+        }
+        return {count:state.count}
+    }
+    const [state, dispatch]=useReducer(action, {count:0} );
+
+    return <div>
+        <br/>
+        <button onClick={(e)=>{ dispatch({type:"decrement"}) }}>-</button>&nbsp;
+        {state.count}
+        &nbsp;
+        <button onClick={(e)=>{dispatch({type:"increment"})}}>+</button>
+    </div>
+}
+
+Task:
+try this counter example using useReducer
+		
+------------------------------------------------
+Shall we now use this useReducer for a CRUD of Product?
+
+lets start with dummy CRUD
+	dummy means, it will just say, adding, updating, deleting
+
+i will push this ProductForm also to git.
+
+try to do a dummy CRUD and then i will give demo for using payload.
+
+We have done Add...
+
+We will do update and delete after the break.
+-----------------
+
+
+As suggested by Madhu,
+I have modified the code such that, unnecessarily addTrigger, etc should not be sent to api.
+
+we use object destructuring to solve this:
+
+var {id, name, price}=state;
+
+ProductService.fnAddProduct({id, name, price})//not sending state
+                .then(response=>{
+                    console.log(response.data);  
+                    fnLoadProducts();
+                })
+                .catch(err=>{
+                    console.log(err);
+                    
+                })           
+
+
+
+Task:
+I have completed till add, update.
+
+Now, you will do delete
+and put a select button in each row,
+to select and populate the data in the form fields.
+
+I have completed, the 
+	delete
+	select
+everything. pushing the changes to git.
+
+Try this CRUD with select in your system,
+
+--------------------------------------------------------
+useMemo
+-------
+
+The useMemo hook in React is used to optimize performance by memoizing the result of a costly computation, so that it is not re-calculated on every render, unless its dependencies change.
+
+in useEffect also, we mention the dependency, and it is watched. Any change occur in those dependencies, the useEffect callback is executed.
+
+so in that case, both appears similar.
+
+
+useCallback
+------------------
+Excellent! Here's a clear, **side-by-side example** that shows how `useCallback` **prevents unnecessary re-renders** of child components.
+
+---
+
+## 🎯 Goal:
+
+We’ll create:
+
+* A **parent component** with two states.
+* A **child component** wrapped with `React.memo` that receives a function as prop.
+* We'll see how **with and without `useCallback`**, the child behaves differently.
+
+---
+
+### ✅ 1. **With `useCallback` (Optimized)**
+
+```jsx
+// File: Optimized.js
+import React, { useState, useCallback } from 'react';
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child Rendered');
+  return <button onClick={onClick}>Increment Count</button>;
+});
+
+export const Optimized = () => {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(100);
+
+  const handleClick = useCallback(() => {
+    setCount(c => c + 1);
+  }, []); // ✅ memoized function
+
+  return (
+    <div>
+      <h2>Optimized with useCallback</h2>
+      <p>Count: {count}</p>
+      <p>Other: {other}</p>
+      <Child onClick={handleClick} />
+      <button onClick={() => setOther(other + 1)}>Change Other</button>
+    </div>
+  );
+};
+```
+
+🧠 **Result:**
+
+* Clicking `Change Other` will NOT re-render `<Child />`.
+* ✅ `Child Rendered` only appears when `handleClick` or props change.
+
+---
+
+### ❌ 2. **Without `useCallback` (Not Optimized)**
+
+```jsx
+// File: NotOptimized.js
+import React, { useState } from 'react';
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child Rendered');
+  return <button onClick={onClick}>Increment Count</button>;
+});
+
+export const NotOptimized = () => {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(100);
+
+  const handleClick = () => {
+    setCount(c => c + 1);
+  }; // ❌ new function created every render
+
+  return (
+    <div>
+      <h2>Not Optimized (No useCallback)</h2>
+      <p>Count: {count}</p>
+      <p>Other: {other}</p>
+      <Child onClick={handleClick} />
+      <button onClick={() => setOther(other + 1)}>Change Other</button>
+    </div>
+  );
+};
+```
+
+🧠 **Result:**
+
+* Clicking `Change Other` will cause `Child Rendered` every time.
+* ❌ Unnecessary re-renders because `handleClick` is a new function each time.
+
+---
+
+### 🧪 Test It Yourself:
+
+Put both `<Optimized />` and `<NotOptimized />` in `App.jsx`:
+
+```jsx
+import { Optimized } from './Optimized';
+import { NotOptimized } from './NotOptimized';
+
+function App() {
+  return (
+    <div>
+      <Optimized />
+      <hr />
+      <NotOptimized />
+    </div>
+  );
+}
+```
+
+---
+
+### ✅ Key Takeaway:
+
+| Case                  | Child Re-renders on unrelated state change? |
+| --------------------- | ------------------------------------------- |
+| Without `useCallback` | ✅ Yes (function is new each time)           |
+| With `useCallback`    | ❌ No (function is memoized)                 |
+
+---
+
+Task:
+------
+understand the use of
+	useMemo
+	useCallback
+
+---------------------
+Lazy loading
+
+
+Great! Let's break down **Lazy Loading and Code Splitting** in **ReactJS** — two important techniques to **optimize performance and load time** of your React apps.
+
+---
+
+## 🚀 **What Is Code Splitting?**
+
+### ✅ Definition:
+
+Code Splitting is the practice of **breaking your JavaScript bundle into smaller chunks** so that only what's needed is loaded initially.
+
+### 🎯 Why?
+
+* Faster initial load time
+* Improve performance on slower networks
+* Load parts of app **on-demand**
+
+---
+
+## 💤 **What Is Lazy Loading?**
+
+### ✅ Definition:
+
+Lazy loading means **deferring loading of a component or module until it’s needed** (e.g., when user navigates to a route).
+
+### In React, we do this using:
+
+```js
+const Component = React.lazy(() => import('./MyComponent'));
+```
+
+Then render it with:
+
+```jsx
+<Suspense fallback={<div>Loading...</div>}>
+  <Component />
+</Suspense>
+```
+
+---
+
+## ✅ Simple Example – Lazy Load a Component
+
+### 🗂️ File Structure
+
+```
+/src
+  ├── App.jsx
+  ├── components/
+       ├── Home.jsx
+       └── About.jsx
+```
+
+### 📄 `Home.jsx`
+
+```jsx
+const Home = () => <h2>Welcome to Home</h2>;
+export default Home;
+```
+
+### 📄 `About.jsx`
+
+```jsx
+const About = () => <h2>About Us</h2>;
+export default About;
+```
+
+---
+
+### 📄 `App.jsx` with React Router + Lazy Loading
+
+```jsx
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+// Lazy loaded components
+const Home = lazy(() => import('./components/Home'));
+const About = lazy(() => import('./components/About'));
+
+function App() {
+  return (
+    <Router>
+      <h1>React Lazy Loading Example</h1>
+      <nav>
+        <Link to="/">Home</Link> | <Link to="/about">About</Link>
+      </nav>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+---
+
+## 🔍 Key Points:
+
+| Concept        | Tool/Function    | Purpose                               |
+| -------------- | ---------------- | ------------------------------------- |
+| Code Splitting | `import()`       | Splits the bundle                     |
+| Lazy Loading   | `React.lazy()`   | Loads component only when needed      |
+| Fallback UI    | `React.Suspense` | Renders a loading state while loading |
+
+---
+
+## ⚠️ Notes:
+
+* Works best with **React Router** (e.g. route-based splitting).
+* Works well with **large components**, **dashboards**, or **admin panels**.
+* Use meaningful `fallback={<...>}` to keep UX smooth.
+
+---
+
+Task:
+
+ Lazy Loading & Code Splitting Works
+
+In browser devTools, network tab,
+we can see the components loaded.
+
+until, we navigate to a particular component, they must not be loaded.
+
+// Lazy loaded components
+const Home = lazy(() => import('./components/Home'));
+const About = lazy(() => import('./components/About'));
+
+
+You are going to observe lazy loading and code splitting
+-------------------------------------
+
+
+
+Virtual DOM and Reconciliation				----------------------
+virtual DOM is a copy of the actual DOM, stored in the memory
+	in memory representation
+	performance
+		updates the virtual DOM instead of actual DOM
+	efficient updates
+		by comparing virtual representations, only the 					necessary changes to the real DOM
+
+Reconcilliation:
+	diffin algorithm
+	minimizing the changes
+	Real dom updates
+		only wherever necessary the updates are done
+	
+
+
+Optimized Product listing app "optimized-product-list"
+
+---------------------
+Implement Performance Monitoring with React Profiler			
+
+we use Profiler to get insigts that are used to measure the performance of a child component.
+
+The parent component wraps the child using <Profiler>
+
+          <Profiler id='ProductManager' onRender={onRenderCallback}>
+            <ProductManager />
+          </Profiler>
+
+complete code:-
+--------------------
+import { Profiler } from 'react';
+import './App.css';
+import { Counter } from './components/Counter';
+import { ProductManager } from './components/ProductManager';
+
+function App() {
+  
+   function onRenderCallback(
+    id, // the "id" prop of the Profiler tree
+    phase, // either "mount" or "update"
+    actualDuration, // time spent rendering the committed update
+    baseDuration, // estimated time to render without memoization
+    startTime, // when React began rendering this update
+    commitTime, // when React committed this update
+    interactions // the Set of interactions belonging to this update
+  ) {
+    console.log(`[Profiler: ${id}]`);
+    console.log(`Phase: ${phase}`);
+    console.log(`Actual duration: ${actualDuration.toFixed(2)}ms`);
+    console.log(`Base duration: ${baseDuration.toFixed(2)}ms`);
+    console.log(`Start time: ${startTime}`);
+    console.log(`Commit time: ${commitTime}`);
+    console.log("Interactions:", interactions);
+  }
+  
+  return (
+    <>
+      <div className='p-5 bg-secondary text-center text-white'>
+        <h1>Adv React</h1>
+      </div>
+      <div className='row text-center'>
+        <div className='col-md-2'>
+          <Counter />
+        </div>
+        <div className='col-md-8'>
+          {/* <ProductForm /> */}
+          <Profiler id='ProductManager' onRender={onRenderCallback}>
+            <ProductManager />
+          </Profiler>
+        </div>
+        <div className='col-md-2'>
+          
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default App
+
+
+
+TasK
+------
+Understand how performance is monitored using React Profiler.
+example code is updated in notes and also "advanced" app in reactjs folder.
+
+-------------------------------------
+We will come to back to reactjs and angular 
+	after completing spring security jwt
+
+
+----------------------------------------------------
+Debugging with React DevTools				
+
+
+React Query for cache.
+
+----------------------------

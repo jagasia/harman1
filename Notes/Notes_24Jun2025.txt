@@ -1,0 +1,1601 @@
+Hibernate
+-----------
+ORM	-	Object Relational Mapping
+
+Object in java is mapped to a table in database
+
+
+Many Customers buy Many Products
+	M - M
+
+in case of many to many, the relationship becomes a table
+so, it is 3 tables mapped to 2 entity classes.
+
+
+class - table
+object - record
+property - column
+
+why we do ORM?
+	so that the framework can take care of basic db operations
+
+
+
+Introduction to ORM, Persistence and Persistence Life Cycle					
+ORM gives us one liberty of working with java classes and objects, rather than the database tables and rows.
+
+
+
+
+if class name is JavaStudent, then table name will be JAVA_STUDENT
+this is the normal behavior, that can be modified by configuring
+
+
+
+What is Hibernate?					
+Hibernate Architecture					
+Hibernate Framework Components (SessionFactory, Session, Transaction, Query, Criteria API)					
+
+-------------------------------------------------
+-------------------------------------------------
+Demo:
+
+steps for hibernate:
+
+1) create a maven project of quickstart archetype.
+2) in pom.xml, add the following dependencies.
+
+  <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.4.0</version>
+    </dependency>
+
+    <!-- JPA API -->
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.5.3.Final</version>
+    </dependency>
+
+
+3) create a configuration file:	hibernate.cfg.xml
+
+
+<hibernate-configuration>
+  <session-factory>
+    <!-- JDBC connection settings -->
+    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/harman</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password"></property>
+
+    <!-- Hibernate settings -->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">false</property>
+
+    <!-- Annotated class -->
+    <!-- <mapping class="com.harman.demo.model.Product"/> -->
+  </session-factory>
+</hibernate-configuration>
+
+
+
+4) Entity class:
+Customer
+	id, name, address, phone
+
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="CUST")
+public class Customer {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String address;
+	private String phone;
+	
+	public Customer() {}
+
+	public Customer(Long id, String name, String address, String phone) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + "]";
+	}
+	
+}
+
+
+5) create an util class that contains code to get session factory
+
+package com.harman.demo.util;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class DbUtil {
+
+	public static SessionFactory getSessionFactory() {
+		Configuration cfg=new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory sf = cfg.buildSessionFactory();
+		return sf;
+	}
+}
+
+
+6) create a DAO Impl class
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class CustomerDAOImpl implements CustomerDAO {
+
+	@Override
+	public void create(Customer customer) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+//		session.persist(customer);
+		Object id = session.save(customer);
+		System.out.println("Customer created. Kindly note the ID: ");
+		System.out.println(id);
+		txn.commit();
+		session.clear();
+	}
+	@Override
+	public List<Customer> read() {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Query<Customer> query = session.createQuery("select c from Customer c",Customer.class);
+		return query.list();
+	}
+	
+	@Override
+	public Customer read(Long id) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Customer managed = session.get(Customer.class, id);
+		return managed;
+	}
+	
+	@Override
+	public void update(Customer customer) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+//		session.persist(customer);	 //detached entity error
+//		detached entity passed to persist: com.harman.demo.model.Customer
+		session.merge(customer);
+		txn.commit();
+		session.close();
+	}
+	@Override
+	public void delete(Long id) {
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction txn = session.beginTransaction();
+		Customer x = session.get(Customer.class, id);
+		if(x!=null) {
+			session.delete(x);
+		}else {
+			System.out.println("Nothing to delete");
+		}
+		
+		txn.commit();
+		session.close();
+	}
+	
+}
+
+
+7) extract dao interface from impl by right click code, refactor -> extract interface.
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface CustomerDAO {
+
+	void create(Customer customer);
+
+	List<Customer> read();
+
+	Customer read(Long id);
+
+	void update(Customer customer);
+
+	void delete(Long id);
+
+}
+
+8) Test the code in App.java
+
+
+package com.harman.demo;
+
+import java.util.List;
+
+import com.harman.demo.model.Customer;
+import com.harman.demo.model.CustomerDAO;
+import com.harman.demo.model.CustomerDAOImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+//    	Customer customer=new Customer(2L, "Suresh", "Raja street, New Delhi", "1212121212");
+    	CustomerDAO cdao=new CustomerDAOImpl();
+//    	cdao.update(customer);
+    	
+//    	List<Customer> customers = cdao.read();
+//    	for(Customer c:customers) {
+//    		System.out.println(c);
+//    	}
+    	
+//    	Customer x = cdao.read(1L);
+//    	System.out.println(x);
+    	
+    	cdao.delete(2L);
+
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
+Task:
+
+Follow the above steps to create a basic CRUD for "Product" using hibernate.
+
+
+
+Introduction to Hibernate Caching
+-------------------------------------------------
+HQL
+Relationship between entities
+
+
+
+HQL
+-----
+Hibernate Query Language
+	in SQL, we are querying tables
+	in HQL, we are querying entities
+
+
+HQL query does no mention table names, but entity class names, and property names instead of column names
+
+from Customer		all columns, rows from table mapped to 				Customer entity
+
+select c from Customer c		same as above
+
+select c.id, c.name from Customer c
+	the problem is that, we need to create a custom class type that is used to capture the result
+
+select c.name from Customer c
+	it returns List<String> 
+
+
+if you use where conditions other than id property, you get List<Entity>
+List<Customer>
+
+Queries can be 3 types:
+	Query		HQL query we use entities names
+	NamedQuery	entity class itself has these
+	NativeQuery	SQL query
+
+
+
+Demo:
+
+import java.util.List;
+import java.util.Scanner;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+
+import com.harman.demo.model.Customer;
+import com.harman.demo.util.DbUtil;
+
+public class AppQueries {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter the name:");
+		String name=sc.nextLine();
+		SessionFactory sf = DbUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Query<Customer> query = session.createQuery("from Customer c where c.name=:name", Customer.class);
+		query.setParameter("name", name);
+		List<Customer> customers = query.list();
+		for(Customer c:customers)
+			System.out.println(c);
+	}
+
+}
+
+
+
+Task:
+
+check above example and try HQL
+
+
+
+--------------------------------------
+--------------------------------------
+
+---
+
+## 🔍 Hibernate Query Language (HQL) Tutorial
+
+### ✅ What is HQL?
+
+**HQL (Hibernate Query Language)** is an object-oriented query language similar to SQL but operates on **entity objects** (Java classes) rather than directly on database tables.
+
+* SQL works with tables and columns.
+* HQL works with **entities and their properties**.
+
+---
+
+### 🧱 Basic Syntax
+
+```java
+String hql = "FROM Employee";
+Query query = session.createQuery(hql);
+List<Employee> employees = query.list();
+```
+
+---
+
+### 🧭 Common HQL Queries
+
+#### 1. **Select all records**
+
+```java
+String hql = "FROM Employee";
+List<Employee> list = session.createQuery(hql).list();
+```
+
+#### 2. **Select with WHERE clause**
+
+```java
+String hql = "FROM Employee e WHERE e.salary > :minSalary";
+Query query = session.createQuery(hql);
+query.setParameter("minSalary", 50000);
+List<Employee> list = query.list();
+```
+
+#### 3. **Select specific columns (projection)**
+
+```java
+String hql = "SELECT e.name, e.salary FROM Employee e";
+List<Object[]> list = session.createQuery(hql).list();
+
+for (Object[] row : list) {
+    String name = (String) row[0];
+    Double salary = (Double) row[1];
+}
+```
+
+#### 4. **Order By**
+
+```java
+String hql = "FROM Employee e ORDER BY e.salary DESC";
+List<Employee> list = session.createQuery(hql).list();
+```
+
+#### 5. **Update Query**
+
+```java
+String hql = "UPDATE Employee SET salary = :salary WHERE id = :id";
+Query query = session.createQuery(hql);
+query.setParameter("salary", 60000);
+query.setParameter("id", 2);
+int rowsAffected = query.executeUpdate();
+```
+
+#### 6. **Delete Query**
+
+```java
+String hql = "DELETE FROM Employee WHERE id = :id";
+Query query = session.createQuery(hql);
+query.setParameter("id", 3);
+int rowsAffected = query.executeUpdate();
+```
+
+#### 7. **Aggregate Functions**
+
+```java
+String hql = "SELECT COUNT(e.id), AVG(e.salary) FROM Employee e";
+Object[] result = (Object[]) session.createQuery(hql).uniqueResult();
+
+Long count = (Long) result[0];
+Double averageSalary = (Double) result[1];
+```
+
+---
+
+### 🔄 Joins in HQL
+
+#### 1. **Inner Join**
+
+```java
+String hql = "SELECT e.name, d.name FROM Employee e INNER JOIN e.department d";
+List<Object[]> list = session.createQuery(hql).list();
+```
+
+#### 2. **Left Join**
+
+```java
+String hql = "SELECT e.name, d.name FROM Employee e LEFT JOIN e.department d";
+```
+
+> Note: This assumes `Employee` has a field `Department department` with `@ManyToOne`.
+
+---
+
+### 📦 Pagination
+
+```java
+Query query = session.createQuery("FROM Employee");
+query.setFirstResult(0);  // offset
+query.setMaxResults(10);  // limit
+List<Employee> list = query.list();
+```
+
+---
+
+### ⚠️ Tips
+
+* Always use **entity names and property names** in HQL.
+* For **native SQL**, use `session.createSQLQuery(...)`.
+* HQL supports **named queries** and **parameterized queries**.
+
+---
+
+### 📘 Example Entity
+
+```java
+@Entity
+public class Employee {
+    @Id
+    private int id;
+    private String name;
+    private double salary;
+
+    @ManyToOne
+    private Department department;
+}
+```
+
+After completing HQL, we will discuss Relationships between entities
+--------------------------------------------
+Relationship between entities
+---------------------------------
+Basically, when we do projects, it is important to identify the entities and their relationships
+
+E-R diagrams can be the artifacts, that evolves at the end of this activity on identifying the entities and relationships
+
+Entity becomes table in database
+Entity becomes class in java code.
+
+If 2 entities have relationship, then it can be
+	One to One
+	One to Many
+	Many to One
+	Many to Many
+
+
+These relationships can be exactly represented in our code using annotations like
+	@OneToOne
+	@OneToMany
+	@ManyToOne
+	@ManyToMany
+
+Why these are important?
+	when we create tables, we will also create constraints like foreign key, that establishes the relationship between 2 tables. Parent-child or Master-details or Master-transaction etc.
+
+Now that, Hibernate is going to create the tables, we need to help hibernate to understand the relationship, like what is foreign key that references which primary key of which table etc.
+
+Apart from this, lot of advantages in having these relationships, lazy or eager loading, cascading, etc.
+
+
+ Introduction to Hibernate Relationships
+In real-world applications, data in a database is often related. For example:
+
+A user might have one profile.
+
+A department has many employees.
+
+A student can register for many courses, and a course can have many students.
+
+These relationships between tables are known as associations or entity relationships in Hibernate (and JPA).
+
+Hibernate lets you map Java classes (entities) to database tables and also define how those classes relate to each other — just like relationships in a relational database (MySQL, PostgreSQL, etc.).
+
+📘 Why Relationships Are Important
+They let you represent real-world data structures (e.g., one user has many orders).
+
+You can navigate through related data easily using Java objects.
+
+They help maintain data integrity with constraints like foreign keys.
+
+Hibernate handles automated joins, cascading, and fetching — reducing manual SQL.
+
+🔗 Types of Relationships in Hibernate
+Hibernate supports four main types of relationships:
+
+Relationship Type	Real-Life Example	Description
+One-to-One	A person and their passport	Each entity has exactly one related entity.
+One-to-Many	A department and its employees	One entity is related to many entities.
+Many-to-One	Many employees belong to one department	Inverse of One-to-Many.
+Many-to-Many	Students and courses	Many entities are related to many others.
+
+Each of these can be:
+
+Unidirectional: Navigation is allowed in only one direction.
+
+Bidirectional: Navigation is allowed in both directions (more common).
+
+
+
+
+------------------
+Demo
+-------
+I will give demo for one to many using
+	Employee
+	Department
+
+Many Employees belong to a Department	@ManyToOne
+A Department has many Employees		@OneToMany
+
+
+
+in Employee class:
+	Department department;	//department object. Not just 					departmentId
+
+in Department class
+	List<Employee> employees;		//lazy or eager can be 						specified
+
+
+lazy means:	when i get an object of department, it will contain 			list of employees
+
+eager means:	when i get an object of department, it will not 			contain list of employees. But when i call 			"getEmployees" method, then it 					will retrieve all employees from database.
+
+
+Task:
+
+Complete the learnings in HQL. 
+After lunch break, i will give demo on Hibernate relationships.
+
+-------------------------------------------------------------------------
+Hibernate relationships.
+
+Demo:
+---------
+Department
+	id
+	name
+	list of employees
+
+Employee
+	id
+	name
+	department		ref to Department.id
+
+
+Department to Employee 		is OneToMany
+Employee to Department		is ManyToOne
+
+1) create a maven quickstart archetype project "24-jun-hibernate-relationships"
+
+2) in pom.xml
+<dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.4.0</version>
+    </dependency>
+
+    <!-- JPA API -->
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.5.3.Final</version>
+    </dependency>
+
+
+3) create hibernate.cfg.xml file in src/main/java directly.
+
+
+<hibernate-configuration>
+  <session-factory>
+    <!-- JDBC connection settings -->
+    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/harman</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password"></property>
+
+    <!-- Hibernate settings -->
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">false</property>
+
+    <!-- Annotated class -->
+    <!-- <mapping class="com.harman.demo.model.Product"/> -->
+    
+<!--       <property name="hibernate.cache.use_second_level_cache">true</property>
+    <property name="hibernate.cache.region.factory_class">
+      org.hibernate.cache.ehcache.EhCacheRegionFactory
+    </property> -->
+  </session-factory>
+</hibernate-configuration>
+
+
+4) DbUtil.java
+
+package com.harman.demo.util;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+
+public class DbUtil {
+
+	public static SessionFactory getSessionFactory() {
+		Configuration cfg=new Configuration();
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory sf = cfg.buildSessionFactory();
+		return sf;
+	}
+}
+
+
+5) create the entity classes and add them to the cfg
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
+public class Department {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	
+	public Department() {}
+
+	public Department(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Department [id=" + id + ", name=" + name + "]";
+	}
+	
+}
+
+
+6) Employee.java
+
+package com.harman.demo.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
+@Entity
+public class Employee {
+	private Long id;
+	private String name;
+	@ManyToOne
+	private Department department;
+	
+	public Employee() {}
+
+	public Employee(Long id, String name, Department department) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.department = department;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", name=" + name + ", department=" + department + "]";
+	}
+	
+	
+}
+
+
+7) DaoImp for Department:
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class DepartmentDaoImpl implements DepartmentDao {
+	@Override
+	public void create(Department department) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(department);
+		txn.commit();
+		session.close();
+		System.out.println("Department is created. ID is: "+id);		
+	}
+	@Override
+	public List<Department> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Department> query = session.createQuery("from Department", Department.class);
+		List<Department> departments = query.list();
+		session.close();
+		return departments;
+	}
+	@Override
+	public Department read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Department department = session.get(Department.class, id);
+		session.close();
+		return department;
+	}
+		
+	@Override
+	public void update(Department department) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(department);
+				txn.commit();
+				session.close();
+				System.out.println("Department is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Department department = session.get(Department.class, id);
+				if(department!=null) {
+				session.delete(department);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+8) extract the dao interface for Department:
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface DepartmentDao {
+
+	void create(Department department);
+
+	List<Department> read();
+
+	Department read(Long id);
+
+	void update(Department department);
+
+	void delete(Long id);
+
+}
+
+
+9) EmployeeDaoImpl
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class EmployeeDaoImpl implements EmployeeDao {
+	@Override
+	public void create(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(employee);
+		txn.commit();
+		session.close();
+		System.out.println("Employee is created. ID is: "+id);		
+	}
+	@Override
+	public List<Employee> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Employee> query = session.createQuery("from Employee", Employee.class);
+		List<Employee> employees = query.list();
+		session.close();
+		return employees;
+	}
+	@Override
+	public Employee read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Employee employee = session.get(Employee.class, id);
+		session.close();
+		return employee;
+	}
+		
+	@Override
+	public void update(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(employee);
+				txn.commit();
+				session.close();
+				System.out.println("Employee is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Employee employee = session.get(Employee.class, id);
+				if(employee!=null) {
+				session.delete(employee);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+
+
+
+10) EmployeeDao interface
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface EmployeeDao {
+
+	void create(Employee employee);
+
+	List<Employee> read();
+
+	Employee read(Long id);
+
+	void update(Employee employee);
+
+	void delete(Long id);
+
+}
+
+11) App.java
+
+test the code
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	Department d1=new Department(null, "IT");
+    	Department d2=new Department(null, "CSE");
+    	Department d3=new Department(null, "EEE");
+    	Department d4=new Department(null, "AI & ML");
+    	Department d5=new Department(null, "AI & DS");
+    	
+    	DepartmentDao ddao2 = new DepartmentDaoImpl();
+    	ddao2.create(d1);
+    	ddao2.create(d2);
+    	ddao2.create(d3);
+    	ddao2.create(d4);
+    	ddao2.create(d5);
+    	
+    	
+    	
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+12) now, lets test the employee dao impl.
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import com.harman.demo.util.DbUtil;
+
+public class EmployeeDaoImpl implements EmployeeDao {
+	@Override
+	public void create(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+		.openSession();
+		Transaction txn = session.beginTransaction();
+		Object id = session.save(employee);
+		txn.commit();
+		session.close();
+		System.out.println("Employee is created. ID is: "+id);		
+	}
+	@Override
+	public List<Employee> read() {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Query<Employee> query = session.createQuery("from Employee", Employee.class);
+		List<Employee> employees = query.list();
+		session.close();
+		return employees;
+	}
+	@Override
+	public Employee read(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+		Employee employee = session.get(Employee.class, id);
+		session.close();
+		return employee;
+	}
+		
+	@Override
+	public void update(Employee employee) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Object id = session.merge(employee);
+				txn.commit();
+				session.close();
+				System.out.println("Employee is updated");		
+	}
+	@Override
+	public void delete(Long id) {
+		Session session = DbUtil.getSessionFactory()
+				.openSession();
+				Transaction txn = session.beginTransaction();
+				Employee employee = session.get(Employee.class, id);
+				if(employee!=null) {
+				session.delete(employee);
+				}else
+				{
+					System.out.println("Nothing to delete");
+				}
+				
+				session.close();
+	}
+	
+}
+
+
+
+13) EmployeeDao interface
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+public interface EmployeeDao {
+
+	void create(Employee employee);
+
+	List<Employee> read();
+
+	Employee read(Long id);
+
+	void update(Employee employee);
+
+	void delete(Long id);
+
+}
+
+
+14) App.java to test Department dao impl
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	Department d1=new Department(null, "IT");
+    	Department d2=new Department(null, "CSE");
+    	Department d3=new Department(null, "EEE");
+    	Department d4=new Department(null, "AI & ML");
+    	Department d5=new Department(null, "AI & DS");
+    	
+    	DepartmentDao ddao2 = new DepartmentDaoImpl();
+    	ddao2.create(d1);
+    	ddao2.create(d2);
+    	ddao2.create(d3);
+    	ddao2.create(d4);
+    	ddao2.create(d5);
+    	
+    	
+    	
+        System.out.println( "Hello World!" );
+    }
+}
+
+
+
+15) App2.java for Employee dao impl
+
+package com.harman.demo;
+
+import com.harman.demo.model.Department;
+import com.harman.demo.model.DepartmentDao;
+import com.harman.demo.model.DepartmentDaoImpl;
+import com.harman.demo.model.Employee;
+import com.harman.demo.model.EmployeeDao;
+import com.harman.demo.model.EmployeeDaoImpl;
+
+public class App2 {
+
+	public static void main(String[] args) {
+		DepartmentDao ddao=new DepartmentDaoImpl();
+		EmployeeDao edao=new EmployeeDaoImpl();
+		
+//		Department dept = ddao.read(2L);
+//		Employee e1=new Employee(null, "Abdul", new Department(1L,null));
+		
+		Employee emp = edao.read(2L);
+		System.out.println(emp);
+//		edao.create(e1);
+	}
+}
+
+
+
+
+---------------------------------------------
+Task:
+------
+Referring to above demo of hibernate relationships using
+Employee and Department,
+
+Can you try by yourself for 
+	Customer
+	Product
+	Order
+
+Customer and Product are not directly related in our case study.
+it is possible that these 2 have relationship, then it is M-M
+
+but in our example, 
+	One Customer place Many Order
+	One Product has Many Order
+
+---------------------------------------------------
+Any annotation ends with "many" like
+	@OneToMany
+	@ManyToMany
+
+these are complex because, many values cannot be fit in 1 foregin key column 
+
+for ex:
+
+Many to One
+	Employees to Department
+
+so in employee class, department is 1
+	so it is simple
+
+but vice versa, department class, if you have many employees:
+	List<Employee> employeeList;
+	Set<Employee> employeeSet;
+
+in both cases, the hibernate will try to create a new table and maintain, for one department, multiple employees
+
+	d1	e1
+	d1	e2
+	d1	e3
+
+
+
+but, we do not want 3rd table. Just in Employee table, department_id column is there, and that is enought to maintain the relationship.
+
+so, in order to avoid new table creation, we have to use "mappedBy" attribute in @OneToMay or any annotation ending with Many.
+
+We can skip using "mappedBy" intentionally when we want a 3rd table to be created.
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
+public class Department {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+	private List<Employee> employees;
+	
+	public Department() {}
+
+	public Department(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	
+	
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List<Employee> employees) {
+		this.employees = employees;
+	}
+
+	@Override
+	public String toString() {
+		return "Department [id=" + id + ", name=" + name + "]";
+	}
+
+	
+}
+
+
+
+-------------------------------------
+Demo for Many to Many
+
+
+
+
+
+
+
+Exception in thread "main" org.hibernate.AnnotationException: Association 'com.harman.demo.model.Product.categories' targets the type 'com.harman.demo.model.Category' which is not an '@Entity' type
+
+
+
+package com.harman.demo.model;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+@Entity
+public class Category {
+	@Id
+	private Long id;
+	private String name;
+	@ManyToMany
+	private List<Product> products;
+	
+	public Category() {}
+
+	public Category(Long id, String name, List<Product> products) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.products = products;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + ", products=" + products + "]";
+	}
+	
+	
+}
+
+
+
+
+package com.harman.demo.model;
+
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+@Entity
+public class Product {
+	@Id
+	private Long id;
+	private String name;
+	@ManyToMany
+	private List<Category> categories;
+	
+	public Product() {}
+
+	public Product(Long id, String name, List<Category> categories) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.categories = categories;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", categories=" + categories + "]";
+	}
+	
+}
+
+
+
+Activity:
+----------
+check notes and programs and we conclude Hibernate.
+
+-----------------------------------
+Spring framework
+---------------------
+beans
+and managing beans
+spring season for EJB developers
+
+EJB = Enterprise Java Beans
+	Java Beans  +  services
+
+What is Java Bean?
+	any component developed in java language is a java bean
+
+What is a component?
+	any re-usable piece of code that can be plugged into various types of projects
+
+It is separating 2 things:
+	1) application specific services
+		bean developers will have to do
+	2) generic services
+		are common to most of the projects, 
+		we can customize or configure
+	ex:	
+		security is common service for any project
+		we can configure it
+
+declarative vs programmatic
+
+instead of writing code for everything, we make use of the "containers" that provide generic services.
+
+container
+	special jvm
+	provide generic services
+
+spring container is called as IOC container.
+
+IOC	Inversion of control
+
+declarative way of allowing us to decide/ control the beans and their dependent beans
+
+Dependency injection
+	keeping the dependent bean loosely coupled and
+		allowing injecting them using
+			setters or constructors
+
+constructor based dependency injection
+setter based dependency injection
+
+We will mark a class as a "bean"
+if that class has "compostion" or "aggregation" relationship with another class, then we provide options to inject them using
+	constructor or setter
+
+A has B
+
+Book has Author
+
+class Book
+{
+	id, title, author	//how you inject author?
+	public Book(){}
+	public Book(Long id,String title,Author author){
+		//this.id=id......
+	}
+
+	public void setAuthor(Author author){
+		this.author=author;
+	}
+}
+
+class Author
+{}
+
+
+
+
+Elaborate, notepad friendly:
+What is the Spring Framework?					
+The DI Container					
+Inversion of Control					
+Beans  and Bean Life cycle					
+
+
+Bean life cycle:
+	construction
+		postConstruct()
+	activation
+		ejbActivate()
+	passivation
+		ejbPassivate()
+	destruction
+		preDestroy()
+
+container will maintain a pool bean instances
+it will not create for each request.
+it will take object from pool
+
+if pool size is 100
+then 100 users accessing our application are provided with 1 bean
+what happens to 101st user?
+	container, identifies the most idle bean instance 
+		and passivate the state
+
+Passivate:
+	the state of the bean is stored in secondary storage 
+	and that bean instance memory is claimed
+
+	new requests will use that bean instance
+
+Activate:
+	what happens the idle user becomes active?
+	again, it will passivate another bean instance and provide this user with that instance again, filled with the state recovered from the secondary storage.
+
+this passivation and activation happens several iterations in a millisecond that we will not even be aware of this.
+
+in that way, a set of instances can serve as many requests
+
+Activity:
+
+Understand the need for a framework like Spring framework,
+and what is container
+and what is the need for marking a class as a bean? (component)
+
+how container manages the life cycle of a bean, thereby handling scalability of the application
+

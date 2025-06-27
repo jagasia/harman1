@@ -1,0 +1,1398 @@
+We have completed
+ReactJs
+Angular
+Now, we are in the 3rd module.
+
+	
+Functional Interfaces  , Predicates, Functions, Consumers, Suppliers etc					
+Generics					
+Collections - Iterator, Iterable, Collection Interface, List, Set					
+Collections - Comparable, Comparator, Maps, Collections class					
+Streams, Stream processing methods - map, filter, sorted, max, min etc.,					
+MultiThreading - Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+Introduction to time complexity , Introduction to Big O Notation					
+Optional Methods - empty, of, ofNullable, get, isPresent,, ifPresent					
+SOLID Principles					
+Design Patterns Introduction - Singleton,Factory, Adaptor, Observer					
+----------------------------------------------------
+Collections API
+-----------------
+Array is the first datastructure, i learned
+
+there are some limitations of array:
+
+What are the limitations of array?
+----------------------------------------
+	arrays are fixed length
+	the length of the array must be known in the beginning
+	arrays are contiguous in memory. Means, the elements are present in continuous / adjacent locations.
+	insertion or deletion requires shifting elements
+	deletion does not save memory/ release memory
+
+arrays can be primitive type also.
+	int []arr;		//possible
+
+
+Collections 
+-------------
+	can always be reference type. Can never be primitive type.
+	Integer is allowed. int is not allowed
+
+	ArrayList<Integer> alist;		//allowed
+	ArrayList<int> alist2;		//not allowed
+
+Collections advantage:
+	we do not need to know the size of collection when we create it.
+	ArrayList over Array
+		array list also has index.
+		all collections that implement List are having index
+		LinkedList have index
+		Vector have index
+
+List, Set categories.
+
+what are the differences between List and Set?
+
+List
+	allows adding duplicate entries
+	allows any number of nulls	
+	always maintains the order of insertion
+
+Set
+	Set rejects duplicate entries
+	allows adding 1 null. The 2nd null will be considered as 		duplicate
+	only LinkedHashSet is ordered. ("ordered" means insertion order). 
+	sorted is different from ordered
+	sorted = ascending or descending
+	ordered = insertion order
+
+	Set elements are arranged in order decided by algorithm.
+
+	HashSet
+		order is decided by equals() and hashCode() 			methods
+	TreeSet
+		order is decided by either Comparable/ 			Comparatoro implementations
+	LinkedHashSet
+		is ordered
+
+legacy	=	old
+all legacy collections are synchronized (means, threads allowed 1 by 1)
+	Vector
+	Stack
+	Hashtable	key-value pair
+
+
+the collection classes:
+
+
+List	(interface)
+	ArrayList
+	LinkedList
+	Vector		(legacy)
+	Stack		(legacy)
+
+Set	(interface)
+	HashSet
+	TreeSet
+	LinkedHashSet
+
+Queue	(interface)
+	PriorityQueue
+	ArrayDeque
+	LinkedList
+
+	
+
+the application of collection, Map
+
+Map
+	HashMap
+	TreeMap
+	LinkedHashMap
+	Hashtable	(legacy)
+	ConcurrentHashMap
+
+
+-------------------------------------
+
+---------------------------------------
+
+---
+
+```
+Java Collections - Important Interfaces & Classes
+
+1. Core Interfaces
+-------------------
+- Collection
+- List
+- Set
+- Queue
+- Map  (Note: Map is not a subtype of Collection)
+
+2. List Implementations
+------------------------
+- ArrayList        --> Fast random access, not thread-safe
+- LinkedList       --> Good for insert/delete, implements List & Deque
+- Vector           --> Legacy, synchronized
+- Stack            --> Legacy, LIFO, extends Vector
+
+3. Set Implementations
+-----------------------
+- HashSet          --> No duplicates, no order
+- LinkedHashSet    --> Maintains insertion order
+- TreeSet          --> Sorted order, uses TreeMap internally
+
+4. Queue/Deque Implementations
+-------------------------------
+- PriorityQueue    --> Elements ordered by priority (natural or custom)
+- ArrayDeque       --> Faster than Stack/LinkedList for stack/queue ops
+- LinkedList       --> Also works as Queue and Deque
+
+5. Map Implementations
+-----------------------
+- HashMap          --> Key-value pairs, no order, allows 1 null key
+- LinkedHashMap    --> Maintains insertion order
+- TreeMap          --> Sorted order (by key)
+- Hashtable        --> Legacy, synchronized, no null keys/values
+- ConcurrentHashMap --> Thread-safe, modern alternative to Hashtable
+
+6. Utility Classes
+-------------------
+- Collections      --> Static utility methods (sort, reverse, shuffle, etc.)
+- Arrays           --> Static methods for array manipulation
+
+7. Comparators
+---------------
+- Comparable       --> Natural ordering (implements compareTo())
+- Comparator       --> Custom ordering (implements compare())
+
+8. Iterators
+-------------
+- Iterator         --> Universal cursor for Collection
+- ListIterator     --> Bidirectional for List
+- Enumeration      --> Legacy (for Vector, Hashtable)
+
+```
+
+---
+
+
+
+
+
+Task:
+
+Identify the collection api interfaces and implementations.
+Refer to today's notes.
+
+
+-------------------------
+Challenge:
+
+https://github.com/jagasia/harman1/blob/jag/Java/University_Map_Challenge.docx
+
+download the above document that contains the challenge.
+
+Check if you understand estimate the time to complete.
+
+
+----------------------------------------------------
+The above challenge is difficult.
+
+So, lets see some examples.
+
+
+List
+----
+
+create an array list of employees.
+employee
+	id
+	name
+	department
+	salary
+Sort them by
+	department
+	id
+
+
+Employee class:-
+----------------------
+
+
+public class Employee {
+	private Long id;
+	private String name;
+	private String department;
+	private Double salary;
+	
+	public Employee() {}
+
+	public Employee(Long id, String name, String department, Double salary) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.department = department;
+		this.salary = salary;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public Double getSalary() {
+		return salary;
+	}
+
+	public void setSalary(Double salary) {
+		this.salary = salary;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", name=" + name + ", department=" + department + ", salary=" + salary + "]";
+	}
+	
+	
+	
+}
+
+
+
+App class:-
+------------
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class App4 {
+
+	public static void main(String[] args) {
+		List<Employee> list=new ArrayList<>();
+		list.add(new Employee(11L, "Raja", "IT", 100000.0));
+		list.add(new Employee(1L, "Abdul", "CSE", 100000.0));
+		list.add(new Employee(15L, "Zaheer", "CSE", 100000.0));
+		list.add(new Employee(4L, "Babu", "IT", 100000.0));
+		list.add(new Employee(6L, "Rajeesh", "CSE", 100000.0));
+		list.add(new Employee(5L, "Chandru", "ECE", 100000.0));
+		list.add(new Employee(10L, "Ravi", "IT", 100000.0));
+		
+		//How can we sort this list?
+		
+		Collections.sort(list);	//Error...
+		
+		for(Employee employee : list)
+		{
+			System.out.println(employee);
+		}
+	}
+
+}
+
+
+Task:
+------
+i have given
+	Employee class
+	App class
+
+you need to make it sorted by
+	department, id
+
+
+Hint:
+	use 
+		Comparable in Employee (or)
+		Comparator in sort method
+
+
+
+	@Override
+	public int compareTo(Employee o) {
+		if(this.getDepartment().equals(o.getDepartment())) {
+			return this.getId().compareTo(o.getId());
+		}else
+		{
+			return this.getDepartment().compareTo(o.getDepartment());
+		}
+	}
+
+
+
+---------------------------------------------------------------------
+What is Comparable?
+	is an interface, that a class can implement and override the
+		compareTo method
+
+All wrapper classes, Date class, String class, have implemented Comparable.
+
+
+
+What is the difference between Comparable and Comparator?
+
+
+
+```
+Difference Between Comparable and Comparator in Java
+-----------------------------------------------------
+
+1. Purpose
+-----------
+- Comparable: Used to define natural ordering of objects.
+- Comparator: Used to define custom ordering (external control).
+
+2. Interface Location
+----------------------
+- Comparable: java.lang package
+- Comparator: java.util package
+
+3. Method to Implement
+-----------------------
+- Comparable: int compareTo(Object o)
+- Comparator: int compare(Object o1, Object o2)
+
+4. Where to Use
+----------------
+- Comparable: Implemented by the class itself.
+  Example: public class Student implements Comparable<Student>
+- Comparator: Separate class or anonymous/lambda, passed during sorting.
+  Example: Collections.sort(list, new StudentComparator());
+
+5. Number of Sort Conditions
+-----------------------------
+- Comparable: Only ONE sort logic can be defined.
+- Comparator: MULTIPLE sort logics can be created and passed as needed.
+
+6. Used With
+-------------
+- Comparable: Collections.sort(list); (uses natural order)
+- Comparator: Collections.sort(list, comparator);
+
+7. Example
+-----------
+Using Comparable (natural order):
+----------------------------------
+public class Student implements Comparable<Student> {
+    int id;
+    public int compareTo(Student s) {
+        return this.id - s.id;
+    }
+}
+
+Using Comparator (custom order):
+---------------------------------
+public class Student {
+    int id;
+}
+
+public class StudentNameComparator implements Comparator<Student> {
+    public int compare(Student s1, Student s2) {
+        return s1.name.compareTo(s2.name);
+    }
+}
+Collections.sort(list, new StudentNameComparator());
+
+Or using lambda:
+Collections.sort(list, (a, b) -> a.name.compareTo(b.name));
+
+```
+
+---
+
+### ✅ Summary Table:
+
+| Feature    | Comparable               | Comparator                      |
+| ---------- | ------------------------ | ------------------------------- |
+| Package    | `java.lang`              | `java.util`                     |
+| Method     | `compareTo(Object o)`    | `compare(Object o1, Object o2)` |
+| Affects    | Current class            | External/custom class           |
+| Sort types | One (natural)            | Many (customizable)             |
+| Used with  | `Collections.sort(list)` | `Collections.sort(list, comp)`  |
+
+---
+-----------------------------------------
+
+
+
+
+
+import java.util.HashSet;
+
+public class App5_Set {
+
+public static void main(String[] args) {
+	HashSet<Employee> set=new HashSet<>();
+	set.add(new Employee(11L, "Raja", "IT", 100000.0));
+	set.add(new Employee(1L, "Abdul", "CSE", 100000.0));
+	set.add(new Employee(15L, "Zaheer", "CSE", 100000.0));
+	set.add(new Employee(4L, "Babu", "IT", 100000.0));
+	set.add(new Employee(6L, "Rajeesh", "CSE", 100000.0));
+	set.add(new Employee(5L, "Chandru", "ECE", 100000.0));
+	set.add(new Employee(10L, "Ravi", "IT", 100000.0));
+	for(Employee e:set)
+	{
+		System.out.println(e);
+	}
+	
+}
+
+}
+
+Task:
+
+Display the employees based on Name asc order.
+
+Collections.sort 	does not work for Set
+		Collections.sort works only for list.
+
+
+while adding elements to a list, the new element is added at the end of the list.
+list allows sorting (after adding elements)
+
+Set
+	while adding elements, an algorithm decides the location where the elements to be placed.
+	for ex, TreeSet means, it will add elements in such a way, it is always in sorted fashion (in order traversal)
+	HashSet will use hashCode and equals methods to decide where the element needs to added
+
+later, sorting a set is not allowed.
+
+but we can convert a set into list and then use Collections.sort method.
+
+or get stream from any collection and call the sorted method.
+stream api, sort method returns another stream (modified stream)
+so you need to know terminal operations like
+	collect
+	forEach
+
+to get or print the result
+
+-------------------------
+TreeSet uses Comparable or Comparator to maintain the elements in sorted manner.
+
+How Comparable or Comparator used in TreeSet?
+
+Whenever we add elements to a TreeSet, it either uses Comparable or Comparator.
+
+If the type class itself implements Comparable, then it will use it.
+
+If an instance of Comparator or lambda is provided to the constructor of a TreeSet, then it is considered.
+
+We will discuss this with practical example after break.
+
+
+import java.util.Comparator;
+import java.util.TreeSet;
+
+class EmployeeIdComparator implements Comparator<Employee>{
+
+	@Override
+	public int compare(Employee o1, Employee o2) {
+		return o1.getId().compareTo(o2.getId());
+	}
+	
+}
+
+public class App5_TreeSet {
+
+	public static void main(String[] args) {
+	TreeSet<Employee> set=new TreeSet<>(new EmployeeIdComparator());
+	set.add(new Employee(11L, "Raja", "IT", 100000.0));
+	set.add(new Employee(1L, "Abdul", "CSE", 100000.0));
+	set.add(new Employee(15L, "Zaheer", "CSE", 100000.0));
+	set.add(new Employee(4L, "Babu", "IT", 100000.0));
+	set.add(new Employee(6L, "Rajeesh", "CSE", 100000.0));
+	set.add(new Employee(5L, "Chandru", "ECE", 100000.0));
+	set.add(new Employee(10L, "Ravi", "IT", 100000.0));
+
+	for(Employee e:set)
+	{
+		System.out.println(e);
+	}
+		
+}
+
+}
+
+
+
+-------------------------
+Map
+----
+key value pair
+
+does not have add method like collections have.
+we use put() method to add an entry
+
+what is an entry?
+	key - value pair
+
+put(key,value);		adds an entry to the map
+get(key) returns the value	if the key is found. else returns null.
+
+how to iterate a map?
+	map does not have iterator.
+	but you can get
+		keySet()	method returns all keys as a Set
+			set has iterator
+		
+		entrySet() method returns all entries as a Set
+
+
+		values() method returns all values as Collection
+
+
+To understand a map, let me give you a small task:
+
+Task:
+-------
+
+write a java program, that accepts a sentence as input string and
+displays each character found in the sentence along with their occurrence.
+
+sample input:
+this is a sentence typed by me
+
+sample output:
+t	3
+h	1
+i	2
+s	3
+	6
+a	1
+e	5
+n	2
+c	1
+y	2
+p	1
+d	1
+b	1
+m	1
+
+
+How you solved this problem?
+
+
+HashMap
+	order is not same as the input order
+
+LinkedHashMap	
+	should be the best option because, the order of keys are same as we put the entries.
+
+
+
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+public class AppCharsCount {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		String input=sc.nextLine();
+		Map<Character, Integer> map=new LinkedHashMap<>();
+		//lets iterate each character present in the input string
+		
+		for(char c : input.toCharArray()) {
+//			Integer count = map.get(c);
+//			if(count==null) {
+//				count=0;
+//			}
+//			count++;
+//			map.put(c, count);
+			map.put(c, map.getOrDefault(c, 0)+1);
+		}
+		
+		for(Entry<Character, Integer> e:map.entrySet()) {
+			System.out.printf("%c\t%d\n",e.getKey(),e.getValue());
+		}
+	}
+
+}
+
+
+
+
+
+Task:
+
+https://github.com/jagasia/harman1/blob/jag/Java/University_Map_Challenge.docx
+
+
+
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+public class College {
+	private String name;
+	private String website;
+	private String mobile;
+	private String founder;
+	private Integer numberOofDept;
+	private String location;
+	private Date createdDate;
+	
+	public College() {}
+
+	public College(String name, String website, String mobile, String founder, Integer numberOofDept, String location,
+			Date createdDate) {
+		super();
+		this.name = name;
+		this.website = website;
+		this.mobile = mobile;
+		this.founder = founder;
+		this.numberOofDept = numberOofDept;
+		this.location = location;
+		this.createdDate = createdDate;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getFounder() {
+		return founder;
+	}
+
+	public void setFounder(String founder) {
+		this.founder = founder;
+	}
+
+	public Integer getNumberOofDept() {
+		return numberOofDept;
+	}
+
+	public void setNumberOofDept(Integer numberOofDept) {
+		this.numberOofDept = numberOofDept;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	@Override
+	public String toString() {
+		return "College [name=" + name + ", website=" + website + ", mobile=" + mobile + ", founder=" + founder
+				+ ", numberOofDept=" + numberOofDept + ", location=" + location + ", createdDate=" + createdDate + "]";
+	}
+	
+	static Map<String,Integer> calculateLocationCount(List<College> list){
+		Map<String,Integer> map=new TreeMap<>();
+		//logic here...
+		for(College college:list) {
+			map.put(college.getLocation(), map.getOrDefault(college.getLocation(),0)+1);
+		}
+		return map;
+	}
+}
+
+
+
+
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+public class App {
+
+	public static void main(String[] args) throws ParseException {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter the number of colleges:");
+		int noOfColleges=sc.nextInt();
+		List<College> collegeList=new ArrayList<>();
+		for(int i=0;i<noOfColleges;i++) {
+			String detail=sc.nextLine();
+			if(detail.equals(""))
+				detail=sc.nextLine();
+			//split the detail string by ,
+			String[] arr = detail.split(",");
+			College college=new College();
+			college.setName(arr[0]);
+			college.setWebsite(arr[1]);
+			college.setMobile(arr[2]);
+			college.setFounder(arr[3]);
+			college.setNumberOofDept(Integer.valueOf(arr[4]));
+			college.setLocation(arr[5]);
+			SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+			college.setCreatedDate(sdf.parse(arr[6]));
+			
+			collegeList.add(college);
+		}
+		
+		Map<String, Integer> map = College.calculateLocationCount(collegeList);
+		
+		System.out.format("%-15s %s\n","Location","Count");
+		for(Entry<String, Integer> e:map.entrySet()) {
+			System.out.format("%-15s %s\n",e.getKey(),e.getValue());
+		}
+
+	}
+
+}
+
+
+
+
+Check the above solution for the location count map exercise.
+
+
+-----------------------------------------------------------
+Generics
+----------
+Java version 5 introduced generics that allows a class can be customized for any type
+
+before java 5, 
+ArrayList was object type
+
+it is similar to ArrayList<Object> in generics
+
+It is called as generics because, it is not created for a particular type. It can be used for different types. So it is generic.
+
+Objects created for generic classes are specific types. But the class is generic type.
+
+Advantage?
+	it is type safe. 
+	If a class is Object type, then it will allow any type
+	but when it is generic type, the type is mentioned while creating objects. then only that type is allowed.
+
+LinkedList vs LinkedList<T>
+
+
+
+public class Node<T> {
+	T data;
+	Node<T> next;
+	
+	public Node(){}
+
+	public Node(T data, Node<T> next) {
+		super();
+		this.data = data;
+		this.next = next;
+	}
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
+	public Node<T> getNext() {
+		return next;
+	}
+
+	public void setNext(Node<T> next) {
+		this.next = next;
+	}
+	
+}
+
+
+
+public class LinkedList<T> {
+	Node<T> start;	
+
+	public LinkedList() {}
+
+	public LinkedList(Node<T> start) {
+		super();
+		this.start = start;
+	}
+	
+	public void add(T data) {
+		Node<T> curr=new Node<>();
+		curr.setData(data);
+		if(start==null) {
+			//adding the first node
+			start=curr;
+		}else
+		{
+			//find ref to last node
+			Node temp=null;
+			for(temp=start;temp.next!=null;temp=temp.next);
+			temp.next=curr;
+		}
+	}
+	
+	public void traverse() {
+		for(Node temp=start;temp!=null;temp=temp.next) {
+			System.out.println(temp.getData());
+		}
+	}
+	
+}
+
+
+
+
+
+public class App {
+
+	public static void main(String[] args) {
+		LinkedList<String> list1=new LinkedList<>();
+		list1.add("India");
+		list1.add("Australia");
+		list1.add("Sri lanka");
+		list1.add("Japan");
+		list1.add("China");
+		list1.add("Pakistan");
+		list1.add("Bangladesh");
+		
+		list1.traverse();
+		
+	}
+
+}
+
+
+
+
+----------------------------------
+Streams, Stream processing methods - map, filter, sorted, max, min etc.,					
+
+What is Stream api?
+	is read only access to collections.
+	every operation can return another stream without affecting 		the collection.
+	imo, it is like SELECT query in SQL.
+
+	in SELECT we do
+		filter
+		sort
+		map the row into specific column(s), expressions, 			functions
+		group by
+
+	stream api is used for that
+
+
+
+static Map<String, Integer> calculateLocationCount1(List<College> list) {
+    return list.stream()
+            .collect(Collectors.groupingBy(
+                    College::getLocation,
+                    TreeMap::new, // Use TreeMap instead of default HashMap
+                    Collectors.collectingAndThen(
+                            Collectors.counting(),
+                            Long::intValue // Convert Long to Integer
+                    )
+            ));
+}
+
+
+
+
+lets learn stream api step by step
+
+
+		List<String> countries=new ArrayList<>();
+		countries.add("India");
+		countries.add("Australia");
+		countries.add("Sri lanka");
+		countries.add("China");
+		countries.add("Japan");
+		countries.add("Iran");
+		countries.add("Germany");
+		
+		Stream<String> s1 = countries.stream();
+		Stream<String> s2 = s1.filter(new MyPredicate());
+		Stream<String> s3 = s2.sorted();
+		//terminal operation can be collect or forEach
+		
+		s3.forEach(System.out::println);
+
+
+
+
+
+
+same is refactored into:-
+
+		countries.stream()
+		.filter(new MyPredicate())
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+		
+		countries.stream()
+		.filter((t)->t.length()>5)
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+what is this :: operator????
+	this is "method reference" operator.
+
+
+What is method reference?
+	is a technique that can be used to utilize an existing method,
+		to consider it as an implementation of a functional
+			interface.
+
+
+What is the difference between lambda and method reference?
+	Lambda:- we are providing the implementation there only
+	method ref:- we are using an existing method as 			implementation
+
+
+
+ex: method reference:
+
+	static boolean test(String t) {
+		return t.length()>5;
+	}
+
+
+		countries.stream()
+		.filter(App::test)		//static method ref
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+
+
+if App class test method is not static:- then provide object name
+
+		countries.stream()
+		.filter(new App()::test)
+		.sorted()
+		.forEach(System.out::println);
+
+
+
+-----------------------
+Stages of stream:
+
+CREATION
+INTERMEDIATE
+TERMINAL
+
+
+--------------------------------------
+Task:
+-------
+
+## 🔸 Beginner Level
+
+1. **Filter all even numbers** from a list of integers.
+
+2. **Convert all strings to uppercase** in a list.
+
+3. **Sort a list of strings** in alphabetical and reverse alphabetical order.
+
+4. **Count the number of elements** in a list that start with the letter "A".
+
+5. **Remove duplicates** from a list of integers.
+
+6. **Find the maximum and minimum value** from a list of integers using streams.
+
+7. **Create a list of squares** of all numbers from an integer list.
+
+---
+
+## 🔸 Intermediate Level
+
+8. **Find the first string** that starts with the letter "J" from a list.
+
+9. **Check if any number is divisible by 5** in a list.
+
+10. **Find the sum and average** of all numbers in a list.
+
+11. **Join a list of strings** into a single comma-separated string.
+
+12. **Find all strings longer than 5 characters** from a list.
+
+13. **Count how many strings start with a vowel** in a given list.
+
+14. **Skip the first 3 elements** in a stream and collect the rest.
+
+---
+
+## 🔸 Advanced Level
+
+15. **Group a list of strings by their length.**
+
+16. **Partition a list of numbers** into even and odd numbers.
+
+17. **Find the second highest number** from a list of integers.
+
+18. **Group employees by department** from a list of `Employee` objects.
+
+19. **Find the employee with the highest salary** from a list.
+
+20. **Sort a list of employees by name and then by age.**
+
+21. **Convert a list of strings into a map** where key is the string and value is its length.
+
+22. **Flatten a list of lists of strings** into a single list using flatMap.
+
+---
+
+
+check if a given number is prime or not.
+display all prime numbers between x and y.
+display all prime numbers between x and y, where each digit of that number is also prime.
+display all prime number between x and y, where each digit of that number is also prime, and the sum of digits also prime.
+
+if there is method called "isPrime(num)" then it is easy.
+
+we can call that number for each number between x and y
+and if yes, take each digit of that number and check isPrime(digit)
+and if yes, sum up those digits and then check isPrime(digitsSum)
+
+Complete these stream api hands on till break.
+
+We have Angular test today at 16:30 pm.
+----------------------------------------------------------
+MultiThreading - Introduction to Thread Pools, Creating a Thread Pool using ExecutorService					
+
+
+Basically, any program that we execute, becomes a process. 
+A microprocessor, allocates resources (time and memory) for each process.
+
+
+So far, we have created java programs, that run as single threaded process.
+
+a program runs when there is a main method.
+So, main method defines the flow of execution.
+
+A process that contains only 1 thread then it is main thread.
+
+We can use multi-threading where main will be the main thread, and other threads will be child threads.
+
+Why we need multi-threading?
+	we need multiple simultaneous execution
+	asynchronous execution
+	parallel execution
+
+parallelism and concurrency
+	a processor that has multiple cores like
+		dual core, core 2 duo processor
+		quadcore processor
+		octa core processor
+
+	each core can run separate thread. that is parallelism
+	if same core, runs multiple threads, that is concurrency.
+
+
+how to create a child thread in our java program. 
+	1) using extends Thread
+	2) using implements Runnable
+		in that case also, you will need Thread class later
+		without Thread class, we cannot create thread object. By using Runnable, we are defining the work of the thread.
+But we need thread object to start a thread.
+
+Runnable is a functional interface, that contains only 1 abstract method, called "run()" method.
+
+
+
+Source code of Runnable interface:
+
+
+
+package java.lang;
+
+@FunctionalInterface
+public interface Runnable {
+    void run();
+}
+
+
+
+
+-----------------------
+Example for creating threads by implementing Runnable interface.:
+
+
+class Odd implements Runnable{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i+=2) {
+			System.out.println("Odd: "+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+
+class Even implements Runnable{
+
+	@Override
+	public void run() {
+		for(int i=2;i<=20;i+=2) {
+			System.out.println("Even: "+i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+
+public class App1 {
+
+	public static void main(String[] args) {
+		Thread t1=new Thread(new Odd());
+		Thread t2=new Thread(new Even());
+		
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+
+----------------------------------------------
+Example by extending Thread class:-
+
+
+class One extends Thread
+{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i++) {
+			System.out.println("One");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+class Two extends Thread
+{
+
+	@Override
+	public void run() {
+		for(int i=1;i<=20;i++) {
+			System.out.println("Two");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+
+public class App2 {
+
+	public static void main(String[] args) {
+		One t1=new One();
+		Two t2=new Two();
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+start()		start the thread execution and perform the work 			mentioned in the run method.
+sleep()		pause the execution for the mentioned milliseconds
+
+notify()
+notifyAll()
+yield()
+join()	
+
+t1.join();		//until whoever started already, completes, the others are made wait
+
+
+
+
+what is a thread synchronization?
+	synchronized keyword.
+
+a method can be synchronized 
+a synchronized block
+
+
+only when multiple threads try to access a particular object, then synchornization can allow threads 1 by 1
+
+if multiple threads access multiple objects of same class also, there is no synchronization is possible.
+
+
+
+
+synchronized method example:
+----------------
+
+public class NumberGenerator {
+
+	public synchronized void display() throws InterruptedException {
+		for(int i=0;i<10;i++) {
+			System.out.println(Thread.currentThread().getName()+" : " + i);
+			Thread.sleep(1000);
+		}
+	}
+}
+
+
+
+
+
+public class MyThread extends Thread
+{
+	NumberGenerator ng=null;
+	
+	public MyThread(NumberGenerator ng) {
+		this.ng=ng;
+	}
+	
+	public void run() {
+		try {
+			ng.display();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+
+public class AppSync1 {
+
+	public static void main(String[] args) {
+		NumberGenerator ng=new NumberGenerator();
+		MyThread t1=new MyThread(ng);
+		MyThread t2=new MyThread(ng);
+		
+		t1.setName("Jag");
+		t2.setName("Raja");
+		
+		t1.start();
+		t2.start();
+	}
+
+}
+
+
+
+--------------------------------
+now, only a portion of the method needs to be synchronized.
+
+we use synchronized block.
+
+
+
+public class NumberGenerator {
+
+	public void display() throws InterruptedException {
+		String name=Thread.currentThread().getName();
+		
+		System.out.println(name+" has entered the display method");
+		System.out.println(name+" has entered the first for loop");
+		for(int i=0;i<10;i++) {			
+			System.out.println(name+" : " + i);
+			Thread.sleep(1000);
+		}
+		
+		synchronized (this) {
+			System.out.println(name+" has entered the sync block");
+			for(int i=0;i<10;i++) {				
+				System.out.println(name+" : " + i);
+				Thread.sleep(1000);
+			}
+			System.out.println("Last line of sync block by "+name);
+		}
+
+		System.out.println(name+" has exited the display method");
+	}
+}
+
