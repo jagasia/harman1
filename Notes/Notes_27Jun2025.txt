@@ -1,0 +1,119 @@
+Spring security
+-----------------
+Yesterday, we configured the spring security such that, a default login page came to allow users to login. And there was a browser session automatically remembering if we logged in or not.
+
+But we will not use that login page, because, we are not creating web application, we are creating webservice that is stateless. (REST is stateless) and each request is independent.
+
+so, we are providing login form from ReactJs/ Angular or any front end or from Postman. 
+
+So, we will move to next level.
+
+ie., we are going to authenticate from our controller method.
+
+So that, from reactjs frontend, we call a controller endpoint method to login. or from postman, we call an end point to login.
+
+
+we need "AuthenticationManger" bean, that can be used to authenticate users login by code.
+
+
+
+if all endpoints are allowed access only after logging in, then how we will login? how we will signup??????
+
+	specify what are all the endpoints allowed (permitAll)
+	what other urls/ endpoints are authenticated
+
+
+we specify these in a bean "securityFilterChain"
+
+
+
+so we add the following beans in our configuration class:
+
+  @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+ @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/swagger-ui/**","/swagger-resources/*","/v3/api-docs/**").permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/user/**").authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/admin/**").authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                
+//                .cors((cors) -> cors
+//        				.configurationSource(myWebsiteConfigurationSource()))
+//                
+                .build();
+    }
+
+
+====================================
+Steps for jwt:
+1) add the dependencies to pom.xml
+
+<dependencies>
+    <!-- JJWT Core -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.11.5</version>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson -->
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+
+2) jwt util/ jwt service code.
+
+we should update the security key
+
+update the validity of the token
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))		//30 minutes
+
+
+next, you need to create a 
+	jwt filter
+
+
+
+
+summary:
+
+for authenticating users via our controller method and use jwt:
+following codes to be added or update the configuration:
+
+1) add AuthenticationManager bean to config class (done)
+2) add SecurityFilterChain bean to config class
+3) add jwt dependencies to pom.xml	(done)
+4) add a JwtService class to the project (service=bean) (done)
+5) add a JwtFilter class to the project and configure it in config class (done)
+6) in controller,
+	create end points for "login", "signup"	(done)
+
+7) and configure such that login, signup endpoints are permitAll
+others, authenticated		(done)
+
+
+
+
+
+
+26-jun-security-jwt
+
+Task:
+
+Complete upto Login and getting jwt token.
+
