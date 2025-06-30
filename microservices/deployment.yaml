@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvc-crud-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mvc-crud
+  template:
+    metadata:
+      labels:
+        app: mvc-crud
+    spec:
+      containers:
+        - name: mvc-crud-container
+          image: docker.io/jagindia/26-mvc-crud:latest
+          ports:
+            - containerPort: 5000

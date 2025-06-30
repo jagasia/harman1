@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mvc-crud-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: mvc-crud
+  ports:
+    - protocol: TCP
+      port: 80         # External port for accessing the app
+      targetPort: 5000 # Maps to container's port
