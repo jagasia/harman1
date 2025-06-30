@@ -1001,3 +1001,64 @@ org.eclipse.core.runtime.CoreException: Could not resolve artifact org.springfra
 2025-06-30 10:35:45,178 [Worker-20: Launching sonar-1] INFO  o.eclipse.m2e.core.internal.Bundles - 	Entry: D:\Softwares\sts-4.27.0.RELEASE\plugins\com.google.guava.failureaccess_1.0.2.jar
 2025-06-30 10:35:45,178 [Worker-20: Launching sonar-1] INFO  o.e.m.i.launch.MavenLaunchDelegate - Run build in "D:\Jag\harman_training\Training\microservices\sonar-1":
 2025-06-30 10:35:45,179 [Worker-20: Launching sonar-1] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B -Dstyle.color=always sonar:sonar -Dsonar.projectKey=harman-r -Dsonar.host.url=http://localhost:9000  -Dsonar.login=39a2b44e771bd3e27ed56b3af419e451b5a11827
+2025-06-30 11:48:09,881 [Worker-49: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.harman.demo:26-mvc-crud:0.0.1-SNAPSHOT @ D:\Jag\harman_training\Training\microservices\26-mvc-crud\pom.xml.
+2025-06-30 11:48:50,322 [Worker-49: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /26-mvc-crud/src/main/java
+2025-06-30 11:48:50,323 [Worker-49: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/main/resources
+2025-06-30 11:48:50,324 [Worker-49: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/main/resources
+2025-06-30 11:48:50,324 [Worker-49: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /26-mvc-crud/src/test/java
+2025-06-30 11:48:50,324 [Worker-49: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/test/resources
+2025-06-30 11:51:03,647 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:51:03,678 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:51:03,683 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\customer-service\src\test\resources
+2025-06-30 11:51:06,607 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:51:06,635 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:51:06,641 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\product-service\src\test\resources
+2025-06-30 11:51:08,248 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:51:08,270 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:51:08,274 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\sale-service\src\test\resources
+2025-06-30 11:51:09,122 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\sonar-1\src\main\resources
+2025-06-30 11:51:09,126 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\sonar-1\src\test\resources
+2025-06-30 11:51:11,592 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:51:11,880 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:51:11,884 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\spring-cloud-gateway\src\test\resources
+2025-06-30 11:53:31,281 [Worker-3: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2025-06-30 11:54:15,584 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.harman.demo:26-mvc-crud:0.0.1-SNAPSHOT @ D:\Jag\harman_training\Training\microservices\26-mvc-crud\pom.xml.
+2025-06-30 11:54:20,836 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /26-mvc-crud/src/main/java
+2025-06-30 11:54:20,840 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/main/resources
+2025-06-30 11:54:20,841 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/main/resources
+2025-06-30 11:54:20,841 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /26-mvc-crud/src/test/java
+2025-06-30 11:54:20,842 [Worker-9: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /26-mvc-crud/src/test/resources
+2025-06-30 11:54:23,946 [Worker-9: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 13 sec
+2025-06-30 11:54:27,056 [Worker-4: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:54:27,119 [Worker-4: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:54:27,122 [Worker-4: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:55:03,099 [Worker-10: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.harman.demo:26-mvc-crud:0.0.1-SNAPSHOT @ D:\Jag\harman_training\Training\microservices\26-mvc-crud\pom.xml.
+2025-06-30 11:55:05,891 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:05,892 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:05,897 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:55:05,899 [Worker-10: Building] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of 26-mvc-crud
+2025-06-30 11:55:05,900 [Worker-10: Building] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for 26-mvc-crud
+2025-06-30 11:55:07,420 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:55:07,444 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:07,446 [Worker-2: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:55:09,183 [Worker-10: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: com.harman.demo:26-mvc-crud:0.0.1-SNAPSHOT @ D:\Jag\harman_training\Training\microservices\26-mvc-crud\pom.xml.
+2025-06-30 11:55:10,659 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:10,660 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:10,663 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:55:10,664 [Worker-10: Building] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Changed resources require a complete clean of filtered resources of 26-mvc-crud
+2025-06-30 11:55:10,664 [Worker-10: Building] INFO  o.e.m.w.i.f.ResourceFilteringBuildParticipant - Executing resource filtering for 26-mvc-crud
+2025-06-30 11:55:37,432 [Worker-5: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:55:37,444 [Worker-5: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:37,447 [Worker-5: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:55:48,293 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:55:48,298 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:55:48,302 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:56:19,031 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:56:19,040 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:56:19,043 [Worker-15: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 11:57:35,035 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 11:57:35,044 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 11:57:35,048 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources
+2025-06-30 12:10:33,788 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-06-30 12:10:36,081 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-06-30 12:10:36,113 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory D:\Jag\harman_training\Training\microservices\26-mvc-crud\src\test\resources

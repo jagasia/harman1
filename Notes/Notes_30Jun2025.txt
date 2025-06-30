@@ -163,3 +163,353 @@ you can check
 	Jenkins
 	Sonarqube
 
+------------------
+Docker
+--------
+
+virtualization
+
+even before start of our training,
+we are all provided with cloud lab
+
+that is a virtual computer, there, everything is installed
+and they have cloned it.
+
+what is the difference between 
+	virtual PC or vmware and Docker
+
+virtul pc is heavy weight
+	the entire OS, desktop, is virtualized
+	
+whereas in case of a docker image
+	only the required components are packed
+	
+so docker is light weight.
+
+docker steps:
+
+1) install WSL 	
+	windows sub system for Linux
+2) install docker for windows
+
+	docker -v
+
+Docker version 28.0.1, build 068a01e
+
+docker demon (service) should be running
+
+then only we can see docker images
+
+docker images
+or
+docker image ls
+
+
+what is a docker image?
+	in those days, when there were some CDs that works only when you put cd in cd drive
+
+we used to create ISO image of cd
+so that we can mount it and play
+
+like that, the containerized copy of our deployable project unit is called as docker image
+
+when we run that docker image,
+	it becomes docker container
+
+to see all containers
+	docker container ls
+	or
+	docker ps
+	or 
+	docker ps -a		for all including background
+
+docker rmi <<image name>>	to remove an image
+docker rm <<container id>		to remove container
+-f			to force remove even when it is running
+
+docker build		to build image
+docker run		to run image
+docker pull		to pull image from cloud (hub.docker.com)
+docker push		to pull local image to hub.docker.com
+
+docker compose up		to run multiple images/services together using docker_compose.yml file
+
+docker network
+docker -it
+
+
+lets see how we can run a docker image
+---------------
+for example
+
+if you do not have mysql in your computer.
+we can pull and run mysql image from docker hub.
+
+
+### ✅ **Step 1: Pull MySQL 8 Docker Image**
+
+```bash
+docker pull mysql:8
+```
+
+---
+
+### ✅ **Step 2: Run MySQL 8 Container**
+
+```bash
+docker run -d \
+  --name mysql8-container \
+  -e MYSQL_ROOT_PASSWORD=root123 \
+  -p 3306:3306 \
+  mysql:8
+```
+
+**Explanation:**
+
+* `-d`: Run in detached mode.
+* `--name mysql8-container`: Container name.
+* `-e MYSQL_ROOT_PASSWORD=root123`: Set root password.
+* `-p 3306:3306`: Expose port 3306 to host.
+
+---
+
+### ✅ **Step 3: Access Container Bash**
+
+```bash
+docker exec -it mysql8-container bash
+```
+
+Once inside the container, you'll see a bash prompt like:
+
+```bash
+root@<container_id>:/#
+```
+
+---
+
+### ✅ **Step 4: Login to MySQL from Inside Bash**
+
+```bash
+mysql -u root -p
+```
+
+Then enter the password you set earlier (`root123` in this example).
+
+---
+
+### ✅ **Optional: View Running Containers**
+
+```bash
+docker ps
+```
+
+---
+
+### ✅ **Stop the Container (When Done)**
+
+```bash
+docker stop mysql8-container
+```
+
+---
+
+### ✅ **Start Again (If Already Created)**
+
+```bash
+docker start mysql8-container
+```
+
+
+
+
+
+
+
+
+
+
+
+Lets run an existing application in docker.
+1) open cmd / terminal
+2) 
+3) docker run -p 5000:5000 in28min/todo-rest-api-h2:1.0.0.RELEASE
+4) http://localhost:5000/hello-world
+	check this in a browser
+	(also)
+http://localhost:5000/hello-world-bean
+
+5) 
+	i) To check the running containers list
+		docker container ls
+	ii) To check all the containers list
+		docker container ls -a
+6) to kill a container
+	docker stop <<container-id>>
+	docker container stop <<container-id>>
+
+	stop vs kill	(stop gracefully. Kill immediately)
+
+7) to run a docker container in the background
+	docker run -p 5000:5000 -d in28min/todo-rest-api-h2:1.0.0.RELEASE
+8) to check the logs,
+	docker logs <<container-id>>
+	(also)
+	docker logs -f <<first 5 digits of container id>>
+9) docker images
+	to list the images
+-------------------------------------------
+Task:
+------
+Identify the docker commands
+and how to run an existing docker image
+and list the containers
+and kill the container
+
+After break, we will learn to create a docker image of a spring boot application.
+
+Demo:
+
+lets create a docker image of our spring boot application.
+
+there are 2 ways we can do this.
+	1) using docker file
+	2) maven spring boot project
+		mvn spring-boot:build-image
+	
+		this will not require docker file.
+
+
+we have taken 
+	26-mvc-crud 
+in microservices workspace.
+
+it is now h2 database (file system)
+
+
+in cmd prompt, where pom.xml is present
+	mvn spring-boot:build-image
+
+
+to run this image
+
+docker run -p 5001:5000 26-mvc-crud:0.0.1-SNAPSHOT
+
+
+go to browser:
+
+http://localhost:5001
+
+you can see home page.
+
+
+
+now this image can be pushed to hub.docker.com
+
+and then you can pull it and run in any computer, where just docker is installed.
+
+i will also show you, how to 	
+	install docker in aws
+	and pull and run this project in aws
+	and so that, anybody can access our app
+		from browser in mobile or computer
+
+
+Demo:
+
+how to push this docker image to hub.docker.com?
+
+1) go to hub.docker.com
+	login to your account
+
+2) create a respository
+	"26-mvc-crud"
+
+3) in cmd prompt (any location)
+	tag docker image to repository
+
+docker tag 26-mvc-crud:0.0.1-SNAPSHOT jagindia/26-mvc-crud
+
+4) push the image to hub
+
+	docker push jagindia/26-mvc-crud
+
+
+
+
+------------------------------------------
+suppose, one docker image of a project that connects with mysql,
+and we have a docker image of mysql.
+
+totally 2 docker images.
+
+both should run together and our project should access mysql also.
+
+docker compose should be used.
+
+
+
+create a Dockerfile in project folder where pom.xml is present
+
+# Dockerfile
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY target/*.jar app.jar
+EXPOSE 5000
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+create docker compose yml
+docker-compose.yml
+
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql8-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: harman2
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  springboot-app:
+    image: jag-mysql-crud
+    container_name: springboot-app-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/harman2
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+
+
+
+
+
+mvn clean package -DskipTests
+
+
+docker compose up --build
+
+
+Task:
+
+in cloud lab,
+you can try creating docker image
+and run them as container
+
+check
+	docker ps -a
+
+kill the containers after use.
