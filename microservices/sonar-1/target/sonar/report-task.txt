@@ -1,0 +1,6 @@
+projectKey=harman-r
+serverUrl=http://localhost:9000
+serverVersion=8.8.0.42792
+dashboardUrl=http://localhost:9000/dashboard?id=harman-r
+ceTaskId=AZe_OnUskI0GC-Dl4uhL
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AZe_OnUskI0GC-Dl4uhL

@@ -1,0 +1,165 @@
+Microservices 
+	Eureka service discovery
+	Load balancing
+	Circuit Breaker
+	Feign client
+	cloud/ api gateway
+
+Spring cloud gateway
+-------------------------
+	we are going to provide on microservice that is going to be the single point for all clients. This gateway will redirect the request to other microservices based on the "path" they choose.
+
+for example:
+	there are 3 microservices running and their endpoints are
+
+http://localhost:8081		for customer
+http://localhost:8082		for product
+http://localhost:8083		for sale
+
+but instead of allowing users to discover these microservices by themselves, we are providing a gateway that runs in 8080
+
+gateway runs in 8080
+
+user input:
+	http://localhost:8080/customer
+	http://localhost:8080/product
+	http://localhost:8080/sale
+
+
+this 1 gateway, is receiving all requests and redirect to corresponding service.
+
+Demo:
+---------
+refer to document
+📘 Spring Cloud Gateway
+
+
+----------------------
+Jenkins
+Sonarqube
+Docker
+AWS
+	ECS
+	EKS
+
+
+
+
+
+Jenkins
+----------
+	we can run our java code using jenkins
+	we can pull our java code from git and run
+
+CI/CD can be implemented
+
+we can download jenkins.war from 
+https://get.jenkins.io/war-stable/2.504.3/jenkins.war
+
+
+
+
+lets run jenkins.war
+
+	java -jar jenkins.war
+
+
+
+
+
+-----------------------
+SonarQube
+-------------
+	a tool used for testing the code quality
+	it is not testers tool.
+	it is developer's tool to constantly learn and implement
+		coding standars and good practices
+
+there are lot of metrics like
+	code smell
+	coverage
+	
+we can download sonarqube and start the server.
+
+
+
+steps:
+
+1) start sonarqube 
+
+D:\Softwares\sonarqube-8.8.0.42792\bin\windows-x86-64
+
+StartSonar.bat
+
+2) localhost:9000
+
+
+3) create a maven project with poor coding
+
+
+import java.util.Date;
+
+public class Example {
+
+	public String speak() {
+		int i;
+		Date dt=null;
+		System.out.println(dt.toString());
+		int k=0;
+		if(k==0)
+			return "Ok";
+			
+		return "Hello";
+		
+	}
+}
+
+
+sonarqube steps:
+
+1) in sonar admin portal,
+
+click "Add project" button
+	Manually
+
+project key	= project name
+
+
+setup
+
+
+
+
+mvn sonar:sonar \
+  -Dsonar.projectKey=harman-r \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.login=39a2b44e771bd3e27ed56b3af419e451b5a11827
+
+
+
+sonar:sonar -Dsonar.projectKey=harman-r -Dsonar.host.url=http://localhost:9000  -Dsonar.login=39a2b44e771bd3e27ed56b3af419e451b5a11827
+
+
+in eclipse
+	right click project
+		run as 
+			maven build
+
+
+paste the goals
+
+
+run
+
+now sonar portal automatically refreshes and show you the report.
+
+
+Task:
+-------
+Once i push code to git
+
+you can check 
+	Spring cloud gateway
+	Jenkins
+	Sonarqube
+
